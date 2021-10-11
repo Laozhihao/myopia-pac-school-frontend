@@ -184,9 +184,7 @@ const TableList: React.FC = () => {
           <p className={styles.title}>请确认学生数据导出条件：</p>
           <Radio.Group
             className={styles.radio}
-            onChange={(e: { target: { value: React.SetStateAction<number> } }) =>
-              setExportType(e.target.value)
-            }
+            onChange={(e) => setExportType(e.target.value)}
             value={exportType}
           >
             <Space direction="vertical">
@@ -199,7 +197,7 @@ const TableList: React.FC = () => {
               style={{ width: '100%', marginBottom: 20 }}
               allowClear
               value={gradeId}
-              onChange={(val: React.SetStateAction<undefined>) => setGradeId(val)}
+              onChange={(val) => setGradeId(val)}
               placeholder="请选择年级"
             >
               {gradeList.map((item) => (

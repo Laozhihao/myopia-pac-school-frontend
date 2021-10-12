@@ -214,7 +214,6 @@ const TableList: React.FC = () => {
         title={'学生数据'}
         visible={importVisible}
         onCancel={() => setImportVisible(false)}
-        onOk={() => {}}
       />
     </PageContainer>
   );

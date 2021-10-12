@@ -1,6 +1,6 @@
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
-// import { PageLoading } from '@ant-design/pro-layout';
-import { Spin } from 'antd';
+import { ContentTypeEnum } from '@/enums/http-enum';
+import { message, Spin } from 'antd';
 import type { RunTimeLayoutConfig, RequestConfig } from 'umi';
 import { history } from 'umi';
 import RightContent from '@/components/RightContent';
@@ -110,7 +110,8 @@ export const request: RequestConfig = {
       }
       const headers = {
         ...options.headers,
-        TOKEN: Auth.get(),
+        Authorization: Auth.get(),
+        'Content-Type': ContentTypeEnum.JSON,
       };
       return {
         url,
@@ -124,10 +125,11 @@ export const request: RequestConfig = {
   responseInterceptors: [
     async (response) => {
       // todo 请求拦截
-      // const data = await response.clone().json();
-      // if (response.status !== 200 || data.status !== 'ok') {
-      //   history.push('/welcome');
-      // }
+      const data = await response.clone().json();
+      if (response.status !== 200 || data.code !== 200) {
+        message.error(data.message);
+      }
+      // console.log('res', response);
       // console.log(response, options, data);
       return response;
     },

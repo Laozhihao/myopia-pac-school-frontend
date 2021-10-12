@@ -21,6 +21,10 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       modalProps={{
         destroyOnClose: true,
         onCancel: props.onCancel,
+        bodyStyle: {
+          height: 600,
+          overflow: 'auto',
+        },
       }}
     >
       <PageForm {...studentFormOptions} />

@@ -100,6 +100,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
 // request运行时配置
 export const request: RequestConfig = {
   // timeout: 1000,
+  prefix: process.env.REACT_APP_RUNTIME === 'ONLINE' ? '' : '/api',
   errorConfig: {},
   middlewares: [],
   requestInterceptors: [
@@ -128,10 +129,11 @@ export const request: RequestConfig = {
       const data = await response.clone().json();
       if (response.status !== 200 || data.code !== 200) {
         message.error(data.message);
+        return Promise.reject(data.message);
       }
       // console.log('res', response);
       // console.log(response, options, data);
-      return response;
+      return Promise.resolve(response);
     },
   ],
 };

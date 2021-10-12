@@ -173,7 +173,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                   name="upload"
                   max={1}
                   title={'上传图片'}
-                  fieldProps={{ listType: 'picture-card' }}
+                  fieldProps={{ listType: 'picture-card', isImageUrl: () => false }}
                 />
               </Col>
             </Row>

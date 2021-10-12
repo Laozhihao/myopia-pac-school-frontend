@@ -102,7 +102,7 @@
       },
       "x-swagger-router-controller": "api"
     },
-    "/api/login/account": {
+    "/api/auth/login": {
       "post": {
         "tags": ["login"],
         "description": "登录接口",

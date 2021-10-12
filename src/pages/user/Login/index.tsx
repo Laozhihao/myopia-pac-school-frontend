@@ -2,8 +2,8 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { message, Modal } from 'antd';
 import React, { useState } from 'react';
 import ProForm, { ProFormText } from '@ant-design/pro-form';
-// import { useModel, history } from 'umi';
-// import Auth from '@/utils/authorization';
+import { useModel, history } from 'umi';
+import Auth from '@/utils/authorization';
 import { login } from '@/api/common';
 import styles from './index.less';
 import asideImg from '@/assets/images/login-aside.png';
@@ -17,15 +17,15 @@ let verifyCount = 0;
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [visible, setVisible] = useState(false); // 滑块验证弹窗
-  // const { initialState, setInitialState } = useModel('@@initialState');
+  const { initialState, setInitialState } = useModel('@@initialState');
 
-  // const fetchUserInfo = async () => {
-  //   const userInfo = await initialState?.fetchUserInfo?.();
+  const fetchUserInfo = async () => {
+    const userInfo = await initialState?.fetchUserInfo?.();
 
-  //   if (userInfo) {
-  //     await setInitialState((s) => ({ ...s, currentUser: userInfo }));
-  //   }
-  // };
+    if (userInfo) {
+      await setInitialState((s) => ({ ...s, currentUser: userInfo }));
+    }
+  };
 
   /**
    * @desc 验证弹窗关闭
@@ -81,36 +81,35 @@ const Login: React.FC = () => {
     };
     console.log(parm, '登录');
 
-    // Auth.set('/* token */');
-    // console.log(initialState, values, 'info');
-    // setSubmitting(true);
-    // try {
-    //   const msg = await login({ ...values });
+    Auth.set('/* token */');
+    console.log(initialState, values, 'info');
+    setSubmitting(true);
+    try {
+      const msg = await login({ ...values });
 
-    //   if (msg.status === 'ok') {
-    //     const defaultLoginSuccessMessage = '登录成功！';
-    //     message.success(defaultLoginSuccessMessage);
-    //     await fetchUserInfo();
-    //     // todo setToken
-    //     // Auth.set('/* token */');
-    //     /** 此方法会跳转到 redirect 参数所在的位置 */
+      if (msg.status === 'ok') {
+        const defaultLoginSuccessMessage = '登录成功！';
+        message.success(defaultLoginSuccessMessage);
+        await fetchUserInfo();
+        // todo setToken
+        // Auth.set('/* token */');
+        /** 此方法会跳转到 redirect 参数所在的位置 */
 
-    //     if (!history) return;
-    //     const { query } = history.location;
-    //     const { redirect } = query as {
-    //       redirect: string;
-    //     };
-    //     history.push(redirect || '/');
-    //     return;
-    //   } // 如果失败去设置用户错误信息
-
-    // } catch (err) {
-    //   console.log(err, 'error');
-    //   // const defaultLoginFailureMessage = '登录失败，请重试！';
-    //   // message.error(error);
-    // }
-    const msg = await login(parm);
-    console.log(msg, 'info');
+        if (!history) return;
+        const { query } = history.location;
+        const { redirect } = query as {
+          redirect: string;
+        };
+        history.push(redirect || '/');
+        return;
+      } // 如果失败去设置用户错误信息
+    } catch (err) {
+      console.log(err, 'error');
+      // const defaultLoginFailureMessage = '登录失败，请重试！';
+      // message.error(error);
+    }
+    // const msg = await login(parm);
+    // console.log(msg, 'info');
     setSubmitting(false);
   };
 

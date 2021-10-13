@@ -3,8 +3,9 @@ import { message, Modal } from 'antd';
 import React, { useState } from 'react';
 import ProForm, { ProFormText } from '@ant-design/pro-form';
 import { useModel, history } from 'umi';
-import Auth from '@/utils/authorization';
-import { login } from '@/api/common';
+import jwt from 'jsonwebtoken';
+import { toFormData } from '@/utils/common'
+import { login, getUserInfo } from '@/api/common';
 import styles from './index.less';
 import asideImg from '@/assets/images/login-aside.png';
 import logoImg from '@/assets/images/login-logo.png';
@@ -12,18 +13,30 @@ import Slider from '@/components/VerifySlider/index.js';
 import '@/components/VerifySlider/index.less';
 import type { LoginParams } from '@/api/typings';
 
+import { createStorage } from '@/utils/storage';
+
+const Storage = createStorage({ storage: localStorage });
+
+// token前缀 Bearer
+export const tokenPrefix = 'Bearer ';
 let verifyCount = 0;
+
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [visible, setVisible] = useState(false); // 滑块验证弹窗
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const { setInitialState } = useModel('@@initialState');
 
-  const fetchUserInfo = async () => {
-    const userInfo = await initialState?.fetchUserInfo?.();
-
-    if (userInfo) {
-      await setInitialState((s) => ({ ...s, currentUser: userInfo }));
+  
+  /**
+   * @desc 用户信息 并且存储
+   */
+  const getUserInfomation = async (token: any) => {
+    if(token) {
+      const payload = jwt.decode(token);
+      const { userInfo } = payload
+      const res = await getUserInfo(userInfo?.id);  
+      setInitialState((s) => ({ ...s, currentUser: res.data }));
     }
   };
 
@@ -79,38 +92,25 @@ const Login: React.FC = () => {
       client_id: '1',
       client_secret: '123456',
     };
-    console.log(parm, '登录');
 
-    Auth.set('/* token */');
-    console.log(initialState, values, 'info');
-    setSubmitting(true);
     try {
-      const msg = await login({ ...values });
-
-      if (msg.status === 'ok') {
-        const defaultLoginSuccessMessage = '登录成功！';
-        message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo();
-        // todo setToken
-        // Auth.set('/* token */');
-        /** 此方法会跳转到 redirect 参数所在的位置 */
-
+        const res = await login(toFormData(parm));
+        setSubmitting(false);
+        const { accessToken, expiresIn, refreshToken } = res?.data?.tokenInfo
+        Storage.set('AccessToken', `${tokenPrefix}${accessToken}`, expiresIn);
+        const ONE_DAY = 86400;
+        Storage.set('RefreshToken', `${tokenPrefix}${refreshToken}`, expiresIn + ONE_DAY);
+        await getUserInfomation(accessToken);
         if (!history) return;
         const { query } = history.location;
         const { redirect } = query as {
           redirect: string;
         };
         history.push(redirect || '/');
-        return;
-      } // 如果失败去设置用户错误信息
     } catch (err) {
       console.log(err, 'error');
-      // const defaultLoginFailureMessage = '登录失败，请重试！';
-      // message.error(error);
+      setSubmitting(false);
     }
-    // const msg = await login(parm);
-    // console.log(msg, 'info');
-    setSubmitting(false);
   };
 
   return (

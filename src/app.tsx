@@ -1,12 +1,12 @@
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { ContentTypeEnum } from '@/enums/http-enum';
-import { message, Spin } from 'antd';
+import { Spin } from 'antd';
 import type { RunTimeLayoutConfig, RequestConfig } from 'umi';
 import { history } from 'umi';
 import RightContent from '@/components/RightContent';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import Auth from '@/utils/authorization';
+import { getToken } from '@/pages/hook/storage';
 
 const loginPath = '/user/login';
 
@@ -24,32 +24,32 @@ export async function getInitialState(): Promise<{
       collapsed: boolean;
     }
   >;
-  // settings?: Partial<LayoutSettings>;
   currentUser?: API.CurrentUser;
-  fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
+  // fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
-  const fetchUserInfo = async () => {
-    try {
-      const msg = await queryCurrentUser();
-      return msg.data;
-    } catch (error) {
-      history.push(loginPath);
-    }
-    return undefined;
-  };
+  // const fetchUserInfo = async () => {
+  //   try {
+  //     const msg = await queryCurrentUser();
+  //     return msg.data;
+  //   } catch (error) {
+  //     history.push(loginPath);
+  //   }
+  //   return undefined;
+  // };
   // 如果是登录页面，不执行
-  if (history.location.pathname !== loginPath) {
-    const currentUser = await fetchUserInfo();
-    return {
-      fetchUserInfo,
-      currentUser,
-      settings: {
-        collapsed: false,
-      },
-    };
-  }
+  // if (history.location.pathname !== loginPath) {
+  //   const currentUser = await fetchUserInfo();
+  //   return {
+  //     // fetchUserInfo,
+  //     currentUser,
+  //     settings: {
+  //       collapsed: false,
+  //     },
+  //   };
+  // }
   return {
-    fetchUserInfo,
+    // fetchUserInfo,
+    currentUser: {},
     settings: {
       collapsed: false,
     },
@@ -82,9 +82,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.push(loginPath);
-      }
+      // if (!initialState?.currentUser && location.pathname !== loginPath) {
+      //   history.push(loginPath);
+      // }
     },
     menuHeaderRender: undefined,
     pageTitleRender: false,
@@ -110,9 +110,8 @@ export const request: RequestConfig = {
         return { url, options };
       }
       const headers = {
+        Authorization: getToken(),
         ...options.headers,
-        Authorization: Auth.get(),
-        'Content-Type': ContentTypeEnum.JSON,
       };
       return {
         url,
@@ -125,14 +124,13 @@ export const request: RequestConfig = {
   ],
   responseInterceptors: [
     async (response) => {
-      // todo 请求拦截
-      const data = await response.clone().json();
-      if (response.status !== 200 || data.code !== 200) {
-        message.error(data.message);
-        return Promise.reject(data.message);
+      if(response.headers.get('Content-type') === 'application/json') {
+        // umi封装resquest 导致不能直接拿res中的一些其他信息
+        const data = await response.clone().json();
+        if (response.status !== 200 || data.code !== 200) {
+          return Promise.reject(data);
+        } 
       }
-      // console.log('res', response);
-      // console.log(response, options, data);
       return Promise.resolve(response);
     },
   ],

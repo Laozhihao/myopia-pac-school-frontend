@@ -7,7 +7,7 @@ import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import { outLogin } from '@/services/ant-design-pro/api';
 import type { MenuInfo } from 'rc-menu/lib/interface';
-import Auth from '@/utils/authorization';
+import avatarImg from '@/assets/images/avatar.png'
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -19,7 +19,6 @@ export type GlobalHeaderRightProps = {
 const loginOut = async () => {
   await outLogin();
   // 清空token
-  Auth.clear();
   const { query = {}, pathname } = history.location;
   const { redirect } = query;
   // Note: There may be security issues, please note
@@ -71,6 +70,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = () => {
     return loading;
   }
 
+
   const menuHeaderDropdown = (
     <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
       <Menu.Item key="logout">
@@ -82,7 +82,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = () => {
   return (
     <HeaderDropdown overlay={menuHeaderDropdown}>
       <span className={`${styles.action} ${styles.account}`}>
-        <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
+        <Avatar size="small" className={styles.avatar} src={avatarImg} alt="avatar" />
         <span className={`${styles.name} anticon`}>{currentUser.name}</span>
       </span>
     </HeaderDropdown>

@@ -9,7 +9,7 @@
 export default {
   dev: {
     '/api': {
-      target: 'https://t-myopia-pac-mgmt.tulab.cn',
+      target: 'https://s-myopia-pac-mgmt.tulab.cn',
       changeOrigin: true,
       pathRewrite: { '^/api': '' },
     },

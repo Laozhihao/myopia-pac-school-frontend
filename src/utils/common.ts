@@ -15,3 +15,15 @@ export const deleteTableRow = (message: string, callback: (() => void) | undefin
     },
   });
 };
+
+// 数据转成form data格式
+
+export function toFormData(params: Record<string, any>): FormData {
+  const formData = new FormData();
+  for (const key in params) {
+      if (params.hasOwnProperty(key)) {
+          formData.append(key, params[key] ?? '');
+      }
+  }
+  return formData;
+}

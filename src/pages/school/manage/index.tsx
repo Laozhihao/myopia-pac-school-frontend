@@ -2,17 +2,21 @@ import React from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Card, Col, Row, Form, Cascader, Button } from 'antd';
 import ProForm, { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
-import { history } from 'umi';
+import { history, useModel } from 'umi';
 import styles from './index.less';
 
 const SchoolManage: React.FC = () => {
+  const { initialState } = useModel('@@initialState');
+
+  console.log(initialState, '123');
+
   return (
     <PageContainer className={styles.container}>
       <Row gutter={24}>
         <Col span={12} className={styles.flex_col}>
           <Card title="账号信息" bordered={false}>
             <p className={styles.title}>
-              账号：<span style={{ color: '#141414' }}>XXXXXXXXXXXXXXXXXXXXXX</span>
+              账号：<span style={{ color: '#141414' }}>{initialState?.currentUser?.username}</span>
             </p>
             <p className={styles.tip}>如忘记密码，请联系管理员进行重置！</p>
           </Card>

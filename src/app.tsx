@@ -1,12 +1,11 @@
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
-import { ContentTypeEnum } from '@/enums/http-enum';
+// import { ContentTypeEnum } from '@/enums/http-enum';
 import { Spin } from 'antd';
 import type { RunTimeLayoutConfig, RequestConfig } from 'umi';
 import { history } from 'umi';
 import RightContent from '@/components/RightContent';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { getToken } from '@/pages/hook/storage';
+import { getToken, getUser } from '@/pages/hook/storage';
 
 const loginPath = '/user/login';
 
@@ -25,31 +24,9 @@ export async function getInitialState(): Promise<{
     }
   >;
   currentUser?: API.CurrentUser;
-  // fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
-  // const fetchUserInfo = async () => {
-  //   try {
-  //     const msg = await queryCurrentUser();
-  //     return msg.data;
-  //   } catch (error) {
-  //     history.push(loginPath);
-  //   }
-  //   return undefined;
-  // };
-  // 如果是登录页面，不执行
-  // if (history.location.pathname !== loginPath) {
-  //   const currentUser = await fetchUserInfo();
-  //   return {
-  //     // fetchUserInfo,
-  //     currentUser,
-  //     settings: {
-  //       collapsed: false,
-  //     },
-  //   };
-  // }
   return {
-    // fetchUserInfo,
-    currentUser: {},
+    currentUser: getUser() || {},
     settings: {
       collapsed: false,
     },
@@ -127,11 +104,11 @@ export const request: RequestConfig = {
       if(response.headers.get('Content-type') === 'application/json') {
         // umi封装resquest 导致不能直接拿res中的一些其他信息
         const data = await response.clone().json();
-        if (response.status !== 200 || data.code !== 200) {
+        if (response.status !== 200 || (data.code && data.code !== 200 )) {
           return Promise.reject(data);
         } 
       }
-      return Promise.resolve(response);
+      return response;
     },
   ],
 };

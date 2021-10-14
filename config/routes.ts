@@ -39,6 +39,6 @@ export default [
       { name: '年级管理', path: '/school/grade', component: './school/grade' },
     ],
   },
-  { path: '/', redirect: '/student' },
+  { path: '/', redirect: '/school' },
   { component: './404' },
 ];

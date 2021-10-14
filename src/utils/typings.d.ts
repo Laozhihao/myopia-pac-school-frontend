@@ -18,6 +18,7 @@ declare namespace API {
   // 用户信息
   type CurrentUser = {
     username?: string;
+    orgId?: number; // 学校id
   };
 
   // 弹窗类型

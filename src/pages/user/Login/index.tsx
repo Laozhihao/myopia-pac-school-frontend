@@ -2,7 +2,7 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { message, Modal } from 'antd';
 import React, { useState } from 'react';
 import ProForm, { ProFormText } from '@ant-design/pro-form';
-import { useModel, history } from 'umi';
+import { history, useModel } from 'umi';
 import jwt from 'jsonwebtoken';
 import { toFormData } from '@/utils/common'
 import { login, getUserInfo } from '@/api/common';
@@ -12,10 +12,8 @@ import logoImg from '@/assets/images/login-logo.png';
 import Slider from '@/components/VerifySlider/index.js';
 import '@/components/VerifySlider/index.less';
 import type { LoginParams } from '@/api/typings';
+import { setStorageInfo } from '@/pages/hook/storage';
 
-import { createStorage } from '@/utils/storage';
-
-const Storage = createStorage({ storage: localStorage });
 
 // token前缀 Bearer
 export const tokenPrefix = 'Bearer ';
@@ -35,8 +33,9 @@ const Login: React.FC = () => {
     if(token) {
       const payload = jwt.decode(token);
       const { userInfo } = payload
-      const res = await getUserInfo(userInfo?.id);  
-      setInitialState((s) => ({ ...s, currentUser: res.data }));
+      const res = await getUserInfo(userInfo?.id);
+      setStorageInfo('User', res.data, null);
+      setInitialState((s) => ({ ...s, currentUser: res.data}));
     }
   };
 
@@ -95,11 +94,11 @@ const Login: React.FC = () => {
 
     try {
         const res = await login(toFormData(parm));
+        const ONE_DAY = 86400;
         setSubmitting(false);
         const { accessToken, expiresIn, refreshToken } = res?.data?.tokenInfo
-        Storage.set('AccessToken', `${tokenPrefix}${accessToken}`, expiresIn);
-        const ONE_DAY = 86400;
-        Storage.set('RefreshToken', `${tokenPrefix}${refreshToken}`, expiresIn + ONE_DAY);
+        setStorageInfo('AccessToken', `${tokenPrefix}${accessToken}`, expiresIn);
+        setStorageInfo('RefreshToken', `${tokenPrefix}${refreshToken}`, expiresIn + ONE_DAY);
         await getUserInfomation(accessToken);
         if (!history) return;
         const { query } = history.location;
@@ -108,7 +107,7 @@ const Login: React.FC = () => {
         };
         history.push(redirect || '/');
     } catch (err) {
-      console.log(err, 'error');
+      console.log(err);
       setSubmitting(false);
     }
   };
@@ -151,7 +150,7 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <UserOutlined className={styles.prefixIcon} />,
                 }}
-                placeholder={'账号: admin or user'}
+                placeholder="请输入账号"
                 rules={[
                   {
                     required: true,
@@ -166,7 +165,7 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <LockOutlined className={styles.prefixIcon} />,
                 }}
-                placeholder={'密码: ant.design'}
+                placeholder="请输入密码"
                 rules={[
                   {
                     required: true,

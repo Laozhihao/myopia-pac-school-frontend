@@ -16,7 +16,11 @@ export const deleteTableRow = (message: string, callback: (() => void) | undefin
   });
 };
 
-// 数据转成form data格式
+
+/**
+ * @desc 数据转成form data格式
+ * @param params 需要转的对象
+ */
 
 export function toFormData(params: Record<string, any>): FormData {
   const formData = new FormData();
@@ -27,3 +31,24 @@ export function toFormData(params: Record<string, any>): FormData {
   }
   return formData;
 }
+
+
+/**
+ * @desc 给级联options child的添加第一个节点：全部
+ */
+export const defaultKey = 'id';
+
+export const dealCascaderOptions = (options: any, key = defaultKey) => {
+  for (const eleItem of options) {
+    if (eleItem?.child?.length) {
+      const hasAll = eleItem.child.filter((item: { [x: string]: string; }) => item[key] === 'all');
+      const allTemp = {
+        [key]: 'all',
+        name: '全部',
+      };
+      !hasAll.length && eleItem.child.unshift(allTemp);
+      dealCascaderOptions(eleItem.child);
+    }
+  }
+  return options;
+};

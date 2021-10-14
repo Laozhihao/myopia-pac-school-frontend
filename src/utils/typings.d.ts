@@ -2,12 +2,30 @@ declare namespace API {
   import type { Rule } from 'antd/lib/form';
   import type { FormLayout } from 'antd/lib/form/Form';
 
-  // 接口返回值 
+  // 接口返回值
   type RequestResult = {
     code?: number;
     data?: Record<string, any>;
     message?: string;
-  }
+  };
+
+  // token类型
+  type RequestToken = {
+    code?: number;
+    data?: TokenData;
+    message?: string;
+  };
+
+  type TokenData = {
+    tokenInfo: TokenInfo;
+    [key?: string]: any;
+  };
+
+  type TokenInfo = {
+    accessToken: string;
+    refreshToken: string;
+    expiresIn: number;
+  };
 
   // 分页
   type PageParams = {

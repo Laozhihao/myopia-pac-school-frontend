@@ -2,10 +2,13 @@ import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 // import { ContentTypeEnum } from '@/enums/http-enum';
 import { Spin } from 'antd';
 import type { RunTimeLayoutConfig, RequestConfig } from 'umi';
-import { history } from 'umi';
+import { history, request as requestFn } from 'umi';
 import RightContent from '@/components/RightContent';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { getToken, getUser } from '@/pages/hook/storage';
+import { getToken, getUser, getRefreshToken, clearStorage, setToken } from '@/pages/hook/storage';
+import { checkStatus } from '@/axios/check-status';
+import { toFormData } from './utils/common';
+import { refreshToken } from './api/common';
 
 const loginPath = '/user/login';
 
@@ -59,9 +62,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      // if (!initialState?.currentUser && location.pathname !== loginPath) {
-      //   history.push(loginPath);
-      // }
+      if (!initialState?.currentUser && location.pathname !== loginPath) {
+        history.push(loginPath);
+      }
     },
     menuHeaderRender: undefined,
     pageTitleRender: false,
@@ -100,13 +103,47 @@ export const request: RequestConfig = {
     },
   ],
   responseInterceptors: [
+    async (response, options) => {
+      if (response.status === 403) {
+        const refresh_token = getRefreshToken()?.replace('Bearer ', '');
+        if (!refresh_token) {
+          history.push(loginPath);
+          return response;
+        }
+        try {
+          const { data } = await refreshToken(
+            toFormData({
+              client_id: '1',
+              client_secret: '123456',
+              refresh_token,
+            }),
+          );
+          setToken(data!.tokenInfo);
+
+          return await requestFn(options.url, {
+            ...options,
+            headers: {
+              ...options.headers,
+              Authorization: getToken(),
+            },
+          });
+        } catch {
+          clearStorage();
+          history.push(loginPath);
+        }
+      }
+      return response;
+    },
     async (response) => {
-      if(response.headers.get('Content-type') === 'application/json') {
+      if (response.headers.get('Content-type') === 'application/json') {
         // umi封装resquest 导致不能直接拿res中的一些其他信息
         const data = await response.clone().json();
-        if (response.status !== 200 || (data.code && data.code !== 200 )) {
+        if (response.status !== 200) {
+          return Promise.reject({ message: checkStatus(response) });
+        }
+        if (data.code && data.code !== 200) {
           return Promise.reject(data);
-        } 
+        }
       }
       return response;
     },

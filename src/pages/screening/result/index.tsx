@@ -59,7 +59,7 @@ const ScreeningResult: React.FC = () => {
                 search={false}
                 options={false}
                 headerTitle={item.title}
-              ></ProTable>
+              />
             ))}
           </TabPane>
           <TabPane tab="学生预警跟踪" key="2">

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import ProForm, { ProFormText } from '@ant-design/pro-form';
 import { history, useModel } from 'umi';
 import jwt from 'jsonwebtoken';
-import { toFormData } from '@/utils/common'
+import { toFormData } from '@/utils/common';
 import { login, getUserInfo } from '@/api/common';
 import styles from './index.less';
 import asideImg from '@/assets/images/login-aside.png';
@@ -12,30 +12,26 @@ import logoImg from '@/assets/images/login-logo.png';
 import Slider from '@/components/VerifySlider/index.js';
 import '@/components/VerifySlider/index.less';
 import type { LoginParams } from '@/api/typings';
-import { setStorageInfo } from '@/pages/hook/storage';
-
+import { setStorageInfo, setToken } from '@/pages/hook/storage';
 
 // token前缀 Bearer
-export const tokenPrefix = 'Bearer ';
 let verifyCount = 0;
-
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [visible, setVisible] = useState(false); // 滑块验证弹窗
   const { setInitialState } = useModel('@@initialState');
 
-  
   /**
    * @desc 用户信息 并且存储
    */
   const getUserInfomation = async (token: any) => {
-    if(token) {
+    if (token) {
       const payload = jwt.decode(token);
-      const { userInfo } = payload
+      const { userInfo } = payload;
       const res = await getUserInfo(userInfo?.id);
       setStorageInfo('User', res.data, null);
-      setInitialState((s) => ({ ...s, currentUser: res.data}));
+      setInitialState((s) => ({ ...s, currentUser: res.data }));
     }
   };
 
@@ -93,19 +89,17 @@ const Login: React.FC = () => {
     };
 
     try {
-        const res = await login(toFormData(parm));
-        const ONE_DAY = 86400;
-        setSubmitting(false);
-        const { accessToken, expiresIn, refreshToken } = res?.data?.tokenInfo
-        setStorageInfo('AccessToken', `${tokenPrefix}${accessToken}`, expiresIn);
-        setStorageInfo('RefreshToken', `${tokenPrefix}${refreshToken}`, expiresIn + ONE_DAY);
-        await getUserInfomation(accessToken);
-        if (!history) return;
-        const { query } = history.location;
-        const { redirect } = query as {
-          redirect: string;
-        };
-        history.push(redirect || '/');
+      const res = await login(toFormData(parm));
+      setSubmitting(false);
+      const { accessToken } = res?.data!.tokenInfo;
+      setToken(res.data!.tokenInfo);
+      await getUserInfomation(accessToken);
+      if (!history) return;
+      const { query } = history.location;
+      const { redirect } = query as {
+        redirect: string;
+      };
+      history.push(redirect || '/');
     } catch (err) {
       console.log(err);
       setSubmitting(false);

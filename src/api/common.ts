@@ -1,15 +1,13 @@
 import { request } from 'umi';
 
-
 /** 登录接口 POST /auth/login */
 export async function login(body: FormData, options?: Record<string, any>) {
-  return request<API.RequestResult>('/auth/login', {
+  return request<API.RequestToken>('/auth/login', {
     method: 'POST',
     data: body,
     ...(options || {}),
   });
 }
-
 
 /** 用户信息 POST /auth/login */
 export async function getUserInfo(userId: number, options?: Record<string, any>) {
@@ -24,5 +22,14 @@ export async function getDistrict(options?: Record<string, any>) {
   return request<any[]>('data/district.json', {
     method: 'GET',
     ...(options || {}),
+  });
+}
+
+/** 登录接口 POST /auth/login */
+export async function refreshToken(data: FormData) {
+  return request<API.RequestToken>('/auth/refresh/token', {
+    method: 'POST',
+    data,
+    requestType: 'form',
   });
 }

@@ -8,6 +8,6 @@ export const listColumns: ProColumns<API.StudentListItem>[] = [
   },
   {
     title: '座位数',
-    dataIndex: 'number',
+    dataIndex: 'seatCount',
   },
 ];

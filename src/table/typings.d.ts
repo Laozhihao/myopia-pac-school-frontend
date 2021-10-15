@@ -81,17 +81,9 @@ declare namespace API {
 
   // 年级班级列表
   type GradeListItem = {
-    key?: number;
-    disabled?: boolean;
-    href?: string;
-    avatar?: string;
+    gradeId?: number;
+    seatCount?: boolean;
     name?: string;
-    owner?: string;
-    desc?: string;
-    callNo?: number;
-    status?: number;
-    updatedAt?: string;
-    createdAt?: string;
-    progress?: number;
+    uniqueId?: number;
   };
 }

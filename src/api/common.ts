@@ -25,7 +25,7 @@ export async function getDistrict(options?: Record<string, any>) {
   });
 }
 
-/** 登录接口 POST /auth/login */
+/** 刷新token POST /auth/refresh/token */
 export async function refreshToken(data: FormData) {
   return request<API.RequestToken>('/auth/refresh/token', {
     method: 'POST',

@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Card, Col, Row, Form, Cascader, Button } from 'antd';
+import { Card, Col, Row, Form, Cascader, Button, Tree } from 'antd';
 import ProForm, { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { history, useModel, useRequest } from 'umi';
-import { getSchoolDetail, editSchoolDetail } from '@/api/school';
+import { getSchoolDetail, editSchoolDetail, getschoolGrade } from '@/api/school';
 import { getDistrict } from '@/api/common';
 import { setStorageInfo, getCascader } from '@/pages/hook/storage';
 import styles from './index.less';
@@ -14,8 +14,9 @@ const SchoolManage: React.FC = () => {
   const { currentUser } = initialState!;
 
   const modalRef = useRef<ProFormInstance>();
-  const [schoolInfo, setSchoolInfo] = useState<Record<string, any>>(); // 学生总数
-  const [areaOption, setAreaOption] = useState<any[]>([]);
+  const [schoolInfo, setSchoolInfo] = useState<Record<string, any>>(); // 学校详情
+  const [areaOption, setAreaOption] = useState<any[]>([]); // 地区级联
+  const [gradeOption, setGradeOption] = useState<any[]>([]); // 年级级联
 
   const { run } = useRequest(getSchoolDetail, {
     manual: true,
@@ -24,6 +25,12 @@ const SchoolManage: React.FC = () => {
       modalRef?.current?.setFieldsValue(result || {});
     },
   });
+
+  const getschoolList = (params: API.ObjectType) => {
+    getschoolGrade(params).then((res) => {
+      setGradeOption(res?.data);
+    });
+  };
 
   /**
    * @desc 获取地区级联
@@ -38,24 +45,24 @@ const SchoolManage: React.FC = () => {
 
   const onEdit = (values: Record<string, any>) => {
     const { region = [] } = values;
-    const parm = Object.assign(
-      {},
-      schoolInfo,
-      {
-        provinceCode: region[0] ?? '',
-        cityCode: region[1] ?? '',
-        areaCode: region[2] ?? '',
-        townCode: region[3] ?? '',
-      },
-      values,
-    );
+    const parm = {
+      ...schoolInfo,
+      provinceCode: region[0] ?? '',
+      cityCode: region[1] ?? '',
+      areaCode: region[2] ?? '',
+      townCode: region[3] ?? '',
+      ...values,
+    };
     editSchoolDetail(parm).then((res) => {
       console.log(res, '123');
     });
   };
 
   useEffect(() => {
-    currentUser?.orgId && run(currentUser!.orgId);
+    if (currentUser?.orgId) {
+      run(currentUser!.orgId);
+      getschoolList({ schoolId: currentUser!.orgId });
+    }
     getCascaderOption();
   }, [currentUser, run]);
 
@@ -125,7 +132,13 @@ const SchoolManage: React.FC = () => {
                 年级班级管理
               </Button>
             }
-          />
+          >
+            <Tree
+              showLine
+              treeData={gradeOption}
+              fieldNames={{ title: 'name', key: 'uniqueId', children: 'child' }}
+            />
+          </Card>
         </Col>
       </Row>
     </PageContainer>

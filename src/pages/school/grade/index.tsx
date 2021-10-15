@@ -7,30 +7,20 @@ import { listColumns } from './columns';
 import { PlusOutlined } from '@ant-design/icons';
 import { AddModal } from './add-modal';
 import { deleteTableRow } from '@/utils/common';
+import { getsGradeList } from '@/api/school';
+import { useModel } from 'umi';
 
 const GradeManage: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false); // 新增/编辑弹窗
   const [currentRow, setCurrentRow] = useState<API.GradeListItem>();
 
-  const tableListDataSource: {
-    key: number;
-    name: string;
-    number: number;
-    children: { key: number; name: string; number: number }[];
-  }[] = [];
-
-  for (let i = 0; i < 3; i += 1) {
-    tableListDataSource.push({
-      key: i,
-      name: 'AppName',
-      number: Math.floor(Math.random() * 20),
-      children: [{ key: i, name: 'AppName', number: Math.floor(Math.random() * 20) }],
-    });
-  }
+  const { initialState } = useModel('@@initialState');
+  const { currentUser } = initialState!;
 
   const onAdd = (rows: React.SetStateAction<API.GradeListItem | undefined>) => {
     setModalVisible(true);
     setCurrentRow(rows);
+    console.log(rows, '123');
   };
 
   const onDelete = (rows: API.GradeListItem) => {
@@ -47,9 +37,12 @@ const GradeManage: React.FC = () => {
       valueType: 'option',
       width: 300,
       render: (_, record) => [
-        <a key="add" onClick={() => onAdd(record)}>
-          新增班级
-        </a>,
+        !record?.gradeId ? (
+          <a key="add" onClick={() => onAdd(record)}>
+            {' '}
+            新增班级
+          </a>
+        ) : null,
         <a key="delete" style={{ color: '#FF4D4F' }} onClick={() => onDelete(record)}>
           删除
         </a>,
@@ -61,15 +54,19 @@ const GradeManage: React.FC = () => {
     <PageContainer>
       <ProTable<API.GradeListItem, API.PageParams>
         columns={columns}
-        request={(params, sorter, filter) => {
-          // 表单搜索项会从 params 传入，传递给后端接口。
-          console.log(params, sorter, filter);
-          return Promise.resolve({
-            data: tableListDataSource,
-            success: true,
+        request={async (params) => {
+          const datas = await getsGradeList({
+            ...params,
+            size: params.pageSize,
+            schoolId: currentUser?.orgId,
           });
+          return {
+            data: datas.data.records,
+            success: true,
+            total: datas.data.total,
+          };
         }}
-        rowKey="key"
+        rowKey="uniqueId"
         pagination={{
           pageSize: 10,
         }}
@@ -78,7 +75,7 @@ const GradeManage: React.FC = () => {
             fixed: 'right',
           },
         }}
-        expandable={{ childrenColumnName: 'children' }}
+        expandable={{ childrenColumnName: 'child' }}
         search={false}
         headerTitle="年级表格"
         options={false}

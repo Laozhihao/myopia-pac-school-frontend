@@ -5,7 +5,7 @@ declare namespace API {
   // 接口返回值
   type RequestResult = {
     code?: number;
-    data?: Record<string, any>;
+    data?: any;
     message?: string;
   };
 
@@ -75,4 +75,6 @@ declare namespace API {
     onSearch?: (values: any) => Promise<void>;
     onReset?: () => void;
   };
+
+  type ObjectType = Record<string, any>;
 }

@@ -93,6 +93,7 @@ export const createStorage = ({ prefixKey = '', storage = localStorage } = {}) =
      */
     getCookie(name: string): string {
       const cookieArr = document.cookie.split('; ');
+      /* eslint-disable */
       for (let i = 0, { length } = cookieArr; i < length; i++) {
         const kv = cookieArr[i].split('=');
         if (kv[0] === this.getKey(name)) {
@@ -116,6 +117,7 @@ export const createStorage = ({ prefixKey = '', storage = localStorage } = {}) =
     clearCookie(): void {
       const keys = document.cookie.match(/[^ =;]+(?==)/g);
       if (keys) {
+        /* eslint-disable */
         for (let i = keys.length; i--; ) {
           document.cookie = `${keys[i]}=0;expire=${new Date(0).toUTCString()}`;
         }

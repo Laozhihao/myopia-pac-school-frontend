@@ -1,9 +1,23 @@
 import { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import type { ProFormInstance } from '@ant-design/pro-form';
-import { useRef } from 'react';
+import { getGradeCode } from '@/api/school';
+import { useRequest } from 'umi';
+import { useEffect, useRef, useState } from 'react';
 
 export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const modalRef = useRef<ProFormInstance>();
+  const [gradeOption, setGradeOption] = useState<any[]>();
+
+  const { run } = useRequest(getGradeCode, {
+    manual: true,
+    onSuccess: (result) => {
+      setGradeOption(result);
+    },
+  });
+
+  useEffect(() => {
+    !props?.currentRow && run();
+  }, [props, run]);
 
   return (
     <ModalForm
@@ -21,6 +35,8 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
         <ProFormSelect
           name="gradeId"
           label="年级名称"
+          options={gradeOption}
+          // fieldProps={{fieldNames: }}
           required
           rules={[{ required: true, message: '请选择年级' }]}
         />

@@ -64,7 +64,7 @@ const SchoolManage: React.FC = () => {
       getschoolList({ schoolId: currentUser!.orgId });
     }
     getCascaderOption();
-  }, [currentUser, run]);
+  }, []);
 
   return (
     <PageContainer className={styles.container}>

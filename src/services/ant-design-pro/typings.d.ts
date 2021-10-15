@@ -1,6 +1,4 @@
 declare namespace API {
-
-
   type LoginResult = {
     code?: string;
     type?: string;

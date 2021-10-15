@@ -139,8 +139,11 @@ export const request: RequestConfig = {
         // umi封装resquest 导致不能直接拿res中的一些其他信息
         const data = await response.clone().json();
         if (response.status !== 200) {
-          return Promise.reject(new Error(checkStatus(response)));
-          // new Error(checkStatus(response))
+          return data.message
+            ? Promise.reject(data)
+            : Promise.reject({ message: checkStatus(response) });
+          // return Promise.reject(new Error(checkStatus(response)));
+          // return Promise.reject(data);
         }
         if (data.code && data.code !== 200) {
           return Promise.reject(data);

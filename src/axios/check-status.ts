@@ -3,7 +3,7 @@ import { HttpStatusEnum } from '@/enums/http-enum';
 export function checkStatus(res: any): string {
   const { status } = res || {};
   return {
-    [HttpStatusEnum.ERROR_REQUEST]: 'Bad Request',
+    [HttpStatusEnum.ERROR_REQUEST]: '请求错误, 请稍后再试!',
     [HttpStatusEnum.UNAUTHORIZED]: '用户没有权限（令牌、用户名、密码错误）!',
     [HttpStatusEnum.NOT_FOUND]: '网络请求错误,未找到该资源!',
     [HttpStatusEnum.METHOD_DISABLED]: '网络请求错误,请求方法未允许!',

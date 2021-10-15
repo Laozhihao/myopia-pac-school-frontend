@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns } from '@ant-design/pro-table';
 import { Button } from 'antd';
@@ -7,10 +7,12 @@ import { listColumns } from './columns';
 import { PlusOutlined } from '@ant-design/icons';
 import { AddModal } from './add-modal';
 import { deleteTableRow } from '@/utils/common';
-import { getsGradeList } from '@/api/school';
+import { getsGradeList, deleteClass, deleteGrade } from '@/api/school';
 import { useModel } from 'umi';
+import type { ActionType } from '@ant-design/pro-table';
 
 const GradeManage: React.FC = () => {
+  const ref = useRef<ActionType>();
   const [modalVisible, setModalVisible] = useState(false); // 新增/编辑弹窗
   const [currentRow, setCurrentRow] = useState<API.GradeListItem>();
 
@@ -20,12 +22,13 @@ const GradeManage: React.FC = () => {
   const onAdd = (rows: React.SetStateAction<API.GradeListItem | undefined>) => {
     setModalVisible(true);
     setCurrentRow(rows);
-    console.log(rows, '123');
   };
 
   const onDelete = (rows: API.GradeListItem) => {
-    deleteTableRow('该所选数据', () => {
-      console.log('确认删除', rows);
+    deleteTableRow('该所选数据', async () => {
+      const apiFn = rows?.gradeId ? deleteClass : deleteGrade;
+      await apiFn(rows?.id!);
+      ref?.current?.reload();
     });
   };
 
@@ -39,7 +42,6 @@ const GradeManage: React.FC = () => {
       render: (_, record) => [
         !record?.gradeId ? (
           <a key="add" onClick={() => onAdd(record)}>
-            {' '}
             新增班级
           </a>
         ) : null,
@@ -54,6 +56,7 @@ const GradeManage: React.FC = () => {
     <PageContainer>
       <ProTable<API.GradeListItem, API.PageParams>
         columns={columns}
+        actionRef={ref}
         request={async (params) => {
           const datas = await getsGradeList({
             ...params,
@@ -66,7 +69,8 @@ const GradeManage: React.FC = () => {
             total: datas.data.total,
           };
         }}
-        rowKey="uniqueId"
+        // todo rowKey 替换 uniqueId
+        rowKey="name"
         pagination={{
           pageSize: 10,
         }}
@@ -93,7 +97,10 @@ const GradeManage: React.FC = () => {
         onCancel={() => {
           setModalVisible(false);
         }}
-        onFinish={async (values) => console.log(values)}
+        onFinish={() => {
+          setModalVisible(false);
+          ref?.current?.reload();
+        }}
       />
     </PageContainer>
   );

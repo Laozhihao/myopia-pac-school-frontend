@@ -10,5 +10,8 @@ module.exports = {
     'no-console': 'off',
     'no-unused-expressions': 'off',
     '@typescript-eslint/no-unused-expressions': 'off',
+    'react-hooks/exhaustive-deps': 'off',
+    'prefer-promise-reject-errors': 'off',
+    '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
   },
 };

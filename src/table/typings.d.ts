@@ -85,5 +85,6 @@ declare namespace API {
     seatCount?: boolean;
     name?: string;
     uniqueId?: number;
+    id?: number;
   };
 }

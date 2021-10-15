@@ -60,4 +60,9 @@ export default defineConfig({
   mfsu: {},
   webpack5: {},
   exportStatic: {},
+  lessLoader: {
+    modifyVars: {
+      'root-entry-name': 'default',
+    },
+  },
 });

@@ -134,7 +134,6 @@ const SchoolManage: React.FC = () => {
             }
           >
             <Tree
-              showLine
               treeData={gradeOption}
               fieldNames={{ title: 'name', key: 'uniqueId', children: 'child' }}
             />

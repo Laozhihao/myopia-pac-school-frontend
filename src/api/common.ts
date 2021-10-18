@@ -1,6 +1,6 @@
 import { request } from 'umi';
 
-/** 登录接口 POST /auth/login */
+/** 登录 POST /auth/login */
 export async function login(body: FormData, options?: Record<string, any>) {
   return request<API.RequestToken>('/auth/login', {
     method: 'POST',
@@ -9,7 +9,14 @@ export async function login(body: FormData, options?: Record<string, any>) {
   });
 }
 
-/** 用户信息 POST /auth/login */
+/** 退出登录 POST /auth/exit */
+export async function outLogin() {
+  return request<API.RequestResult>('/auth/exit', {
+    method: 'POST',
+  });
+}
+
+/** 用户信息 POST /management/user/userId */
 export async function getUserInfo(userId: number, options?: Record<string, any>) {
   return request<API.RequestResult>(`/management/user/${userId}`, {
     method: 'GET',
@@ -31,5 +38,12 @@ export async function refreshToken(data: FormData) {
     method: 'POST',
     data,
     requestType: 'form',
+  });
+}
+
+/** 未读通知 GET /management/notice/unreadCount */
+export async function unreadCount() {
+  return request<API.RequestResult>('/management/notice/unreadCount', {
+    method: 'GET',
   });
 }

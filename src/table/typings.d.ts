@@ -65,18 +65,14 @@ declare namespace API {
 
   // 消息列表
   type NoticeListItem = {
-    key?: number;
-    disabled?: boolean;
-    href?: string;
-    avatar?: string;
-    name?: string;
-    owner?: string;
-    desc?: string;
-    callNo?: number;
+    index?: number;
+    id?: number;
+    createTime?: string;
     status?: number;
-    updatedAt?: string;
-    createdAt?: string;
-    progress?: number;
+    content?: string;
+    title?: string;
+    downloadUrl?: string;
+    filter?: function; // 过滤
   };
 
   // 年级班级列表

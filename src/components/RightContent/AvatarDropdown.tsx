@@ -1,13 +1,16 @@
 import React, { useCallback } from 'react';
 import { LogoutOutlined } from '@ant-design/icons';
-import { Avatar, Menu, Spin } from 'antd';
+import { Avatar, Menu, Spin, Modal } from 'antd';
 import { history, useModel } from 'umi';
-import { stringify } from 'querystring';
+// import { stringify } from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
-import { outLogin } from '@/services/ant-design-pro/api';
+import { outLogin } from '@/api/common';
 import type { MenuInfo } from 'rc-menu/lib/interface';
+import { clearStorage } from '@/pages/hook/storage';
 import avatarImg from '@/assets/images/avatar.png';
+
+const { confirm } = Modal;
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -17,19 +20,21 @@ export type GlobalHeaderRightProps = {
  * 退出登录，并且将当前的 url 保存
  */
 const loginOut = async () => {
-  await outLogin();
-  // 清空token
-  const { query = {}, pathname } = history.location;
-  const { redirect } = query;
-  // Note: There may be security issues, please note
-  if (window.location.pathname !== '/user/login' && !redirect) {
-    history.replace({
-      pathname: '/user/login',
-      search: stringify({
-        redirect: pathname,
-      }),
-    });
-  }
+  confirm({
+    title: '您确定要退出登录吗？',
+    centered: true,
+    async onOk() {
+      await outLogin();
+      clearStorage();
+      const { query = {} } = history.location;
+      const { redirect } = query;
+      if (window.location.pathname !== '/user/login' && !redirect) {
+        history.replace({
+          pathname: '/user/login',
+        });
+      }
+    },
+  });
 };
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = () => {

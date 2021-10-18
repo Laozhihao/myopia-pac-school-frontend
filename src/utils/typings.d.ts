@@ -77,4 +77,7 @@ declare namespace API {
   };
 
   type ObjectType = Record<string, any>;
+
+  // 通知栏
+  type NoticeIconItemType = 'info' | 'notice';
 }

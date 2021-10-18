@@ -17,6 +17,7 @@ export enum RequestEnum {
 }
 
 // 常用的contentTyp类型
+
 export enum ContentTypeEnum {
   // json
   JSON = 'application/json;charset=UTF-8',
@@ -26,6 +27,7 @@ export enum ContentTypeEnum {
   FORM_URLENCODED = 'application/x-www-form-urlencoded;charset=UTF-8',
   // form-data  上传
   FORM_DATA = 'multipart/form-data;charset=UTF-8',
+  FORBID = 'FORBID',
 }
 
 // 常见的http状态码集合

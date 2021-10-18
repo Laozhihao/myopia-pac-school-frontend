@@ -94,7 +94,7 @@ const Login: React.FC = () => {
       const { accessToken } = res?.data!.tokenInfo;
       setToken(res.data!.tokenInfo);
       await getUserInfomation(accessToken);
-      if (!history) return;
+      // if (!history) return;
       const { query } = history.location;
       const { redirect } = query as {
         redirect: string;

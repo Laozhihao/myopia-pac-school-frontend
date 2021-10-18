@@ -1,24 +1,24 @@
 import type { ProColumns } from '@ant-design/pro-table';
 
-export const columns: ProColumns<API.NoticeListItem>[] = [
+export const listColumns: ProColumns<API.NoticeListItem>[] = [
   {
     title: '序号',
-    dataIndex: 'name',
+    dataIndex: 'index',
+    valueType: 'index',
+    width: 100,
   },
   {
     title: '时间',
-    dataIndex: 'desc',
-    valueType: 'textarea',
+    dataIndex: 'createTime',
+    width: 250,
   },
   {
     title: '状态',
-    dataIndex: 'desc',
-    valueType: 'textarea',
-  },
-  {
-    title: '消息内容',
-    dataIndex: 'callNo',
-    hideInForm: true,
-    renderText: (val: string) => `${val}${'万'}`,
+    dataIndex: 'status',
+    width: 100,
+    valueEnum: {
+      1: { text: '已读', status: 'Processing' },
+      0: { text: '未读', status: 'Default' },
+    },
   },
 ];

@@ -1,5 +1,5 @@
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
-// import { ContentTypeEnum } from '@/enums/http-enum';
+import { HttpStatusEnum } from '@/enums/http-enum';
 import { Spin } from 'antd';
 import type { RunTimeLayoutConfig, RequestConfig } from 'umi';
 import { history, request as requestFn } from 'umi';
@@ -104,7 +104,8 @@ export const request: RequestConfig = {
   ],
   responseInterceptors: [
     async (response, options) => {
-      if (response.status === 403) {
+      // token过期 403
+      if (response.status === HttpStatusEnum.FORBID) {
         const refresh_token = getRefreshToken()?.replace('Bearer ', '');
         if (!refresh_token) {
           history.push(loginPath);
@@ -119,7 +120,6 @@ export const request: RequestConfig = {
             }),
           );
           setToken(data!.tokenInfo);
-
           return await requestFn(options.url, {
             ...options,
             headers: {
@@ -132,6 +132,10 @@ export const request: RequestConfig = {
           history.push(loginPath);
         }
       }
+      if (response.status === HttpStatusEnum.UNAUTHORIZED) {
+        clearStorage();
+        history.push(loginPath);
+      }
       return response;
     },
     async (response) => {
@@ -142,8 +146,6 @@ export const request: RequestConfig = {
           return data.message
             ? Promise.reject(data)
             : Promise.reject({ message: checkStatus(response) });
-          // return Promise.reject(new Error(checkStatus(response)));
-          // return Promise.reject(data);
         }
         if (data.code && data.code !== 200) {
           return Promise.reject(data);

@@ -41,12 +41,11 @@ const TableList: React.FC = () => {
   }, []);
 
   /**
-   * @desc 删除
+   * @desc 新增/编辑
    */
-  const onDelete = () => {
-    deleteTableRow('该学生数据', () => {
-      console.log('确认删除');
-    });
+  const onAdd = (rows: React.SetStateAction<API.StudentListItem | undefined>) => {
+    setModalVisible(true);
+    setCurrentRow(rows);
   };
 
   /**
@@ -57,9 +56,13 @@ const TableList: React.FC = () => {
     ref?.current?.submit();
   };
 
-  const onAdd = (rows: React.SetStateAction<API.StudentListItem | undefined>) => {
-    setModalVisible(true);
-    setCurrentRow(rows);
+  /**
+   * @desc 删除
+   */
+  const onDelete = () => {
+    deleteTableRow('该学生数据', () => {
+      console.log('确认删除');
+    });
   };
 
   const columns: ProColumns<API.StudentListItem>[] = [
@@ -99,7 +102,7 @@ const TableList: React.FC = () => {
           collapseRender: false,
           collapsed: false,
           optionRender: () => [
-            <Button key="reset" onClick={() => onReset()}>
+            <Button key="reset" onClick={onReset}>
               重 置
             </Button>,
             <Button key="search" type="primary" onClick={() => ref?.current?.submit()}>

@@ -16,39 +16,37 @@ export type GlobalHeaderRightProps = {
   menu?: boolean;
 };
 
-/**
- * 退出登录，并且将当前的 url 保存
- */
-const loginOut = async () => {
-  confirm({
-    title: '您确定要退出登录吗？',
-    centered: true,
-    async onOk() {
-      await outLogin();
-      clearStorage();
-      const { query = {} } = history.location;
-      const { redirect } = query;
-      if (window.location.pathname !== '/user/login' && !redirect) {
-        history.replace({
-          pathname: '/user/login',
-        });
-      }
-    },
-  });
-};
-
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
+
+  /**
+   * 退出登录，并且将当前的 url 保存
+   */
+  const loginOut = async () => {
+    confirm({
+      title: '您确定要退出登录吗？',
+      centered: true,
+      async onOk() {
+        await outLogin();
+        clearStorage();
+        setInitialState((s) => ({ ...s, currentUser: undefined }));
+        const { query = {} } = history.location;
+        const { redirect } = query;
+        if (window.location.pathname !== '/user/login' && !redirect) {
+          history.replace({
+            pathname: '/user/login',
+          });
+        }
+      },
+    });
+  };
 
   const onMenuClick = useCallback(
     (event: MenuInfo) => {
       const { key } = event;
       if (key === 'logout') {
-        setInitialState((s) => ({ ...s, currentUser: undefined }));
         loginOut();
-        return;
       }
-      history.push(`/account/${key}`);
     },
     [setInitialState],
   );

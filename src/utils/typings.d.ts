@@ -45,7 +45,7 @@ declare namespace API {
     visible?: boolean;
     currentRow?: Record<string, any> | undefined;
     width?: number; // 宽度
-    onFinish?: () => void; // modalForm 的确定回调
+    onFinish?: () => Promise<void>; // modalForm 的确定回调
     onOk?: () => void; // modal确定回调
     onCancel: () => void; // 取消回调
   };
@@ -60,6 +60,7 @@ declare namespace API {
     col?: number;
     show?: boolean;
     rules?: Rule[];
+    required?: boolean;
     fieldProps?: Record<string, any>; // 透传的属性
     fieldNames?: Record<string, any>;
   };

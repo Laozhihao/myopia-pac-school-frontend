@@ -13,16 +13,17 @@ const SchoolManage: React.FC = () => {
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState!;
 
-  const modalRef = useRef<ProFormInstance>();
-  const [schoolInfo, setSchoolInfo] = useState<Record<string, any>>(); // 学校详情
+  const ref = useRef<ProFormInstance>();
+  const [schoolInfo, setSchoolInfo] = useState<API.ObjectType>(); // 学校详情
   const [areaOption, setAreaOption] = useState<any[]>([]); // 地区级联
   const [gradeOption, setGradeOption] = useState<any[]>([]); // 年级级联
+  const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
 
   const { run } = useRequest(getSchoolDetail, {
     manual: true,
-    onSuccess: (result) => {
+    onSuccess: (result: React.SetStateAction<API.ObjectType | undefined>) => {
       setSchoolInfo(result);
-      modalRef?.current?.setFieldsValue(result || {});
+      ref?.current?.setFieldsValue(result || {});
     },
   });
 
@@ -43,7 +44,10 @@ const SchoolManage: React.FC = () => {
     setAreaOption(getCascader());
   };
 
-  const onEdit = (values: Record<string, any>) => {
+  /**
+   * @desc 更新基本资料
+   */
+  const onEdit = (values: API.ObjectType) => {
     const { region = [] } = values;
     const parm = {
       ...schoolInfo,
@@ -54,7 +58,7 @@ const SchoolManage: React.FC = () => {
       ...values,
     };
     editSchoolDetail(parm).then((res) => {
-      console.log(res, '123');
+      console.log(res);
     });
   };
 
@@ -80,7 +84,7 @@ const SchoolManage: React.FC = () => {
             <ProForm
               layout="horizontal"
               labelCol={{ style: { width: 90 } }}
-              formRef={modalRef}
+              formRef={ref}
               submitter={{
                 searchConfig: {
                   submitText: '更新基本资料',
@@ -112,10 +116,12 @@ const SchoolManage: React.FC = () => {
                   options={areaOption}
                   placeholder="请选择"
                   fieldNames={{ label: 'name', value: 'code', children: 'child' }}
+                  onChange={(value: any) => setAddressFlag(!value.length)}
                 />
               </Form.Item>
               <ProFormTextArea
                 name="address"
+                disabled={addressFlag}
                 fieldProps={{ maxLength: 50 }}
                 placeholder="请输入详细地址"
               />

@@ -6,6 +6,13 @@ export const studentFormOptions = {
       label: '学号',
       type: 'input',
       value: 'name',
+      required: true,
+      rules: [
+        {
+          required: true,
+          message: '请输入用户名',
+        },
+      ],
       col: 24,
     },
     {

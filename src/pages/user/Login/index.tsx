@@ -94,12 +94,11 @@ const Login: React.FC = () => {
       const { accessToken } = res?.data!.tokenInfo;
       setToken(res.data!.tokenInfo);
       await getUserInfomation(accessToken);
-      // if (!history) return;
       const { query } = history.location;
       const { redirect } = query as {
         redirect: string;
       };
-      history.push(redirect || '/');
+      history.replace(redirect || '/');
     } catch (err) {
       console.log(err);
       setSubmitting(false);
@@ -115,7 +114,7 @@ const Login: React.FC = () => {
             <img className={styles.img} src={asideImg} alt="" />
           </div>
           <div className={styles.content}>
-            <p className={styles.title}>近视防控家长端</p>
+            <p className={styles.title}>近视防控学校端</p>
             <p className={styles.sub_title}>欢迎使用</p>
             <ProForm
               requiredMark={false}

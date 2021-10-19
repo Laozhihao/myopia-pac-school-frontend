@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
-// import { message } from 'antd';
-import { useRequest } from 'umi';
+import { useRequest, history } from 'umi';
 import { unreadCount } from '@/api/common';
-
 import NoticeIcon from './NoticeIcon';
 import styles from './index.less';
 
+const Info = '/info-center';
+// const Notice = '/screening';
 const NoticeIconView = () => {
   const [notices, setNotices] = useState<API.ObjectType>();
   const { run } = useRequest(unreadCount, {
     manual: true,
+    // pollingInterval: 3000,
     onSuccess: (result) => {
       setNotices(result);
     },
@@ -19,8 +20,12 @@ const NoticeIconView = () => {
     run();
   }, []);
 
-  const onRouter = () => {
-    console.log('changeRouter');
+  const onRouter = (item: any, props: any) => {
+    // 站内信
+    if (props.tabKey === 'info') {
+      if (history.location.pathname === Info) return;
+      history.push(Info);
+    }
   };
 
   return (
@@ -30,7 +35,7 @@ const NoticeIconView = () => {
       onItemClick={onRouter}
       loading={false}
       viewMoreText="查看更多"
-      onViewMore={onRouter}
+      onViewMore={(props) => onRouter(false, props)}
       clearClose
     >
       <NoticeIcon.Tab
@@ -38,7 +43,6 @@ const NoticeIconView = () => {
         count={notices?.stationLetter?.length}
         list={notices?.stationLetter}
         title="站内信"
-        emptyText="您已读完所有消息"
         showViewMore
       />
       <NoticeIcon.Tab
@@ -46,7 +50,6 @@ const NoticeIconView = () => {
         count={notices?.screeningNotice?.length}
         list={notices?.screeningNotice}
         title="筛查通知"
-        emptyText="您已查看所有信息"
         showViewMore
       />
     </NoticeIcon>

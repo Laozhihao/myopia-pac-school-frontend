@@ -23,8 +23,7 @@ export default [
     path: '/screening',
     hideChildrenInMenu: true,
     routes: [
-      { path: '/screening', redirect: '/screening/play' },
-      { path: '/screening/play', component: './screening/play' },
+      { path: '/screening', component: './screening/play' },
       { path: '/screening/result', component: './screening/result', name: '筛查结果' },
     ],
   },

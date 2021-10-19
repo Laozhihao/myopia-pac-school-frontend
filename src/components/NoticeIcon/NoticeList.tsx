@@ -22,12 +22,8 @@ export type NoticeIconTabProps = {
 const NoticeList: React.FC<NoticeIconTabProps> = ({
   list = [],
   onClick,
-  // onClear,
-  // title,
   onViewMore,
   emptyText,
-  // showClear = true,
-  // clearText,
   viewMoreText,
   showViewMore = false,
 }) => {
@@ -50,6 +46,7 @@ const NoticeList: React.FC<NoticeIconTabProps> = ({
         renderItem={(item, i) => {
           return (
             <List.Item
+              className={styles.item}
               key={item.id || i}
               onClick={() => {
                 onClick?.(item);

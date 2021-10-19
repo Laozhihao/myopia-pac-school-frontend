@@ -17,7 +17,9 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       formRef={modalRef}
       width={800}
       visible={props.visible}
-      onFinish={props.onFinish}
+      onFinish={async (value) => {
+        console.log(value, '123');
+      }}
       modalProps={{
         destroyOnClose: true,
         onCancel: props.onCancel,

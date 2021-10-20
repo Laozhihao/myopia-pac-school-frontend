@@ -1,44 +1,26 @@
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Radio, Space, Select } from 'antd';
+import { Button } from 'antd';
 import { Link } from 'umi';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';
 import { AddModal } from './add-modal';
-import { ImportModal } from './import-modal';
+import { OperationModal } from './operation-modal';
 import { listColumns } from './columns';
 import { rule } from '@/services/ant-design-pro/api';
 import { deleteTableRow } from '@/utils/common';
-import { ExportModal } from '@/pages/components/export-modal';
-import styles from './index.less';
-
-const { Option } = Select;
-
-// 年级option类型
-interface gradeOptionType {
-  label: string;
-  value: string;
-}
 
 const TableList: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false); // 新增/编辑弹窗
-  const [exportVisible, setExportVisible] = useState(false); // 导出
-  const [importVisible, setImportVisible] = useState(false); // 导入
-  const [gradeList, setGradeList] = useState<gradeOptionType[]>([]); // 学生列表
 
-  const [gradeId, setGradeId] = useState();
-  const [exportType, setExportType] = useState(1); // 导出类型
+  const [operationVisible, setOperationVisible] = useState(false); // 导入/导出
+  const [typeKey, setTypeKey] = useState(''); // 导入/导出标志位
 
   const [currentRow, setCurrentRow] = useState<API.StudentListItem>();
 
   const ref = useRef<ProFormInstance>();
-
-  useEffect(() => {
-    // todo 接口
-    setGradeList([{ label: '一年级', value: '11' }]);
-  }, []);
 
   /**
    * @desc 新增/编辑
@@ -63,6 +45,14 @@ const TableList: React.FC = () => {
     deleteTableRow('该学生数据', () => {
       console.log('确认删除');
     });
+  };
+
+  /**
+   * @desc 导入导出弹窗
+   */
+  const showModal = (key: React.SetStateAction<string>) => {
+    setOperationVisible(true);
+    setTypeKey(key);
   };
 
   const columns: ProColumns<API.StudentListItem>[] = [
@@ -124,18 +114,18 @@ const TableList: React.FC = () => {
         toolBarRender={() => [
           <Button
             type="primary"
-            key="primary"
+            key="export"
             onClick={() => {
-              setExportVisible(true);
+              showModal('export');
             }}
           >
             <UploadOutlined /> 导出
           </Button>,
           <Button
             type="primary"
-            key="primary"
+            key="import"
             onClick={() => {
-              setImportVisible(true);
+              showModal('import');
             }}
           >
             <DownloadOutlined /> 导入
@@ -173,50 +163,12 @@ const TableList: React.FC = () => {
         }}
       />
 
-      <ExportModal
-        visible={exportVisible}
-        title={'学生数据'}
+      <OperationModal
+        visible={operationVisible}
+        typeKey={typeKey}
         onCancel={() => {
-          setExportVisible(false);
+          setOperationVisible(false);
         }}
-        onOk={() => {
-          console.log(gradeId, '123');
-        }}
-      >
-        <div className={styles.content}>
-          <p className={styles.title}>请确认学生数据导出条件：</p>
-          <Radio.Group
-            className={styles.radio}
-            onChange={(e) => setExportType(e.target.value)}
-            value={exportType}
-          >
-            <Space direction="vertical">
-              <Radio value={1}>导出全校学生数据</Radio>
-              <Radio value={2}>导出年级学生数据</Radio>
-            </Space>
-          </Radio.Group>
-          {exportType === 2 ? (
-            <Select
-              style={{ width: '100%', marginBottom: 20 }}
-              allowClear
-              value={gradeId}
-              onChange={(val) => setGradeId(val)}
-              placeholder="请选择年级"
-            >
-              {gradeList.map((item) => (
-                <Option key={item.value} value={item.value}>
-                  {item.label}
-                </Option>
-              ))}
-            </Select>
-          ) : null}
-          <p>导出内容：在所选择学校下对应选择年级的全部学生信息</p>
-        </div>
-      </ExportModal>
-      <ImportModal
-        title={'学生数据'}
-        visible={importVisible}
-        onCancel={() => setImportVisible(false)}
       />
     </PageContainer>
   );

@@ -1,18 +1,17 @@
 declare namespace API {
   // 学生管理列表
   type StudentListItem = {
-    key?: number;
-    disabled?: boolean;
-    href?: string;
-    avatar?: string;
-    name?: string;
-    owner?: string;
-    desc?: string;
-    callNo?: number;
-    status?: number;
-    updatedAt?: string;
-    createdAt?: string;
-    progress?: number;
+    sno?: number;
+    name?: boolean;
+    gender?: number;
+    myopiaLevel?: string;
+    gradeName?: string;
+    className?: string;
+    screeningCount?: number;
+    lastScreeningTime?: string;
+    numOfVisits?: string;
+    parentPhone?: string;
+    address?: string;
   };
 
   // 档案管理列表

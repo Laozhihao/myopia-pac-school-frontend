@@ -97,8 +97,8 @@ const GradeManage: React.FC = () => {
         onCancel={() => {
           setModalVisible(false);
         }}
-        onFinish={() => {
-          setModalVisible(false);
+        onFinish={async () => {
+          await setModalVisible(false);
           ref?.current?.reload();
         }}
       />

@@ -1,35 +1,44 @@
 import type { ProColumns } from '@ant-design/pro-table';
-import { MYOPIAWARNOPTION, STUDENTSELECTOPTIONS } from '@/utils/constant';
+import { MYOPIAWARNOPTION, STUDENTSELECTOPTIONS, TABLESEXOPTION } from '@/utils/constant';
 import { Cascader } from 'antd';
 import { InputGroup } from '@/pages/components/input-group';
 
-export const listColumns: ProColumns<API.StudentListItem>[] = [
+export const listColumns: (gradeOption: any[]) => ProColumns<API.StudentListItem>[] = (
+  gradeOption: any[],
+) => [
   {
     title: '学号',
-    dataIndex: 'name',
+    dataIndex: 'sno',
     search: false,
   },
   {
     title: '姓名',
-    dataIndex: 'desc',
-    valueType: 'textarea',
+    dataIndex: 'name',
     search: false,
   },
   {
     title: '性别',
-    dataIndex: 'desc',
+    dataIndex: 'gender',
+    valueEnum: TABLESEXOPTION,
     search: false,
   },
   {
     title: '年级-班级',
-    dataIndex: 'grade',
+    dataIndex: 'gradeName',
     order: 2,
     renderFormItem: () => {
-      return <Cascader options={[]} placeholder="请选择" />;
+      return (
+        <Cascader
+          options={gradeOption}
+          placeholder="请选择"
+          fieldNames={{ label: 'name', value: 'id', children: 'child' }}
+        />
+      );
     },
+    renderText: (val: string, record) => `${val}-${record?.className}`,
   },
   {
-    hideInForm: true,
+    hideInTable: true,
     order: 3,
     renderFormItem: () => {
       return (
@@ -45,31 +54,30 @@ export const listColumns: ProColumns<API.StudentListItem>[] = [
   },
   {
     title: '视力情况',
-    dataIndex: 'callNo',
+    dataIndex: 'gradeType',
     search: false,
-    renderText: (val: string) => `${val}${'万'}`,
+    // renderText: (val: string) => `${val}${'万'}`,
   },
   {
     title: '视力预警',
-    dataIndex: 'desc',
+    dataIndex: 'visionLabel',
     valueEnum: MYOPIAWARNOPTION,
     order: 1,
   },
   {
     title: '筛查次数',
-    dataIndex: 'desc',
+    dataIndex: 'screeningCount',
     search: false,
   },
   {
     title: '最新筛查日期',
-    dataIndex: 'updatedAt',
-    valueType: 'dateTime',
+    dataIndex: 'lastScreeningTime',
+    valueType: 'date',
     search: false,
   },
   {
     title: '医院就诊',
-    dataIndex: 'updatedAt',
-    valueType: 'dateTime',
+    dataIndex: 'numOfVisits',
     search: false,
   },
 ];

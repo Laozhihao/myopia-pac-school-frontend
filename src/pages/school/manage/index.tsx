@@ -5,8 +5,7 @@ import ProForm, { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { history, useModel, useRequest } from 'umi';
 import { getSchoolDetail, editSchoolDetail, getschoolGrade } from '@/api/school';
-import { getDistrict } from '@/api/common';
-import { setStorageInfo, getCascader } from '@/pages/hook/storage';
+import { getCascaderOption } from '@/pages/hook/district';
 import styles from './index.less';
 
 const SchoolManage: React.FC = () => {
@@ -34,17 +33,6 @@ const SchoolManage: React.FC = () => {
   };
 
   /**
-   * @desc 获取地区级联
-   */
-  const getCascaderOption = async () => {
-    if (!getCascader()) {
-      const region = await getDistrict();
-      setStorageInfo('Cascader', region, null);
-    }
-    setAreaOption(getCascader());
-  };
-
-  /**
    * @desc 更新基本资料
    */
   const onEdit = (values: API.ObjectType) => {
@@ -62,12 +50,16 @@ const SchoolManage: React.FC = () => {
     });
   };
 
-  useEffect(() => {
+  const init = async () => {
     if (currentUser?.orgId) {
       run(currentUser!.orgId);
       getschoolList({ schoolId: currentUser!.orgId });
     }
-    getCascaderOption();
+    setAreaOption(await getCascaderOption());
+  };
+
+  useEffect(() => {
+    init();
   }, []);
 
   return (
@@ -97,7 +89,6 @@ const SchoolManage: React.FC = () => {
                 },
               }}
               onFinish={async (values) => {
-                // console.log(values, 'form');
                 onEdit(values);
               }}
             >

@@ -22,14 +22,14 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = () => {
   /**
    * 退出登录，并且将当前的 url 保存
    */
-  const loginOut = async () => {
+  const logOut = async () => {
     confirm({
       title: '您确定要退出登录吗？',
       centered: true,
       async onOk() {
         await outLogin();
         clearStorage();
-        setInitialState((s) => ({ ...s, currentUser: undefined }));
+        await setInitialState((s) => ({ ...s, currentUser: undefined }));
         const { query = {} } = history.location;
         const { redirect } = query;
         if (window.location.pathname !== '/user/login' && !redirect) {
@@ -45,7 +45,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = () => {
     (event: MenuInfo) => {
       const { key } = event;
       if (key === 'logout') {
-        loginOut();
+        logOut();
       }
     },
     [setInitialState],

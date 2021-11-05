@@ -12,10 +12,12 @@ export type InputItemType = {
 };
 
 export const InputGroup: React.FC<InputItemType> = (props) => {
+  const onChange = () => {};
+
   return (
     <Input.Group compact style={{ display: 'flex', marginBottom: props?.bottom }}>
       <Form.Item name={props.selectName} initialValue={props.selectInitial}>
-        <Select placeholder="请选择" style={{ width: props.width ?? 140 }}>
+        <Select placeholder="请选择" style={{ width: props.width ?? 140 }} onClick={onChange}>
           {props.option.map((item) => (
             <Option value={item.value} key={item.value}>
               {item.label}

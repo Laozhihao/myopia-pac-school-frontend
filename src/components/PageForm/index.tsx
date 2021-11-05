@@ -1,12 +1,16 @@
 import {
   ProFormText,
-  ProFormSelect,
+  // ProFormSelect,
   ProFormRadio,
   ProFormDatePicker,
   ProFormTextArea,
 } from '@ant-design/pro-form';
-import { Row, Col, Form, Cascader } from 'antd';
+import { Row, Col, Form, Cascader, Select } from 'antd';
 import { useEffect, useState } from 'react';
+
+const { Option } = Select;
+
+// JSON数据生成表单
 
 const PageForm: React.FC<API.PropsType> = (props) => {
   const [formlist, setFormList] = useState([] as API.FilterListType[]);
@@ -38,15 +42,16 @@ const PageForm: React.FC<API.PropsType> = (props) => {
     ),
 
     // 下拉选择
-    select: ({ label, value, list, rules, required }: API.FilterListType) => (
-      <ProFormSelect
-        options={props.listTypeInfo[list]}
-        name={value}
-        label={label}
-        rules={rules}
-        required={required}
-        placeholder="请选择"
-      />
+    select: ({ label, value, list, rules, required, fieldNames }: API.FilterListType) => (
+      <Form.Item label={label} rules={rules} name={value} required={required}>
+        <Select>
+          {props.listTypeInfo[list].map((item) => (
+            <Option value={item[fieldNames?.value]} key={item[fieldNames?.value]}>
+              {item[fieldNames?.label]}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
     ),
 
     // 级联

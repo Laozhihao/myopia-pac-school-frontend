@@ -31,7 +31,7 @@ const Login: React.FC = () => {
       const { userInfo } = payload;
       const res = await getUserInfo(userInfo?.id);
       setStorageInfo('User', res.data, null);
-      setInitialState((s) => ({ ...s, currentUser: res.data }));
+      await setInitialState((s) => ({ ...s, currentUser: res.data }));
     }
   };
 
@@ -84,7 +84,7 @@ const Login: React.FC = () => {
     setSubmitting(true);
     const parm = {
       ...values,
-      client_id: '1',
+      client_id: '2',
       client_secret: '123456',
     };
 

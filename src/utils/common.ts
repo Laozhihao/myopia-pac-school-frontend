@@ -30,23 +30,3 @@ export function toFormData(params: Record<string, any>): FormData {
   }
   return formData;
 }
-
-/**
- * @desc 给级联options child的添加第一个节点：全部
- */
-export const defaultKey = 'id';
-/* eslint-disable */
-export const dealCascaderOptions = (options: any, key = defaultKey) => {
-  for (const eleItem of options) {
-    if (eleItem?.child?.length) {
-      const hasAll = eleItem.child.filter((item: Record<string, string>) => item[key] === 'all');
-      const allTemp = {
-        [key]: 'all',
-        name: '全部',
-      };
-      !hasAll.length && eleItem.child.unshift(allTemp);
-      dealCascaderOptions(eleItem.child);
-    }
-  }
-  return options;
-};

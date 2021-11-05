@@ -1,3 +1,6 @@
+// 空
+export const EMPTY = '--';
+
 // 绑定公众号
 export const BINDOPTIONS = {
   0: { text: '已绑定' },
@@ -20,11 +23,25 @@ export const REVIEWOPTIONS = {
 };
 
 export const STUDENTSELECTOPTIONS = [
-  { value: 'number', label: '学号' },
+  { value: 'sno', label: '学号' },
   { value: 'name', label: '姓名' },
 ];
 
+// 性别 （pro表格）
+export const TABLESEXOPTION = {
+  0: { text: '男' },
+  1: { text: '女' },
+};
+
+// 性别 （JSON表单）
 export const SEXOPTION = [
-  { label: '男', value: 1 },
-  { label: '女', value: 2 },
+  { label: '男', value: 0 },
+  { label: '女', value: 1 },
 ];
+
+// 戴镜类型
+export const GLASSESTYPE = {
+  0: '不佩戴眼镜',
+  1: '佩戴框架眼镜',
+  2: '佩戴隐形眼镜',
+};

@@ -32,6 +32,14 @@ export async function getDistrict(options?: Record<string, any>) {
   });
 }
 
+/** 民族 GET /management/student/nation */
+export async function getNation(options?: Record<string, any>) {
+  return request<any[]>('/management/student/nation', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
 /** 刷新token POST /auth/refresh/token */
 export async function refreshToken(data: FormData) {
   return request<API.RequestToken>('/auth/refresh/token', {

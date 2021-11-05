@@ -29,7 +29,7 @@ export async function getInitialState(): Promise<{
   currentUser?: API.CurrentUser;
 }> {
   return {
-    currentUser: getUser() || {},
+    currentUser: getUser(),
     settings: {
       collapsed: false,
     },
@@ -42,7 +42,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     rightContentRender: () => <RightContent />,
     headerContentRender: () => (
       <div
-        style={{ cursor: 'pointer', fontSize: '16px' }}
+        style={{ cursor: 'pointer', fontSize: '16px', width: 'fit-content' }}
         onClick={() =>
           setInitialState({
             ...initialState,

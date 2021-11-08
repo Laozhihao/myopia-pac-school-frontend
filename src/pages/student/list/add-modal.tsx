@@ -3,29 +3,30 @@ import PageForm from '@/components/PageForm';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { useRef, useState, useEffect, useMemo } from 'react';
 import { studentFormOptions } from '../utils/constant';
-import { getCascaderOption, getNationOption } from '@/pages/hook/district';
+import { getNationOption, getCascaderOption } from '@/pages/hook/district';
+import { Form, Cascader } from 'antd';
 
 export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props) => {
   const modalRef = useRef<ProFormInstance>();
   const [studentForm, setStudentForm] = useState<API.PropsType>({ ...studentFormOptions });
+  const [addressOptions, setAddressOptions] = useState<any[]>();
 
   useMemo(async () => {
-    // const addressArr = await getCascaderOption();
-    // const nationArr = await getNationOption();
-    if (props.option.length) {
-      const [addressArr, nationArr] = await Promise.all([getCascaderOption(), getNationOption()]);
-      setStudentForm((value) => {
-        return Object.assign(value, {
-          listTypeInfo: {
-            ...value.listTypeInfo,
-            gradeOptions: props.option,
-            addressOptions: addressArr,
-            nationList: nationArr,
-          },
-        });
+    const nationArr = await getNationOption();
+    setStudentForm((value) => {
+      return Object.assign(value, {
+        listTypeInfo: {
+          ...value.listTypeInfo,
+          gradeOptions: props.option,
+          nationList: nationArr || [],
+        },
       });
-    }
+    });
   }, [props.option]);
+
+  useMemo(async () => {
+    setAddressOptions(await getCascaderOption());
+  }, []);
 
   useEffect(() => {
     const info = {};
@@ -51,7 +52,7 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
         console.log(value);
       }}
       modalProps={{
-        destroyOnClose: true,
+        destroyOnClose: false,
         onCancel: props.onCancel,
         bodyStyle: {
           height: 600,
@@ -60,6 +61,13 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
       }}
     >
       <PageForm {...studentForm} />
+      <Form.Item label="居住地址">
+        <Cascader
+          options={addressOptions}
+          placeholder="请选择"
+          fieldNames={{ label: 'name', value: 'code', children: 'child' }}
+        />
+      </Form.Item>
     </ModalForm>
   );
 };

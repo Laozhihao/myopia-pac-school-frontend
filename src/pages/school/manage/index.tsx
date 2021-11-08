@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Card, Col, Row, Form, Cascader, Button, Tree } from 'antd';
 import ProForm, { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
@@ -50,16 +50,12 @@ const SchoolManage: React.FC = () => {
     });
   };
 
-  const init = async () => {
+  useMemo(async () => {
     if (currentUser?.orgId) {
       run(currentUser!.orgId);
       getschoolList({ schoolId: currentUser!.orgId });
     }
     setAreaOption(await getCascaderOption());
-  };
-
-  useEffect(() => {
-    init();
   }, []);
 
   return (

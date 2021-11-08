@@ -20,8 +20,8 @@ const TableList: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false); // 新增/编辑弹窗
   const [operationVisible, setOperationVisible] = useState(false); // 导入/导出
   const [typeKey, setTypeKey] = useState(''); // 导入/导出标志位
-  const [currentRow, setCurrentRow] = useState<API.StudentListItem>();
-  const [gradeOption, setGradeOption] = useState<any[]>([]);
+  const [currentRow, setCurrentRow] = useState<API.StudentListItem>(); // 当前行数据
+  const [gradeOption, setGradeOption] = useState<API.ObjectType[]>([]);
   const ref = useRef<ProFormInstance>();
 
   let searchForm = {}; // 搜索表单项
@@ -29,7 +29,8 @@ const TableList: React.FC = () => {
   /**
    * @desc 获取年级班级
    */
-  const getOptions = (params: API.ObjectType) => {
+
+  const init = (params: API.ObjectType) => {
     getschoolGrade(params).then((res) => {
       setGradeOption(res.data);
     });
@@ -37,7 +38,7 @@ const TableList: React.FC = () => {
 
   useEffect(() => {
     // getOptions({ schoolId: currentUser!.orgId })
-    getOptions({ schoolId: 2 });
+    init({ schoolId: 2 });
   }, []);
 
   /**
@@ -69,7 +70,6 @@ const TableList: React.FC = () => {
       [formVal?.select]: formVal?.input,
       visionLabel: formVal?.visionLabel,
     });
-    console.log(formVal, '123');
     ref?.current?.submit();
   };
 

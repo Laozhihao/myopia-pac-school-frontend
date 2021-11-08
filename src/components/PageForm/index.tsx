@@ -1,6 +1,5 @@
 import {
   ProFormText,
-  // ProFormSelect,
   ProFormRadio,
   ProFormDatePicker,
   ProFormTextArea,
@@ -44,7 +43,7 @@ const PageForm: React.FC<API.PropsType> = (props) => {
     // 下拉选择
     select: ({ label, value, list, rules, required, fieldNames }: API.FilterListType) => (
       <Form.Item label={label} rules={rules} name={value} required={required}>
-        <Select>
+        <Select placeholder="请选择">
           {props.listTypeInfo[list].map((item) => (
             <Option value={item[fieldNames?.value]} key={item[fieldNames?.value]}>
               {item[fieldNames?.label]}
@@ -80,11 +79,12 @@ const PageForm: React.FC<API.PropsType> = (props) => {
 
   return (
     <Row gutter={props.gutter ?? 40}>
-      {formlist.map((item, index) => (
-        <Col key={index} span={item.col ?? 8}>
+      {formlist.map((item) => (
+        <Col key={item.value} span={item.col ?? 8}>
           {FormTemp[item.type](item)}
         </Col>
       ))}
+      {props?.children}
     </Row>
   );
 };

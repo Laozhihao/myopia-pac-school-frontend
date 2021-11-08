@@ -1,12 +1,13 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Card, Col, Row, Form, Cascader, Button, Tree } from 'antd';
+import { Card, Col, Row, Form, Button, Tree } from 'antd';
 import ProForm, { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { history, useModel, useRequest } from 'umi';
 import { getSchoolDetail, editSchoolDetail, getschoolGrade } from '@/api/school';
 import { getCascaderOption } from '@/pages/hook/district';
 import styles from './index.less';
+import LazyCascader from '@/pages/components/lazy-cascader';
 
 const SchoolManage: React.FC = () => {
   const { initialState } = useModel('@@initialState');
@@ -99,11 +100,13 @@ const SchoolManage: React.FC = () => {
                 学生总数： <span>{schoolInfo?.studentCount}</span>
               </p>
               <Form.Item label="学校地址" name="region">
-                <Cascader
+                <LazyCascader
                   options={areaOption}
-                  placeholder="请选择"
                   fieldNames={{ label: 'name', value: 'code', children: 'child' }}
-                  onChange={(value: any) => setAddressFlag(!value.length)}
+                  originProps={{
+                    placeholder: '请选择',
+                    onChange: (value: any) => setAddressFlag(!value.length),
+                  }}
                 />
               </Form.Item>
               <ProFormTextArea

@@ -47,7 +47,7 @@ declare namespace API {
     width?: number; // 宽度
     onFinish?: () => Promise<void>; // modalForm 的确定回调
     onOk?: () => void; // modal确定回调
-    onCancel: () => void; // 取消回调
+    onCancel: (refresh?: boolean) => void; // 取消回调 refresh 取消后是否刷新页面
   };
 
   //  显示的表单类型

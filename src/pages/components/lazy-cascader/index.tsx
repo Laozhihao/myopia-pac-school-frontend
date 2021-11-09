@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import type { CascaderProps } from 'antd';
-import { Cascader } from 'antd';
+import { Cascader, Form } from 'antd';
 import type { DataNode } from 'rc-cascader';
 
 interface LazyCascaderProps {
+  label?: string;
+  name?: string;
   options?: LazyDataNode[];
   fieldNames: { value: string; label: string; children: string };
   originProps?: CascaderProps;
@@ -18,6 +20,7 @@ type LazyDataNode = Partial<
 
 const LazyCascader: React.FC<LazyCascaderProps> = (props) => {
   const [filterOption, setFilterOption] = useState<any>([]);
+
   useMemo(() => {
     setFilterOption(
       props.options?.map((item) => ({
@@ -27,10 +30,12 @@ const LazyCascader: React.FC<LazyCascaderProps> = (props) => {
       })),
     );
   }, [props.options]);
+
   const findTarget = (origin: LazyDataNode[] | LazyDataNode, code: number | string) => {
     if (Array.isArray(origin)) return origin.find((item) => item[props.fieldNames.value] === code);
     return origin.child!.find((item) => item[props.fieldNames.value] === code);
   };
+
   const cascaderLoadData = (selectOptions: LazyDataNode[]) => {
     const targetOption = selectOptions[selectOptions.length - 1];
     const selectCodes = selectOptions.map((item) => item.value);
@@ -46,7 +51,16 @@ const LazyCascader: React.FC<LazyCascaderProps> = (props) => {
     setFilterOption([...filterOption]);
   };
 
-  return <Cascader options={filterOption} loadData={cascaderLoadData} {...props.originProps} />;
+  return (
+    <Form.Item label={props?.label} name={props.name}>
+      <Cascader
+        options={filterOption}
+        loadData={cascaderLoadData}
+        placeholder="请选择"
+        {...props.originProps}
+      />
+    </Form.Item>
+  );
 };
 
 export default LazyCascader;

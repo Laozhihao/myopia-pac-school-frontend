@@ -1,15 +1,18 @@
-import { ModalForm } from '@ant-design/pro-form';
+import { ModalForm, ProFormTextArea } from '@ant-design/pro-form';
 import PageForm from '@/components/PageForm';
+import LazyCascader from '@/pages/components/lazy-cascader';
+import { message } from 'antd';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { useRef, useState, useEffect, useMemo } from 'react';
 import { studentFormOptions } from '../utils/constant';
 import { getNationOption, getCascaderOption } from '@/pages/hook/district';
-import { Form, Cascader } from 'antd';
+import { editStudentInfo } from '@/api/student';
 
 export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props) => {
   const modalRef = useRef<ProFormInstance>();
   const [studentForm, setStudentForm] = useState<API.PropsType>({ ...studentFormOptions });
-  const [addressOptions, setAddressOptions] = useState<any[]>();
+  const [areaOption, setAreaOption] = useState<any[]>();
+  const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
 
   useMemo(async () => {
     const nationArr = await getNationOption();
@@ -25,10 +28,11 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
   }, [props.option]);
 
   useMemo(async () => {
-    setAddressOptions(await getCascaderOption());
+    setAreaOption(await getCascaderOption());
   }, []);
 
   useEffect(() => {
+    setAddressFlag(!props?.currentRow?.provinceCode); // 编辑地址
     const info = {};
     if (props?.currentRow) {
       const { gradeId, classId, provinceCode, cityCode, areaCode, townCode } = props?.currentRow;
@@ -36,11 +40,32 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
       const gradeArr = [gradeId, classId].filter((item) => item);
       Object.assign(info, {
         gradeIds: gradeArr, // 回显年级班级
-        addressIds: addressArr, // 回显地区
+        region: addressArr, // 回显地区
       });
     }
     modalRef?.current?.setFieldsValue({ ...props?.currentRow, ...info });
   }, [props?.currentRow, props.visible]);
+
+  /**
+   * @desc 新增/编辑
+   */
+  const onConfirm = async (value: any) => {
+    const { gradeIds = [], region = [] } = value;
+    const parm = {
+      ...value,
+      id: props?.currentRow?.id ?? '',
+      studentId: props?.currentRow?.studentId ?? '',
+      gradeId: gradeIds[0] ?? '',
+      classId: gradeIds[1] ?? '',
+      provinceCode: region[0] ?? '',
+      cityCode: region[1] ?? '',
+      areaCode: region[2] ?? '',
+      townCode: region[3] ?? '',
+    };
+    await editStudentInfo(parm);
+    message.success(props?.currentRow ? '编辑成功' : '新增成功');
+    props.onCancel(true);
+  };
 
   return (
     <ModalForm
@@ -48,12 +73,10 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
       formRef={modalRef}
       width={800}
       visible={props.visible}
-      onFinish={async (value) => {
-        console.log(value);
-      }}
+      onFinish={onConfirm}
       modalProps={{
-        destroyOnClose: false,
-        onCancel: props.onCancel,
+        destroyOnClose: true,
+        onCancel: () => props.onCancel(false),
         bodyStyle: {
           height: 600,
           overflow: 'auto',
@@ -61,13 +84,22 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
       }}
     >
       <PageForm {...studentForm} />
-      <Form.Item label="居住地址">
-        <Cascader
-          options={addressOptions}
-          placeholder="请选择"
-          fieldNames={{ label: 'name', value: 'code', children: 'child' }}
-        />
-      </Form.Item>
+      <LazyCascader
+        label="居住地址"
+        name="region"
+        options={areaOption}
+        fieldNames={{ label: 'name', value: 'code', children: 'child' }}
+        originProps={{
+          placeholder: '请选择',
+          onChange: (value: any) => setAddressFlag(!value.length),
+        }}
+      />
+      <ProFormTextArea
+        name="address"
+        disabled={addressFlag}
+        fieldProps={{ maxLength: 50 }}
+        placeholder="请输入详细地址"
+      />
     </ModalForm>
   );
 };

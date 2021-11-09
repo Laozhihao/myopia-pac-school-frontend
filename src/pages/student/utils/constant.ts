@@ -77,13 +77,19 @@ export const studentFormOptions = {
       type: 'datePicker',
       value: 'birthday',
       col: 24,
+      rules: [
+        {
+          required: true,
+          message: '请选择出生日期',
+        },
+      ],
     },
     {
       label: '民族',
       type: 'select',
       value: 'nation',
       list: 'nationList',
-      fieldNames: { label: 'cnName', value: 'enName' },
+      fieldNames: { label: 'cnName', value: 'code' },
       col: 24,
     },
     {
@@ -100,25 +106,10 @@ export const studentFormOptions = {
       ],
       col: 24,
     },
-    // {
-    //   label: '居住地址',
-    //   type: 'cascader',
-    //   value: 'addressIds',
-    //   list: 'addressOptions',
-    //   fieldNames: { label: 'name', value: 'code', children: 'child' },
-    //   col: 24,
-    // },
-    // {
-    //   label: '具体地址',
-    //   type: 'textArea',
-    //   value: 'address',
-    //   col: 24,
-    // },
   ],
   listTypeInfo: {
-    sexList: SEXOPTION,
-    nationList: [],
-    gradeOptions: [],
-    // addressOptions: [],
+    sexList: SEXOPTION, // 性别
+    nationList: [], // 民族
+    gradeOptions: [], // 年级班级
   },
 };

@@ -12,10 +12,11 @@ import { listColumns } from './columns';
 import { deleteTableRow } from '@/utils/common';
 import { getschoolGrade } from '@/api/school';
 import { getStudentList } from '@/api/student';
+import { useModel } from 'umi';
 
 const TableList: React.FC = () => {
-  // const { initialState } = useModel('@@initialState');
-  // const { currentUser } = initialState!;
+  const { initialState } = useModel('@@initialState');
+  const { currentUser } = initialState!;
 
   const [modalVisible, setModalVisible] = useState(false); // 新增/编辑弹窗
   const [operationVisible, setOperationVisible] = useState(false); // 导入/导出
@@ -37,8 +38,8 @@ const TableList: React.FC = () => {
   };
 
   useEffect(() => {
-    // getOptions({ schoolId: currentUser!.orgId })
-    init({ schoolId: 2 });
+    init({ schoolId: currentUser!.orgId });
+    // init({ schoolId: 2 });
   }, []);
 
   /**
@@ -64,7 +65,7 @@ const TableList: React.FC = () => {
   const onSearch = () => {
     const formVal = ref?.current?.getFieldsFormatValue?.();
     Object.assign(searchForm, {
-      schoolId: 4,
+      // schoolId: 4,
       gradeId: formVal?.gradeName?.[0],
       classId: formVal?.gradeName?.[1],
       [formVal?.select]: formVal?.input,
@@ -178,7 +179,6 @@ const TableList: React.FC = () => {
         request={async (params) => {
           const datas = await getStudentList({
             ...searchForm,
-            schoolId: 2,
             current: params.current,
             size: params.pageSize,
           });
@@ -195,8 +195,9 @@ const TableList: React.FC = () => {
         currentRow={currentRow}
         option={gradeOption}
         title={currentRow ? '编辑学生' : '创建学生'}
-        onCancel={() => {
+        onCancel={(refresh) => {
           setModalVisible(false);
+          refresh && onSearch();
         }}
       />
 

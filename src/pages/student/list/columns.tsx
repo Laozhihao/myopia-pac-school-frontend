@@ -60,7 +60,7 @@ export const listColumns: (gradeOption: any[]) => ProColumns<API.StudentListItem
   },
   {
     title: '视力预警',
-    dataIndex: 'visionLabel',
+    dataIndex: 'warningLevel',
     valueEnum: MYOPIAWARNOPTION,
     order: 1,
   },

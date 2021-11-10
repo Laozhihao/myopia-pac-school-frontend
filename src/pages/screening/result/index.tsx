@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Tabs, Card, Button } from 'antd';
 import { firstColumns, secondColumns, thirdColumns, fourthColumns, warnColumns } from './columns';
 import ProTable from '@ant-design/pro-table';
-import { rule } from '@/services/ant-design-pro/api';
 import type { ProColumns } from '@ant-design/pro-table';
 import { UploadOutlined } from '@ant-design/icons';
+import { history } from 'umi';
 import { AddModal } from './add-modal';
 import { ExportModal } from '@/pages/components/export-modal';
 import { useState } from 'react';
+import { getScreeningResult } from '@/api/screen';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -16,6 +17,7 @@ const { TabPane } = Tabs;
 const ScreeningResult: React.FC = () => {
   const [detailVisible, setDetailVisible] = useState(false); // 课座椅visible
   const [exportVisible, setExportVisible] = useState(false); // 导出visible
+  const [resultInfo, setResultInfo] = useState<Object[]>([]); // 结果分析
 
   const tableOptions = [
     { title: '视力筛查情况', columns: firstColumns },
@@ -36,10 +38,18 @@ const ScreeningResult: React.FC = () => {
       valueType: 'option',
       render: (...params) => {
         const [, record] = params;
-        return [<a key={record.name}>学生档案</a>];
+        return [<a key="student">学生档案{record}</a>];
       },
     },
   ];
+
+  useEffect(() => {
+    const { query: { id } = {} } = history.location;
+    id &&
+      getScreeningResult(id as string).then((res) => {
+        setResultInfo([res?.data]);
+      });
+  }, []);
 
   return (
     <PageContainer>
@@ -58,6 +68,7 @@ const ScreeningResult: React.FC = () => {
                 key={index}
                 search={false}
                 options={false}
+                defaultData={resultInfo}
                 headerTitle={item.title}
               />
             ))}
@@ -69,10 +80,10 @@ const ScreeningResult: React.FC = () => {
               search={{ collapseRender: false, collapsed: false }}
               pagination={{ pageSize: 10 }}
               options={false}
-              request={rule}
+              // request={rule}
               columns={studentWarnColumns}
               scroll={{
-                x: 'max-content',
+                x: '100vw',
               }}
               columnsStateMap={{
                 name: {

@@ -1,5 +1,8 @@
 import { SEXOPTION } from '@/utils/constant';
 import { isPhoneNum86, isIdCard } from '@vistel/vistel-utils/lib/validator';
+import { getNationOption } from '@/pages/hook/district';
+
+const nationArr = await getNationOption();
 
 export const studentFormOptions = {
   filterList: [
@@ -109,7 +112,7 @@ export const studentFormOptions = {
   ],
   listTypeInfo: {
     sexList: SEXOPTION, // 性别
-    nationList: [], // 民族
+    nationList: nationArr, // 民族
     gradeOptions: [], // 年级班级
   },
 };

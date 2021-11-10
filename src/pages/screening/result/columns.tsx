@@ -2,18 +2,15 @@ import type { ProColumns } from '@ant-design/pro-table';
 import { MYOPIAWARNOPTION, BINDOPTIONS, REVIEWOPTIONS } from '@/utils/constant';
 import { Cascader } from 'antd';
 
-export const firstColumns: ProColumns[] = [
+export const firstColumns: ProColumns<API.ScreenResultListItem>[] = [
   {
     title: '预计筛查学生数',
-    dataIndex: 'name',
+    dataIndex: 'planScreeningNumbers',
     tip: '筛查计划中导入的该学校的筛查学生总数',
-    fieldProps: {
-      fixed: 'right',
-    },
   },
   {
     title: '实际筛查学生数',
-    dataIndex: 'desc',
+    dataIndex: 'realScreeningNumbers',
     tip: '现场筛查中进行筛查的学生总数（即有筛查数据的学生）',
   },
   {
@@ -28,7 +25,7 @@ export const firstColumns: ProColumns[] = [
   },
 ];
 
-export const secondColumns: ProColumns[] = [
+export const secondColumns: ProColumns<API.ScreenResultListItem>[] = [
   {
     title: '近视（人数/占比）',
     dataIndex: 'name',
@@ -63,7 +60,7 @@ export const secondColumns: ProColumns[] = [
   },
 ];
 
-export const thirdColumns: ProColumns[] = [
+export const thirdColumns: ProColumns<API.ScreenResultListItem>[] = [
   {
     title: '加入预警学生数（人数/占比）',
     dataIndex: 'name',
@@ -94,7 +91,7 @@ export const thirdColumns: ProColumns[] = [
   },
 ];
 
-export const fourthColumns: ProColumns[] = [
+export const fourthColumns: ProColumns<API.ScreenResultListItem>[] = [
   {
     title: '建议就诊学生数（人数/占比）',
     dataIndex: 'name',

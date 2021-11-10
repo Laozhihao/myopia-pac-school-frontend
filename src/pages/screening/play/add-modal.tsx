@@ -7,7 +7,6 @@ import RightTips from './right-tips';
 
 export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const [options, setOptions] = useState([]);
-  console.log(setOptions);
 
   const FormPreTemp = [
     {
@@ -44,6 +43,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   ];
 
   const onChange = () => {
+    setOptions([]);
     // console.log(value, '123');
   };
 
@@ -53,7 +53,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       width={800}
       visible={props.visible}
       footer={null}
-      onCancel={props.onCancel}
+      onCancel={() => props.onCancel()}
       className={styles.modal}
     >
       <StepsForm

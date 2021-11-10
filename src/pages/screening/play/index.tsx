@@ -4,17 +4,27 @@ import type { ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';
 import { listColumns } from './columns';
-import { rule } from '@/services/ant-design-pro/api';
 import { AddModal } from './add-modal';
 import { Link } from 'umi';
+import { Modal } from 'antd';
+import { escape2Html } from '@/utils/common';
+import { getScreeningList } from '@/api/screen';
 
 const TableList: React.FC = () => {
   // const [currentRow, setCurrentRow] = useState();
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const [createModalVisible, handleModalVisible] = useState(false);
+  const [textModalVisible, setTextModalVisible] = useState(false); // 筛查内容visible
+  const [textHtml, setTextHtml] = useState<string>();
   const actionRef = useRef<ActionType>();
 
+  const onShow = (dom: any) => {
+    setTextHtml(escape2Html(dom));
+    setTextModalVisible(true);
+    console.log(dom, escape2Html(dom), '123');
+  };
+
   const columns: ProColumns<API.ScreenListItem>[] = [
-    ...listColumns,
+    ...listColumns(onShow),
     {
       title: '操作',
       dataIndex: 'option',
@@ -22,10 +32,10 @@ const TableList: React.FC = () => {
       render: (...params) => {
         const [, record] = params;
         return [
-          <a key={record.name} onClick={() => handleModalVisible(true)}>
+          <a key={record?.planId} onClick={() => handleModalVisible(true)}>
             打印二维码/告知书
           </a>,
-          <Link to="/screening/result" key="result">
+          <Link to={`/screening/result/?id=${record?.schoolStatisticId}`} key="result">
             筛查结果
           </Link>,
         ];
@@ -38,14 +48,24 @@ const TableList: React.FC = () => {
       <ProTable<API.ScreenListItem, API.PageParams>
         actionRef={actionRef}
         tableStyle={{ paddingTop: 30 }}
-        rowKey="key"
+        rowKey="planId"
         search={false}
         pagination={{ pageSize: 10 }}
         options={false}
-        request={rule}
+        request={async (params) => {
+          const datas = await getScreeningList({
+            current: params.current,
+            size: params.pageSize,
+          });
+          return {
+            data: datas.data.records,
+            success: true,
+            total: datas.data.total,
+          };
+        }}
         columns={columns}
         scroll={{
-          x: 'max-content',
+          x: '100vw',
         }}
         columnsStateMap={{
           name: {
@@ -63,6 +83,15 @@ const TableList: React.FC = () => {
           handleModalVisible(false);
         }}
       />
+      <Modal
+        title="筛查内容"
+        visible={textModalVisible}
+        onOk={() => {}}
+        onCancel={() => setTextModalVisible(false)}
+        footer={null}
+      >
+        {textHtml}
+      </Modal>
     </PageContainer>
   );
 };

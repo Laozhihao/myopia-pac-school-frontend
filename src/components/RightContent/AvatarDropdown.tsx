@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import { LogoutOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin, Modal } from 'antd';
 import { history, useModel } from 'umi';
-// import { stringify } from 'querystring';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import { outLogin } from '@/api/common';

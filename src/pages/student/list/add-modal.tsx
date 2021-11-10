@@ -5,7 +5,7 @@ import { message } from 'antd';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { useRef, useState, useEffect, useMemo } from 'react';
 import { studentFormOptions } from '../utils/constant';
-import { getNationOption, getCascaderOption } from '@/pages/hook/district';
+import { getCascaderOption } from '@/pages/hook/district';
 import { editStudentInfo } from '@/api/student';
 
 export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props) => {
@@ -15,13 +15,11 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
   const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
 
   useMemo(async () => {
-    const nationArr = await getNationOption();
     setStudentForm((value) => {
       return Object.assign(value, {
         listTypeInfo: {
           ...value.listTypeInfo,
           gradeOptions: props.option,
-          nationList: nationArr || [],
         },
       });
     });

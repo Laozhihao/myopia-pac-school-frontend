@@ -18,8 +18,22 @@ export async function editStudentInfo(data: API.ObjectType) {
 }
 
 /** 删除 /school/student */
-export async function deleteStudentList(id: number) {
+export async function deleteStudentInfo(id: number | string) {
   return request<API.RequestResult>(`/school/student/${id}`, {
     method: 'DELETE',
+  });
+}
+
+/** 学生详情 /school/student */
+export async function getStudentDetail(id: number | string) {
+  return request<API.RequestResult>(`/school/student/${id}`, {
+    method: 'GET',
+  });
+}
+
+/** 筛查记录 /school/student */
+export async function getStudentScreen(id: number | string) {
+  return request<API.RequestResult>(`/school/student/screening/list/${id}`, {
+    method: 'GET',
   });
 }

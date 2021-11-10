@@ -1,5 +1,5 @@
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import { Link } from 'umi';
 import React, { useState, useRef, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -9,9 +9,9 @@ import type { ProColumns } from '@ant-design/pro-table';
 import { AddModal } from './add-modal';
 import { OperationModal } from './operation-modal';
 import { listColumns } from './columns';
-import { deleteTableRow } from '@/utils/common';
+import { deleteTableRow } from '@/pages/hook/table';
 import { getschoolGrade } from '@/api/school';
-import { getStudentList } from '@/api/student';
+import { getStudentList, deleteStudentInfo } from '@/api/student';
 import { useModel } from 'umi';
 
 const TableList: React.FC = () => {
@@ -28,7 +28,7 @@ const TableList: React.FC = () => {
   let searchForm = {}; // 搜索表单项
 
   /**
-   * @desc 获取年级班级
+   * @desc 获取年级班级 todo: 接口替换
    */
 
   const init = (params: API.ObjectType) => {
@@ -65,7 +65,6 @@ const TableList: React.FC = () => {
   const onSearch = () => {
     const formVal = ref?.current?.getFieldsFormatValue?.();
     Object.assign(searchForm, {
-      // schoolId: 4,
       gradeId: formVal?.gradeName?.[0],
       classId: formVal?.gradeName?.[1],
       [formVal?.select]: formVal?.input,
@@ -77,9 +76,11 @@ const TableList: React.FC = () => {
   /**
    * @desc 删除
    */
-  const onDelete = () => {
-    deleteTableRow('该学生数据', () => {
-      console.log('确认删除');
+  const onDelete = (row: API.StudentListItem | undefined) => {
+    deleteTableRow('该学生数据', async () => {
+      await deleteStudentInfo(row?.id!);
+      message.success('删除成功');
+      onSearch();
     });
   };
 
@@ -106,10 +107,10 @@ const TableList: React.FC = () => {
         >
           编辑
         </a>,
-        <a key="delete" onClick={onDelete}>
+        <a key="delete" onClick={() => onDelete(record)}>
           删除
         </a>,
-        <Link key="manage" to="/student/file">
+        <Link key="manage" to={`/student/file?id=${record.id}`}>
           档案管理
         </Link>,
       ],
@@ -137,7 +138,7 @@ const TableList: React.FC = () => {
           ],
         }}
         scroll={{
-          x: 'max-content',
+          x: '100vw',
         }}
         columnsStateMap={{
           name: {

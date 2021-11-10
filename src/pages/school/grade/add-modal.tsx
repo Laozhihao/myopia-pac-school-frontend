@@ -53,7 +53,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       onFinish={onComfirm}
       modalProps={{
         destroyOnClose: true,
-        onCancel: props.onCancel,
+        onCancel: () => props.onCancel(),
       }}
     >
       {!props?.currentRow ? (

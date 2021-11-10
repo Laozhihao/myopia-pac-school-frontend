@@ -1,21 +1,3 @@
-import { Modal } from 'antd';
-
-/**
- * @desc 删除表格项
- * @param message 删除文本
- * @param callback 确认删除回调
- */
-export const deleteTableRow = (message: string, callback: (() => void) | undefined) => {
-  const { confirm } = Modal;
-  confirm({
-    title: `是否删除${message}`,
-    centered: true,
-    onOk() {
-      callback?.();
-    },
-  });
-};
-
 /**
  * @desc 数据转成form data格式
  * @param params 需要转的对象
@@ -30,3 +12,25 @@ export function toFormData(params: Record<string, any>): FormData {
   }
   return formData;
 }
+
+/**
+ * @desc 截取字符长度
+ */
+
+export const formatLength = (val: string, length = 15) =>
+  val && val.length > length ? `${val.substr(0, length)}...` : val;
+
+/**
+ * @desc 富文本反转义html
+ * @param {string} str
+ */
+export const escape2Html = (str: string) => {
+  const arrEntities = {
+    lt: '<',
+    gt: '>',
+    nbsp: ' ',
+    amp: '&',
+    quot: '"',
+  };
+  return str.replace(/&(lt|gt|nbsp|amp|quot);/gi, (all, t) => arrEntities[t]);
+};

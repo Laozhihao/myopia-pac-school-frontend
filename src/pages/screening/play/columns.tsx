@@ -1,49 +1,53 @@
 import type { ProColumns } from '@ant-design/pro-table';
-
-export const listColumns: ProColumns<API.ScreenListItem>[] = [
+import { formatLength } from '@/utils/common';
+import { SCREENSTATUS } from '@/utils/constant';
+// import * as dayjs from 'dayjs'
+// DATE, EMPTY
+export const listColumns: (show: (dom: any) => void) => ProColumns<API.ScreenListItem>[] = (
+  show,
+) => [
   {
     title: '序号',
-    dataIndex: 'name',
+    dataIndex: 'index',
+    valueType: 'index',
   },
   {
     title: '筛查标题',
-    dataIndex: 'desc',
-    valueType: 'textarea',
+    dataIndex: 'title',
+    renderText: (val: string) => formatLength(val),
   },
   {
     title: '筛查时间段',
-    dataIndex: 'desc',
-    valueType: 'textarea',
+    dataIndex: 'startTime',
+    // renderText: (val: string, record) => `${val ? dayjs(val).format(DATE) : EMPTY } 至 ${record?.endTime ? dayjs(val).format(record?.endTime) : EMPTY}`
   },
   {
     title: '筛查状态',
-    dataIndex: 'callNo',
-    hideInForm: true,
-    renderText: (val: string) => `${val}${'万'}`,
+    dataIndex: 'releaseStatus',
+    valueEnum: SCREENSTATUS,
   },
   {
     title: '预计筛查学生数',
-    dataIndex: 'desc',
-    valueType: 'textarea',
+    dataIndex: 'planScreeningNumbers',
   },
   {
     title: '实际筛查学生数',
-    dataIndex: 'desc',
-    valueType: 'textarea',
+    dataIndex: 'realScreeningNumbers',
   },
   {
     title: '筛查机构',
-    dataIndex: 'updatedAt',
-    valueType: 'dateTime',
+    dataIndex: 'screeningOrgName',
   },
   {
     title: '筛查内容',
-    dataIndex: 'updatedAt',
-    valueType: 'dateTime',
+    dataIndex: 'content',
+    render: (dom) => {
+      return <a onClick={() => show(dom)}>查看</a>;
+    },
   },
   {
     title: '通知日期',
-    dataIndex: 'updatedAt',
-    valueType: 'dateTime',
+    dataIndex: 'releaseTime',
+    valueType: 'date',
   },
 ];

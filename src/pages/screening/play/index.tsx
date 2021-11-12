@@ -14,13 +14,12 @@ const TableList: React.FC = () => {
   // const [currentRow, setCurrentRow] = useState();
   const [createModalVisible, handleModalVisible] = useState(false);
   const [textModalVisible, setTextModalVisible] = useState(false); // 筛查内容visible
-  const [textHtml, setTextHtml] = useState<string>();
+  const [textHtml, setTextHtml] = useState('');
   const actionRef = useRef<ActionType>();
 
   const onShow = (dom: any) => {
     setTextHtml(escape2Html(dom));
     setTextModalVisible(true);
-    console.log(dom, escape2Html(dom), '123');
   };
 
   const columns: ProColumns<API.ScreenListItem>[] = [
@@ -35,7 +34,10 @@ const TableList: React.FC = () => {
           <a key={record?.planId} onClick={() => handleModalVisible(true)}>
             打印二维码/告知书
           </a>,
-          <Link to={`/screening/result/?id=${record?.schoolStatisticId}`} key="result">
+          <Link
+            to={`/screening/result/?id=${record?.schoolStatisticId}&screeningPlanId=${record?.planId}`}
+            key="result"
+          >
             筛查结果
           </Link>,
         ];
@@ -90,7 +92,7 @@ const TableList: React.FC = () => {
         onCancel={() => setTextModalVisible(false)}
         footer={null}
       >
-        {textHtml}
+        <div dangerouslySetInnerHTML={{ __html: textHtml }}></div>
       </Modal>
     </PageContainer>
   );

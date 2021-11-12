@@ -45,7 +45,37 @@ declare namespace API {
 
   // 筛查结果列表
   type ScreenResultListItem = {
-    planScreeningNumbers?: string;
+    id?: string;
+    planScreeningNumbers?: number; // 预计筛查学生数
+    realScreeningNumbers?: number; // 实际筛查学生数
+    validScreeningNumbers: number; // 有效实际筛查学生数
+    myopiaNumbers?: number; // 近视人数
+    myopiaRatio?: number; // 近视比例
+    myopiaLevelLight?: number;
+    myopiaLevelMiddle?: number;
+    avgLeftVision?: number; // 平均视力 （左眼）
+    avgRightVision?: number; // 平均视力 （右眼）
+    wearingGlassesNumbers?: number; // 戴镜人数
+    visionLabel0Numbers?: number; // 0级预警人数
+    visionLabel1Numbers?: number; // 1级预警人数
+    visionLabel2Numbers?: number; // 2级预警人数
+    visionLabel3Numbers?: number; // 3级预警人数
+    myopiaLevelInsufficient?: number; // 远视储备不足人数
+    treatmentAdviceNumbers?: number; // 就诊学生数
+    reviewNumbers?: number; // 就诊医院数
+    bindMpNumbers?: number; // 绑定公众号人数
+  };
+
+  type ScreenWarnListItem = {
+    studentId?: number;
+    sno?: string;
+    name?: string;
+    gender?: number;
+    gradeName?: string;
+    className?: string;
+    warningLevel?: string; // 视力标签
+    isBindMq?: boolean; // 公众号绑定
+    isReview?: boolean; // 医院复查
   };
 
   // 消息列表

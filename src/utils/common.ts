@@ -34,3 +34,22 @@ export const escape2Html = (str: string) => {
   };
   return str.replace(/&(lt|gt|nbsp|amp|quot);/gi, (all, t) => arrEntities[t]);
 };
+
+/**
+ * @desc 百分比计算
+ * @param moleculeVal 分子值
+ * @param denominatorVal 分母值
+ * @param company 单位
+ */
+
+export function getPercentage(moleculeVal = 0, denominatorVal = 0, company = '%') {
+  return `${((moleculeVal / denominatorVal) * 100).toFixed(2)}${company}`;
+}
+
+/**
+ * @desc 获取累加数
+ */
+
+export function getTotalNumber(arr: any[]) {
+  return arr.reduce((a, b) => a + b);
+}

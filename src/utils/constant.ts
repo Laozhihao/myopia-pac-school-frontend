@@ -9,23 +9,23 @@ export const DATATIME = 'YYYY-MM-DD HH:mm:ss';
 
 // 绑定公众号
 export const BINDOPTIONS = {
-  0: { text: '已绑定' },
-  1: { text: '未绑定' },
+  0: '未绑定',
+  1: '已绑定',
 };
 
 // 视力预警
 export const MYOPIAWARNOPTION = {
-  0: { text: '0级预警' },
-  4: { text: '0级预警 远视储备不足' },
-  1: { text: '1级预警' },
-  2: { text: '2级预警' },
-  3: { text: '3级预警' },
+  0: { text: '0级预警', status: 'Success' },
+  4: { text: '0级预警 远视储备不足', status: 'Success' },
+  1: { text: '1级预警', status: 'Warning' },
+  2: { text: '2级预警', status: 'Error' },
+  3: { text: '3级预警', status: 'Error' },
 };
 
 // 医院复查
 export const REVIEWOPTIONS = {
-  0: { text: '未去医院' },
-  1: { text: '已去医院' },
+  0: '未去医院',
+  1: '已去医院',
 };
 
 // 筛查状态

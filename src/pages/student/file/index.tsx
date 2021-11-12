@@ -47,7 +47,7 @@ const FileList: React.FC = () => {
 
   const { run } = useRequest(getStudentDetail, {
     manual: true,
-    onSuccess: (result) => {
+    onSuccess: (result: any) => {
       const info = {};
       setAddressFlag(!result?.provinceCode); // 编辑地址
       setBasicInfo(result);

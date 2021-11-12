@@ -1,118 +1,166 @@
 import type { ProColumns } from '@ant-design/pro-table';
-import { MYOPIAWARNOPTION, BINDOPTIONS, REVIEWOPTIONS } from '@/utils/constant';
 import { Cascader } from 'antd';
+import {
+  MYOPIAWARNOPTION,
+  BINDOPTIONS,
+  REVIEWOPTIONS,
+  EMPTY,
+  TABLESEXOPTION,
+} from '@/utils/constant';
+import { getPercentage, getTotalNumber } from '@/utils/common';
 
 export const firstColumns: ProColumns<API.ScreenResultListItem>[] = [
   {
     title: '预计筛查学生数',
     dataIndex: 'planScreeningNumbers',
-    tip: '筛查计划中导入的该学校的筛查学生总数',
   },
   {
     title: '实际筛查学生数',
     dataIndex: 'realScreeningNumbers',
-    tip: '现场筛查中进行筛查的学生总数（即有筛查数据的学生）',
   },
   {
     title: '视力筛查完成率',
-    dataIndex: 'desc',
-    tip: '公式=实际筛查学生数 / 预计筛查学生数 * 100%',
+    dataIndex: 'realScreeningNumbers',
+    renderText: (val: number, record) =>
+      val && record?.planScreeningNumbers
+        ? `${((val / record?.planScreeningNumbers) * 100).toFixed(2)} % `
+        : EMPTY,
   },
   {
     title: '有效实际筛查学生数',
-    dataIndex: 'desc',
-    tip: '实际筛查学生数中，其筛查数据满足完整数据要求的学生总数',
+    dataIndex: 'validScreeningNumbers',
   },
 ];
 
 export const secondColumns: ProColumns<API.ScreenResultListItem>[] = [
   {
     title: '近视（人数/占比）',
-    dataIndex: 'name',
-    fieldProps: {
-      fixed: 'right',
-    },
+    dataIndex: 'myopiaNumbers',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
   },
   {
     title: '轻度近视（人数/占比）',
-    dataIndex: 'desc',
+    dataIndex: 'myopiaLevelLight',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
   },
   {
     title: '中度近视（人数/占比）',
-    dataIndex: 'desc',
+    dataIndex: 'myopiaLevelMiddle',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
   },
   {
     title: '高度近视（人数/占比）',
-    dataIndex: 'desc',
+    dataIndex: 'myopiaLevelHigh',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
   },
 
   {
     title: '视力低下（人数/占比）',
-    dataIndex: 'desc',
+    dataIndex: 'lowVisionNumbers',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
   },
   {
     title: '平均视力（左/右）',
-    dataIndex: 'desc',
+    dataIndex: 'avgLeftVision',
+    renderText: (val: number, record) => `${val} / ${record?.avgRightVision} `,
   },
   {
     title: '戴镜情况（人数/占比）',
-    dataIndex: 'desc',
+    dataIndex: 'wearingGlassesNumbers',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
   },
 ];
 
 export const thirdColumns: ProColumns<API.ScreenResultListItem>[] = [
   {
     title: '加入预警学生数（人数/占比）',
-    dataIndex: 'name',
-    fieldProps: {
-      fixed: 'right',
-    },
+    dataIndex: 'visionLabel0Numbers',
+    renderText: (val: number, record) =>
+      `${getTotalNumber([
+        val,
+        record?.visionLabel1Numbers,
+        record?.visionLabel2Numbers,
+        record?.visionLabel3Numbers,
+        record?.myopiaLevelInsufficient,
+      ])} / 
+     ${getPercentage(
+       getTotalNumber([
+         val,
+         record?.visionLabel1Numbers,
+         record?.visionLabel2Numbers,
+         record?.visionLabel3Numbers,
+         record?.myopiaLevelInsufficient,
+       ]),
+       record?.validScreeningNumbers,
+     )} `,
   },
   {
     title: '0级预警（人数/占比）',
-    dataIndex: 'desc',
+    dataIndex: 'visionLabel0Numbers',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
   },
   {
     title: '1级预警（人数/占比）',
-    dataIndex: 'desc',
+    dataIndex: 'visionLabel1Numbers',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
   },
   {
     title: '2级预警（人数/占比）',
-    dataIndex: 'desc',
+    dataIndex: 'visionLabel2Numbers',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
   },
 
   {
     title: '3级预警（人数/占比）',
-    dataIndex: 'desc',
+    dataIndex: 'visionLabel3Numbers',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
   },
   {
     title: '远视储备不足（人数/占比）',
-    dataIndex: 'desc',
+    dataIndex: 'myopiaLevelInsufficient',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
   },
 ];
 
 export const fourthColumns: ProColumns<API.ScreenResultListItem>[] = [
   {
     title: '建议就诊学生数（人数/占比）',
-    dataIndex: 'name',
-    fieldProps: {
-      fixed: 'right',
-    },
+    dataIndex: 'treatmentAdviceNumbers',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
   },
   {
     title: '去医院就诊数（人数/占比）',
-    dataIndex: 'desc',
+    dataIndex: 'reviewNumbers',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
   },
   {
     title: '绑定公众号数（人数/占比）',
-    dataIndex: 'desc',
+    dataIndex: 'bindMpNumbers',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
   },
 ];
 
-export const warnColumns: ProColumns[] = [
+export const warnColumns: (gradeOption: any[]) => ProColumns<API.ScreenWarnListItem>[] = (
+  gradeOption: any[],
+) => [
   {
     title: '学号',
-    dataIndex: 'name',
+    dataIndex: 'sno',
+    width: 150,
     search: false,
   },
   {
@@ -122,52 +170,62 @@ export const warnColumns: ProColumns[] = [
   },
   {
     title: '性别',
-    dataIndex: 'name',
+    dataIndex: 'gender',
+    valueEnum: TABLESEXOPTION,
     search: false,
   },
   {
     title: '年级-班级',
-    dataIndex: 'name',
+    dataIndex: 'gradeName',
     order: 3,
     renderFormItem: () => {
-      return <Cascader options={[]} placeholder="请选择" />;
+      return (
+        <Cascader
+          options={gradeOption}
+          placeholder="请选择"
+          fieldNames={{ label: 'name', value: 'id', children: 'classes' }}
+        />
+      );
     },
+    renderText: (val: string, record) => `${val}-${record?.className}`,
   },
-  {
-    title: '视力情况',
-    dataIndex: 'name',
-    search: false,
-  },
+  // {
+  //   title: '视力情况',
+  //   dataIndex: 'name',
+  //   search: false,
+  // },
   {
     title: '视力预警',
-    dataIndex: 'name',
+    dataIndex: 'warningLevel',
     valueEnum: MYOPIAWARNOPTION,
     order: 1,
   },
   {
     title: '绑定公众号',
-    dataIndex: 'name',
+    dataIndex: 'isBindMq',
     valueEnum: BINDOPTIONS,
+    renderText: (val: boolean) => `${val ? '已绑定' : '未绑定'}`,
     order: 2,
   },
   {
     title: '医院复查',
-    dataIndex: 'name',
+    dataIndex: 'isReview',
     valueEnum: REVIEWOPTIONS,
+    renderText: (val: boolean) => `${val ? '已去医院' : '未去医院'}`,
   },
-  {
-    title: '复查反馈',
-    dataIndex: 'name',
-    search: false,
-  },
-  {
-    title: '防控建议-课桌椅',
-    dataIndex: 'name',
-    search: false,
-  },
-  {
-    title: '防控建议-座位调整',
-    dataIndex: 'name',
-    search: false,
-  },
+  // {
+  //   title: '复查反馈',
+  //   dataIndex: 'name',
+  //   search: false,
+  // },
+  // {
+  //   title: '防控建议-课桌椅',
+  //   dataIndex: 'name',
+  //   search: false,
+  // },
+  // {
+  //   title: '防控建议-座位调整',
+  //   dataIndex: 'name',
+  //   search: false,
+  // },
 ];

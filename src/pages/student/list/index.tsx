@@ -68,7 +68,7 @@ const TableList: React.FC = () => {
       gradeId: formVal?.gradeName?.[0],
       classId: formVal?.gradeName?.[1],
       [formVal?.select]: formVal?.input,
-      visionLabel: formVal?.visionLabel,
+      visionLabel: formVal?.warningLevel,
     });
     ref?.current?.submit();
   };
@@ -141,7 +141,7 @@ const TableList: React.FC = () => {
           x: '100vw',
         }}
         columnsStateMap={{
-          name: {
+          sno: {
             fixed: 'left',
           },
           option: {

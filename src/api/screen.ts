@@ -14,3 +14,18 @@ export async function getScreeningResult(schoolStatisticId: number | string) {
     method: 'GET',
   });
 }
+
+/** 学生预警跟踪 GET /school/vision/screening/statStudents/list */
+export async function getScreeningWarn(params: API.ObjectType) {
+  return request<API.RequestResult>('/school/vision/screening/statStudents/list', {
+    method: 'GET',
+    params,
+  });
+}
+
+/** 学生年级 GET /school/vision/screening/grades/{screeningPlanId} */
+export async function getScreeningGradeList(planId: number | string) {
+  return request<API.RequestResult>(`/school/vision/screening/grades/${planId}`, {
+    method: 'GET',
+  });
+}

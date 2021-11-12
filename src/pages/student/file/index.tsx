@@ -15,6 +15,7 @@ import { ProFormTextArea } from '@ant-design/pro-form';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { getStudentDetail, getStudentScreen } from '@/api/student';
 import { getCascaderOption } from '@/pages/hook/district';
+import { getschoolGrade } from '@/api/school';
 
 const { TabPane } = Tabs;
 const FileList: React.FC = () => {
@@ -23,7 +24,7 @@ const FileList: React.FC = () => {
   const [areaOption, setAreaOption] = useState<any[]>();
   const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
   const [basicInfo, setBasicInfo] = useState<API.ObjectType>({});
-
+  const [studentForm, setStudentForm] = useState<API.PropsType>({ ...studentFormOptions });
   const actionRef = useRef<ActionType>();
 
   const columns: ProColumns<API.FileListItem>[] = [
@@ -64,12 +65,23 @@ const FileList: React.FC = () => {
 
   useMemo(async () => {
     setAreaOption(await getCascaderOption());
+    const gradeArr = await getschoolGrade({ schoolId: 2 });
+    setStudentForm((value) => {
+      return Object.assign(value, {
+        listTypeInfo: {
+          ...value.listTypeInfo,
+          gradeOptions: gradeArr?.data ?? [],
+        },
+      });
+    });
+    setTimeout(() => {
+      console.log(studentForm, 'zd');
+    }, 1000);
   }, []);
 
   useEffect(() => {
     const { query: { id } = {} } = history.location;
     id && run(id as string);
-    // todo: 年级班级接口替换
   }, []);
 
   const onFinish = async (value: {
@@ -113,7 +125,7 @@ const FileList: React.FC = () => {
               }}
               onFinish={onFinish}
             >
-              <PageForm {...studentFormOptions} />
+              <PageForm {...studentForm} />
               <LazyCascader
                 label="居住地址"
                 name="region"

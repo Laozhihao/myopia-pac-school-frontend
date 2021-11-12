@@ -68,6 +68,7 @@ declare namespace API {
 
   type ScreenWarnListItem = {
     studentId?: number;
+    schoolStudentId?: number | string;
     sno?: string;
     name?: string;
     gender?: number;

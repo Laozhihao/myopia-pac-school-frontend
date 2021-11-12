@@ -5,7 +5,7 @@ import NoticeIcon from './NoticeIcon';
 import styles from './index.less';
 
 const Info = '/info-center';
-// const Notice = '/screening';
+const Notice = '/screening';
 const NoticeIconView = () => {
   const [notices, setNotices] = useState<API.ObjectType>();
   const { run } = useRequest(unreadCount, {
@@ -25,6 +25,9 @@ const NoticeIconView = () => {
     if (props.tabKey === 'info') {
       if (history.location.pathname === Info) return;
       history.push(Info);
+    } else {
+      if (history.location.pathname === Notice) return;
+      history.push(Notice);
     }
   };
 

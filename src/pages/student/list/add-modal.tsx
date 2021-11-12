@@ -88,7 +88,6 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
         options={areaOption}
         fieldNames={{ label: 'name', value: 'code', children: 'child' }}
         originProps={{
-          placeholder: '请选择',
           onChange: (value: any) => setAddressFlag(!value.length),
         }}
       />

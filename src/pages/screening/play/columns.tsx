@@ -1,7 +1,7 @@
 import type { ProColumns } from '@ant-design/pro-table';
 import { formatLength } from '@/utils/common';
-import { SCREENSTATUS } from '@/utils/constant';
-// import * as dayjs from 'dayjs'
+import { SCREENSTATUS, DATE, EMPTY } from '@/utils/constant';
+import moment from 'moment';
 // DATE, EMPTY
 export const listColumns: (show: (dom: any) => void) => ProColumns<API.ScreenListItem>[] = (
   show,
@@ -19,7 +19,10 @@ export const listColumns: (show: (dom: any) => void) => ProColumns<API.ScreenLis
   {
     title: '筛查时间段',
     dataIndex: 'startTime',
-    // renderText: (val: string, record) => `${val ? dayjs(val).format(DATE) : EMPTY } 至 ${record?.endTime ? dayjs(val).format(record?.endTime) : EMPTY}`
+    renderText: (val: any, record) =>
+      `${val ? moment(val).format(DATE) : EMPTY} 至 ${
+        record?.endTime ? moment(record?.endTime).format(DATE) : EMPTY
+      }`,
   },
   {
     title: '筛查状态',

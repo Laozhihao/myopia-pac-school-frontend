@@ -57,7 +57,7 @@ const ScreeningResult: React.FC = () => {
       valueType: 'option',
       render: (_, record) => {
         return [
-          <Link key="manage" to={`/student/file?id=${record.studentId}`}>
+          <Link key="manage" to={`/student/file?id=${record?.schoolStudentId}`}>
             档案管理
           </Link>,
         ];
@@ -128,7 +128,7 @@ const ScreeningResult: React.FC = () => {
             {tableOptions.map((item) => (
               <>
                 <p className={styles.table_title}>
-                  {item.title}{' '}
+                  {item.title}
                   <span onClick={() => showModal({ tabKey: item.key, title: item.title })}>
                     <QuestionCircleOutlined />
                   </span>

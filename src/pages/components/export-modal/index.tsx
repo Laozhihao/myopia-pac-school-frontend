@@ -9,7 +9,7 @@ export const ExportModal: React.FC<API.ModalItemType> = (props) => {
       width={props?.width ?? 550}
       visible={props.visible}
       onOk={props.onOk}
-      onCancel={props.onCancel}
+      onCancel={() => props.onCancel()}
     >
       {props.children}
       <div className={styles.tips}>

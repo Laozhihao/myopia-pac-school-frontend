@@ -30,13 +30,16 @@ const LazyCascader: React.FC<LazyCascaderProps> = (props) => {
     );
   }, [props.options]);
 
+  /**
+   * @desc 寻找源数据下的child数据
+   */
   const findTarget = (origin: LazyDataNode[] | LazyDataNode, code: number | string) => {
     if (Array.isArray(origin)) return origin.find((item) => item[props.fieldNames.value] === code);
     return origin.child!.find((item) => item[props.fieldNames.value] === code);
   };
 
   const getValueProps = (selectOptions: (number | string)[]) => {
-    if (!selectOptions) return {}; // 无回显地区
+    if (!selectOptions || !selectOptions.length) return {}; // 无回显地区
     let currentOrigin: LazyDataNode[] | LazyDataNode = props.options!;
     let targetOption: LazyDataNode;
     let options: LazyDataNode[] | undefined = filterOption;

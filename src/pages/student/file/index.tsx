@@ -21,10 +21,17 @@ const { TabPane } = Tabs;
 const FileList: React.FC = () => {
   const formRef = useRef<ProFormInstance>();
 
+  // 获取出生日期
+  const getBrithday = (val: any) => {
+    console.log(val, 'getBrithday');
+  };
+
   const [areaOption, setAreaOption] = useState<any[]>();
   const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
   const [basicInfo, setBasicInfo] = useState<API.ObjectType>({});
-  const [studentForm, setStudentForm] = useState<API.PropsType>({ ...studentFormOptions });
+  const [studentForm, setStudentForm] = useState<API.PropsType>({
+    ...studentFormOptions(getBrithday),
+  });
   const actionRef = useRef<ActionType>();
 
   const columns: ProColumns<API.FileListItem>[] = [
@@ -67,16 +74,13 @@ const FileList: React.FC = () => {
     setAreaOption(await getCascaderOption());
     const gradeArr = await getschoolGrade({ schoolId: 2 });
     setStudentForm((value) => {
-      return Object.assign(value, {
+      return Object.assign({}, value, {
         listTypeInfo: {
           ...value.listTypeInfo,
           gradeOptions: gradeArr?.data ?? [],
         },
       });
     });
-    setTimeout(() => {
-      console.log(studentForm, 'zd');
-    }, 1000);
   }, []);
 
   useEffect(() => {

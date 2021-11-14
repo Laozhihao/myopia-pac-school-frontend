@@ -92,7 +92,7 @@ const TableList: React.FC = () => {
         onCancel={() => setTextModalVisible(false)}
         footer={null}
       >
-        <div dangerouslySetInnerHTML={{ __html: textHtml }}></div>
+        <div dangerouslySetInnerHTML={{ __html: textHtml }} />
       </Modal>
     </PageContainer>
   );

@@ -98,7 +98,7 @@ const GradeManage: React.FC = () => {
           setModalVisible(false);
         }}
         onFinish={async () => {
-          await setModalVisible(false);
+          setModalVisible(false);
           ref?.current?.reload();
         }}
       />

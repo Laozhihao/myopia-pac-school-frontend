@@ -25,37 +25,39 @@ const LazyCascader: React.FC<LazyCascaderProps> = (props) => {
       props.options?.map((item) => ({
         label: item[props.fieldNames.label],
         value: item[props.fieldNames.value],
-        isLeaf: !item.child?.length,
+        isLeaf: !item[props.fieldNames.children]?.length,
       }))!,
     );
   }, [props.options]);
 
-  /**
-   * @desc 寻找源数据下的child数据
-   */
   const findTarget = (origin: LazyDataNode[] | LazyDataNode, code: number | string) => {
     if (Array.isArray(origin)) return origin.find((item) => item[props.fieldNames.value] === code);
-    return origin.child!.find((item) => item[props.fieldNames.value] === code);
+    return (origin[props.fieldNames.children]! as LazyDataNode[]).find(
+      (item) => item[props.fieldNames.value] === code,
+    );
+  };
+
+  const findAndChangeFileds = (
+    origin: LazyDataNode,
+    fieldNames: { value: string; label: string; children: string },
+  ): LazyDataNode => {
+    origin[fieldNames.children] && (origin.children = origin[fieldNames.children]);
+    origin.value = origin[fieldNames.value];
+    origin.label = origin[fieldNames.label];
+    origin.children?.forEach((item) => {
+      findAndChangeFileds(item, fieldNames);
+    });
+    return origin;
   };
 
   const getValueProps = (selectOptions: (number | string)[]) => {
-    if (!selectOptions || !selectOptions.length) return {}; // 无回显地区
-    let currentOrigin: LazyDataNode[] | LazyDataNode = props.options!;
-    let targetOption: LazyDataNode;
-    let options: LazyDataNode[] | undefined = filterOption;
-    selectOptions.forEach((item) => {
-      currentOrigin = findTarget(currentOrigin, item)!;
-      if (!options) return;
-      targetOption = options.find((subItem) => subItem.value === item)!;
-      currentOrigin.child?.length &&
-        (targetOption.children = currentOrigin.child.map((option) => ({
-          label: option[props.fieldNames.label],
-          value: option[props.fieldNames.value],
-        })));
-      options = targetOption.children!;
-    });
+    if (!selectOptions || (selectOptions && !selectOptions.length)) return {}; // 无回显地区
+    const currentOrigin = findTarget(props.options!, selectOptions[0])!;
+    const targetIndex = filterOption.findIndex((subItem) => subItem.value === selectOptions[0])!;
+    filterOption.splice(targetIndex, 1, findAndChangeFileds(currentOrigin, props.fieldNames));
     return {
-      defaultValue: selectOptions,
+      value: selectOptions,
+      options: [...filterOption],
     };
   };
 
@@ -69,7 +71,7 @@ const LazyCascader: React.FC<LazyCascaderProps> = (props) => {
     targetOption.children = (currentOrigin as unknown as LazyDataNode).child!.map((item) => ({
       label: item[props.fieldNames.label],
       value: item[props.fieldNames.value],
-      isLeaf: !item.child?.length,
+      isLeaf: !item[props.fieldNames.children]?.length,
     }));
     setFilterOption([...filterOption]);
   };

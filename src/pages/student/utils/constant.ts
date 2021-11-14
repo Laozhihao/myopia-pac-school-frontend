@@ -3,8 +3,9 @@ import { isPhoneNum86, isIdCard } from '@vistel/vistel-utils/lib/validator';
 import { getNationOption } from '@/pages/hook/district';
 
 const nationArr = await getNationOption();
+type StudentFormOptionsParmas = (params: any) => void;
 
-export const studentFormOptions = {
+export const studentFormOptions = (validatorCb: StudentFormOptionsParmas) => ({
   filterList: [
     {
       label: '学号',
@@ -69,6 +70,7 @@ export const studentFormOptions = {
         {
           validator(_: any, value: any) {
             if (value && !isIdCard(value)) return Promise.reject('请输入正确的身份证号');
+            validatorCb?.(value);
             return Promise.resolve();
           },
         },
@@ -115,4 +117,4 @@ export const studentFormOptions = {
     nationList: nationArr, // 民族
     gradeOptions: [], // 年级班级
   },
-};
+});

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useMemo, useRef, Fragment } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Tabs, Card, Button } from 'antd';
 import type { ProFormInstance } from '@ant-design/pro-form';
@@ -78,7 +78,7 @@ const ScreeningResult: React.FC = () => {
     });
   };
 
-  useEffect(() => {
+  useMemo(() => {
     const { query: { id, screeningPlanId } = {} } = history.location;
     setPlanId(screeningPlanId as string);
     id &&
@@ -126,7 +126,7 @@ const ScreeningResult: React.FC = () => {
         <Tabs defaultActiveKey="1">
           <TabPane tab="结果统计分析" key="1">
             {tableOptions.map((item) => (
-              <>
+              <Fragment key={item.key}>
                 <p className={styles.table_title}>
                   {item.title}
                   <span onClick={() => showModal({ tabKey: item.key, title: item.title })}>
@@ -136,14 +136,14 @@ const ScreeningResult: React.FC = () => {
                 <ProTable<API.ScreenResultListItem>
                   className={styles.table}
                   columns={item.columns}
-                  key={item.key}
+                  // key={item.key}
                   rowKey="id"
                   search={false}
                   options={false}
                   pagination={false}
                   dataSource={resultInfo}
                 />
-              </>
+              </Fragment>
             ))}
           </TabPane>
           <TabPane tab="学生预警跟踪" key="2">
@@ -179,9 +179,6 @@ const ScreeningResult: React.FC = () => {
                   success: true,
                   total: datas.data.total,
                 };
-              }}
-              scroll={{
-                x: '100vw',
               }}
               columnsStateMap={{
                 sno: {

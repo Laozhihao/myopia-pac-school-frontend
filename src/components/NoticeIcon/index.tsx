@@ -8,6 +8,7 @@ const Info = '/info-center';
 const Notice = '/screening';
 const NoticeIconView = () => {
   const [notices, setNotices] = useState<API.ObjectType>();
+  const [visble, setVisble] = useState(false);
   const { run } = useRequest(unreadCount, {
     manual: true,
     // pollingInterval: 3000,
@@ -21,6 +22,7 @@ const NoticeIconView = () => {
   }, []);
 
   const onRouter = (item: any, props: any) => {
+    setVisble(false);
     // 站内信
     if (props.tabKey === 'info') {
       if (history.location.pathname === Info) return;
@@ -40,6 +42,8 @@ const NoticeIconView = () => {
       viewMoreText="查看更多"
       onViewMore={(props) => onRouter(false, props)}
       clearClose
+      popupVisible={visble}
+      onPopupVisibleChange={setVisble}
     >
       <NoticeIcon.Tab
         tabKey="info"

@@ -61,7 +61,7 @@ declare namespace API {
     show?: boolean;
     rules?: Rule[];
     required?: boolean;
-    fieldProps?: Record<string, any>; // 透传的属性
+    fieldProps?: Record<string, any>; // 透传的属性 pro
     fieldNames?: Record<string, any>;
   };
 

@@ -70,7 +70,7 @@ export const studentFormOptions = (validatorCb: StudentFormOptionsParmas) => ({
         {
           validator(_: any, value: any) {
             if (value && !isIdCard(value)) return Promise.reject('请输入正确的身份证号');
-            validatorCb?.(value);
+            value && validatorCb?.(value); // 获取出生日期
             return Promise.resolve();
           },
         },

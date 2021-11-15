@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Card, Col, Row, Form, Button, Tree } from 'antd';
+import { Card, Col, Row, Button, Tree, message } from 'antd';
 import ProForm, { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { history, useModel, useRequest } from 'umi';
@@ -21,33 +21,18 @@ const SchoolManage: React.FC = () => {
 
   const { run } = useRequest(getSchoolDetail, {
     manual: true,
-    onSuccess: (result: React.SetStateAction<API.ObjectType | undefined>) => {
+    onSuccess: (result: any) => {
+      setAddressFlag(!result?.provinceCode); // 是否可编辑地址
       setSchoolInfo(result);
-      ref?.current?.setFieldsValue(result || {});
+      const { provinceCode, cityCode, areaCode, townCode } = result || {}; // 地区回填
+      const region = [provinceCode, cityCode, areaCode, townCode].filter((item) => item); // 过滤空值
+      ref?.current?.setFieldsValue({ ...result, region });
     },
   });
 
   const getschoolList = (params: API.ObjectType) => {
     getschoolGrade(params).then((res) => {
       setGradeOption(res?.data);
-    });
-  };
-
-  /**
-   * @desc 更新基本资料
-   */
-  const onEdit = (values: API.ObjectType) => {
-    const { region = [] } = values;
-    const parm = {
-      ...schoolInfo,
-      provinceCode: region[0] ?? '',
-      cityCode: region[1] ?? '',
-      areaCode: region[2] ?? '',
-      townCode: region[3] ?? '',
-      ...values,
-    };
-    editSchoolDetail(parm).then((res) => {
-      console.log(res);
     });
   };
 
@@ -58,6 +43,31 @@ const SchoolManage: React.FC = () => {
     }
     setAreaOption(await getCascaderOption());
   }, []);
+
+  /**
+   * @desc 更新基本资料
+   */
+  const onEdit = async (values: API.ObjectType) => {
+    const { region = [] } = values;
+    const parm = {
+      ...schoolInfo,
+      provinceCode: region[0] ?? '',
+      cityCode: region[1] ?? '',
+      areaCode: region[2] ?? '',
+      townCode: region[3] ?? '',
+      ...values,
+    };
+    await editSchoolDetail(parm);
+    message.success('更新成功');
+  };
+
+  /**
+   * @desc 更改选择地区
+   */
+  const changeRegion = (value: string | any[]) => {
+    setAddressFlag(!value.length); // 未选择地址 详细地址不可编辑
+    !value.length && ref?.current?.setFieldsValue({ address: '' });
+  };
 
   return (
     <PageContainer className={styles.container}>
@@ -85,9 +95,7 @@ const SchoolManage: React.FC = () => {
                   },
                 },
               }}
-              onFinish={async (values) => {
-                onEdit(values);
-              }}
+              onFinish={onEdit}
             >
               <ProFormText
                 label="学校名称"
@@ -99,16 +107,16 @@ const SchoolManage: React.FC = () => {
               <p className={styles.total}>
                 学生总数： <span>{schoolInfo?.studentCount}</span>
               </p>
-              <Form.Item label="学校地址" name="region">
-                <LazyCascader
-                  options={areaOption}
-                  fieldNames={{ label: 'name', value: 'code', children: 'child' }}
-                  originProps={{
-                    placeholder: '请选择',
-                    onChange: (value: any) => setAddressFlag(!value.length),
-                  }}
-                />
-              </Form.Item>
+              <LazyCascader
+                label="学校地址"
+                name="region"
+                options={areaOption}
+                fieldNames={{ label: 'name', value: 'code', children: 'child' }}
+                originProps={{
+                  onChange: changeRegion,
+                  // onChange: (value: any) => setAddressFlag(!value.length),
+                }}
+              />
               <ProFormTextArea
                 name="address"
                 disabled={addressFlag}

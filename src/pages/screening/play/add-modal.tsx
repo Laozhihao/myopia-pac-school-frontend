@@ -1,39 +1,76 @@
+import type { FormInstance } from 'antd';
 import { Modal, Button, Cascader, Form, Row, Col, Image } from 'antd';
 import styles from './add-modal.less';
 import qrcodeImg from '@/assets/images/qrcode.jpg';
-import React, { useState } from 'react';
+import React, { Fragment, useMemo, useState } from 'react';
 import { StepsForm, ProFormText, ProFormTextArea, ProFormUploadButton } from '@ant-design/pro-form';
 import RightTips from './right-tips';
+import { getschoolGrade } from '@/api/school';
+import type { SubmitterProps } from '@ant-design/pro-form/lib/components/Submitter';
+
+// 分布表单类型
+type ElePropsType = {
+  step: number;
+  onPre: () => void; // 返回上一级
+  form?: FormInstance<any> | undefined;
+  submit: () => void;
+  reset: () => void;
+} & SubmitterProps;
 
 export const AddModal: React.FC<API.ModalItemType> = (props) => {
-  const [options, setOptions] = useState([]);
+  const [gradeOptions, setGradeOptions] = useState([]); // 年级级联
+  // const [current, setCurrent] = useState(0);
+
+  const [initForm, setInitForm] = useState<API.ObjectType>({
+    title: '学生视力筛查告家长书',
+    subTitle: '疾控部门',
+    call: '亲爱的家长朋友：',
+    greetings: '您好！',
+    content: '',
+    qrCodeFileId: -1, // 默认值
+  });
 
   const FormPreTemp = [
     {
       label: '告知书模板',
       title: '标题',
       value: 'title',
-      defaultVal: '学生视力筛查告家长书',
+      // defaultVal: '学生视力筛查告家长书',
       placeholder: '大标题名称',
       limit: 20,
       step: 1,
+      rules: [{ required: true, message: '请输入大标题名称' }],
     },
     {
       value: 'subTitle',
       title: '副标题',
-      defaultVal: '疾控部门',
+      // defaultVal: '疾控部门',
       placeholder: '副标题名称',
       limit: 30,
       step: 2,
+      rules: [{ required: true, message: '请输入副标题名称' }],
     },
   ];
 
   const FormNextTemp = [
-    { title: '称呼', value: 'title', defaultVal: '亲爱的家长朋友：', limit: 15, step: 3 },
-    { title: '开头', value: 'subTitle', defaultVal: '您好！', limit: 10, step: 4 },
+    {
+      title: '称呼',
+      value: 'call',
+      limit: 15,
+      step: 3,
+      rules: [{ required: true, message: '请输入称呼' }],
+    },
+    {
+      title: '开头',
+      placeholder: '问候语',
+      value: 'greetings',
+      limit: 10,
+      step: 4,
+      rules: [{ required: true, message: '请输入问候语' }],
+    },
   ];
 
-  const FormNoticeTemp = [{ title: '正文', value: 'title', limit: 15, step: 5 }];
+  const FormNoticeTemp = [{ title: '正文', value: 'content', limit: 15, step: 5 }];
 
   const prompt = [
     '查看孩子的眼健康档案',
@@ -42,21 +79,36 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     '有问题可在线咨询医生进行解答',
   ];
 
-  const onChange = () => {
-    setOptions([]);
-    // console.log(value, '123');
+  useMemo(async () => {
+    const gradeArr = await getschoolGrade({ schoolId: 2 });
+    setGradeOptions(gradeArr?.data || []);
+    setInitForm({});
+  }, []);
+
+  /**
+   * @desc 打印二维码
+   */
+  const onPrint = (eleProps: ElePropsType) => {
+    eleProps?.form?.validateFields().then((value) => {
+      if (value) {
+        // eleProps.step = 1;
+        // console.log('验证', eleProps)
+      }
+    });
   };
 
   return (
     <Modal
       title={props.title}
       width={800}
+      bodyStyle={{ maxHeight: 650, overflow: 'auto' }}
       visible={props.visible}
       footer={null}
       onCancel={() => props.onCancel()}
       className={styles.modal}
     >
       <StepsForm
+        // current={current}
         stepsProps={{
           type: 'navigation',
         }}
@@ -64,10 +116,16 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
           render: (eleProps) => {
             if (eleProps.step === 0) {
               return [
-                <Button type="primary" key="notice" onClick={() => eleProps.onSubmit?.()}>
+                <Button
+                  type="primary"
+                  key="notice"
+                  onClick={() => {
+                    eleProps.onSubmit?.((value: any) => console.log(value, '123'));
+                  }}
+                >
                   打印告知书
                 </Button>,
-                <Button type="primary" key="code" onClick={() => eleProps.onSubmit?.()}>
+                <Button type="primary" key="code" onClick={() => onPrint(eleProps)}>
                   打印二维码
                 </Button>,
               ];
@@ -77,7 +135,13 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
               <Button key="pre" onClick={() => eleProps.onPre?.()}>
                 上一步
               </Button>,
-              <Button type="primary" key="print" onClick={() => eleProps.onSubmit?.()}>
+              <Button
+                type="primary"
+                key="print"
+                onClick={() => {
+                  console.log(eleProps?.form?.getFieldsValue(), '123');
+                }}
+              >
                 保存打印
               </Button>,
             ];
@@ -85,18 +149,30 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
         }}
       >
         <StepsForm.StepForm
-          name="1"
+          // onFinish={async (value) => {
+          //   console.log(value, 'zd')
+          //   // return true;
+          // }}
+          name="firstForm"
           title={'选择'}
           stepProps={{
             description: '按学校-年级进行打印，选择告知书或二维码打印',
           }}
         >
-          <Form.Item label="选择年级/班级" rules={[{ required: true, message: '请选择年级班级' }]}>
-            <Cascader options={options} onChange={onChange} placeholder="请选择" />
+          <Form.Item
+            label="选择年级/班级"
+            rules={[{ required: true, message: '请选择年级班级' }]}
+            name="gradeIds"
+          >
+            <Cascader
+              options={gradeOptions}
+              placeholder="请选择"
+              fieldNames={{ label: 'name', value: 'id', children: 'child' }}
+            />
           </Form.Item>
         </StepsForm.StepForm>
         <StepsForm.StepForm
-          name="2"
+          name="secordForm"
           title={'预览-保存'}
           stepProps={{
             description: '预览打印样板，点击保存打印',
@@ -104,17 +180,22 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
         >
           <>
             {FormPreTemp.map((item) => (
-              <React.Fragment key={item.value}>
+              <Fragment key={item.value}>
                 {item.label}
                 <Row align={'middle'}>
                   <Col span={16}>
-                    <ProFormText placeholder={`请输入${item.placeholder}`} />
+                    <ProFormText
+                      placeholder={`请输入${item.placeholder}`}
+                      name={item.value}
+                      rules={item.rules}
+                      initialValue={initForm[item.value]}
+                    />
                   </Col>
                   <Col span={8}>
                     <RightTips {...item} />
                   </Col>
                 </Row>
-              </React.Fragment>
+              </Fragment>
             ))}
             <Row className={styles.info}>
               <Col span={8}>
@@ -132,19 +213,22 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
               </Col>
             </Row>
             {FormNextTemp.map((item) => (
-              <React.Fragment key={item.value}>
+              <Fragment key={item.value}>
                 <Row align={'middle'}>
                   <Col span={16}>
                     <ProFormText
+                      name={item.value}
+                      initialValue={initForm[item.value]}
+                      placeholder={`请输入${item.placeholder ?? item.title}`}
                       fieldProps={{ maxLength: item.limit }}
-                      placeholder={`请输入${item.title}`}
+                      rules={item.rules}
                     />
                   </Col>
                   <Col span={8}>
                     <RightTips {...item} />
                   </Col>
                 </Row>
-              </React.Fragment>
+              </Fragment>
             ))}
 
             <Row>
@@ -153,6 +237,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                   name="text"
                   fieldProps={{ maxLength: FormNoticeTemp[0].limit }}
                   placeholder="请输入告知书内容"
+                  rules={[{ required: true, message: '请输入告知书内容' }]}
                 />
               </Col>
               <Col span={8}>

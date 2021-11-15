@@ -7,21 +7,31 @@ import { useRef, useState, useEffect, useMemo } from 'react';
 import { studentFormOptions } from '../utils/constant';
 import { getCascaderOption } from '@/pages/hook/district';
 import { editStudentInfo } from '@/api/student';
+import { getBirthday } from '@/pages/hook/table';
 
 export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props) => {
   const modalRef = useRef<ProFormInstance>();
-  const [studentForm, setStudentForm] = useState<API.PropsType>({ ...studentFormOptions });
   const [areaOption, setAreaOption] = useState<any[]>();
   const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
 
+  /**
+   * @desc 获取身份证自动回显出生日期
+   */
+  const validatorCb = (value: string) => {
+    modalRef?.current?.setFieldsValue({ birthday: getBirthday(value) });
+  };
+
+  const [studentForm, setStudentForm] = useState<API.PropsType>(studentFormOptions(validatorCb));
+
   useMemo(async () => {
     setStudentForm((value) => {
-      return Object.assign(value, {
+      return {
+        ...value,
         listTypeInfo: {
           ...value.listTypeInfo,
           gradeOptions: props.option,
         },
-      });
+      };
     });
   }, [props.option]);
 
@@ -65,6 +75,14 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
     props.onCancel(true);
   };
 
+  /**
+   * @desc 更改选择地区
+   */
+  const changeRegion = (value: string | any[]) => {
+    setAddressFlag(!value.length);
+    !value.length && modalRef?.current?.setFieldsValue({ address: '' });
+  };
+
   return (
     <ModalForm
       title={props.title}
@@ -88,7 +106,7 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
         options={areaOption}
         fieldNames={{ label: 'name', value: 'code', children: 'child' }}
         originProps={{
-          onChange: (value: any) => setAddressFlag(!value.length),
+          onChange: changeRegion,
         }}
       />
       <ProFormTextArea

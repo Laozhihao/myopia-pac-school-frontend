@@ -16,3 +16,13 @@ export const deleteTableRow = (message: string, callback: (() => void) | undefin
     },
   });
 };
+
+/**
+ * @desc 身份证获取出生日期
+ * @param idCard 删除文本
+ */
+
+export const getBirthday = (idCard: string) => {
+  const temStr = idCard.substring(6, 14);
+  return `${temStr.substring(0, 4)}-${temStr.substring(4, 6)}-${temStr.substring(6)}`;
+};

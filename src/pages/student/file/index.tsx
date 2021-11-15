@@ -16,22 +16,35 @@ import type { ProFormInstance } from '@ant-design/pro-form';
 import { getStudentDetail, getStudentScreen } from '@/api/student';
 import { getCascaderOption } from '@/pages/hook/district';
 import { getschoolGrade } from '@/api/school';
+import { getBirthday } from '@/pages/hook/table';
+import { AddModal } from './add-modal';
 
 const { TabPane } = Tabs;
+export type FileCardPropsParams = {
+  visible: boolean;
+  resultId: number | string;
+  templateId: number | string;
+};
+
 const FileList: React.FC = () => {
   const formRef = useRef<ProFormInstance>();
 
-  // 获取出生日期
-  const getBrithday = (val: any) => {
-    console.log(val, 'getBrithday');
+  /**
+   * @desc 获取身份证自动回显出生日期
+   */
+  const validatorCb = (value: string) => {
+    formRef?.current?.setFieldsValue({ birthday: getBirthday(value) });
   };
 
   const [areaOption, setAreaOption] = useState<any[]>();
   const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
   const [basicInfo, setBasicInfo] = useState<API.ObjectType>({});
-  const [studentForm, setStudentForm] = useState<API.PropsType>({
-    ...studentFormOptions(getBrithday),
+  const [cardInfo, setCardInfo] = useState<FileCardPropsParams>({
+    visible: false,
+    resultId: 32682,
+    templateId: 2,
   });
+  const [studentForm, setStudentForm] = useState<API.PropsType>(studentFormOptions(validatorCb));
   const actionRef = useRef<ActionType>();
 
   const columns: ProColumns<API.FileListItem>[] = [
@@ -43,9 +56,9 @@ const FileList: React.FC = () => {
       fieldProps: {
         fixed: 'right',
       },
-      render: (_, record) => {
+      render: () => {
         return [
-          <a key="print" onClick={() => console.log(record)}>
+          <a key="print" onClick={() => setCardInfo({ ...cardInfo, visible: true })}>
             打印档案卡
           </a>,
         ];
@@ -53,6 +66,9 @@ const FileList: React.FC = () => {
     },
   ];
 
+  /**
+   * @desc 初始化数据
+   */
   const { run } = useRequest(getStudentDetail, {
     manual: true,
     onSuccess: (result: any) => {
@@ -74,12 +90,13 @@ const FileList: React.FC = () => {
     setAreaOption(await getCascaderOption());
     const gradeArr = await getschoolGrade({ schoolId: 2 });
     setStudentForm((value) => {
-      return Object.assign({}, value, {
+      return {
+        ...value,
         listTypeInfo: {
           ...value.listTypeInfo,
           gradeOptions: gradeArr?.data ?? [],
         },
-      });
+      };
     });
   }, []);
 
@@ -88,6 +105,9 @@ const FileList: React.FC = () => {
     id && run(id as string);
   }, []);
 
+  /**
+   * @desc 更改基本资料
+   */
   const onFinish = async (value: {
     gradeIds?: never[] | undefined;
     region?: never[] | undefined;
@@ -107,6 +127,14 @@ const FileList: React.FC = () => {
     await editStudentInfo(parm);
     message.success('更新成功');
     run(basicInfo.id);
+  };
+
+  /**
+   * @desc 更改选择地区
+   */
+  const changeRegion = (value: string | any[]) => {
+    setAddressFlag(!value.length);
+    !value.length && formRef?.current?.setFieldsValue({ address: '' });
   };
 
   return (
@@ -136,8 +164,7 @@ const FileList: React.FC = () => {
                 options={areaOption}
                 fieldNames={{ label: 'name', value: 'code', children: 'child' }}
                 originProps={{
-                  placeholder: '请选择',
-                  onChange: (value: any) => setAddressFlag(!value.length),
+                  onChange: changeRegion,
                 }}
               />
               <ProFormTextArea
@@ -169,9 +196,9 @@ const FileList: React.FC = () => {
               request={async () => {
                 const datas = await getStudentScreen(basicInfo.studentId);
                 return {
-                  data: datas.data.items,
+                  data: datas.data.items || [],
                   success: true,
-                  total: datas.data.total,
+                  total: datas.data.total || 0,
                 };
               }}
               columns={columns}
@@ -179,6 +206,13 @@ const FileList: React.FC = () => {
           </TabPane>
         </Tabs>
       </Card>
+      <AddModal
+        {...cardInfo}
+        title="档案卡"
+        onCancel={() => {
+          setCardInfo({ ...cardInfo, visible: false });
+        }}
+      />
     </PageContainer>
   );
 };

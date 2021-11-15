@@ -66,6 +66,7 @@ declare namespace API {
     bindMpNumbers?: number; // 绑定公众号人数
   };
 
+  // 学生跟踪数据列表
   type ScreenWarnListItem = {
     studentId?: number;
     schoolStudentId?: number | string;

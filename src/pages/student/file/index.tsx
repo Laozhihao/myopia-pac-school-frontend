@@ -14,9 +14,9 @@ import ProForm from '@ant-design/pro-form';
 import { ProFormTextArea } from '@ant-design/pro-form';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { getStudentDetail, getStudentScreen } from '@/api/student';
-import { getCascaderOption } from '@/pages/hook/district';
+import { getCascaderOption } from '@/hook/district';
 import { getschoolGrade } from '@/api/school';
-import { getBirthday } from '@/pages/hook/table';
+import { getBirthday } from '@/hook/table';
 import { AddModal } from './add-modal';
 
 const { TabPane } = Tabs;

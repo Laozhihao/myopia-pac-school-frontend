@@ -9,7 +9,7 @@ import type { ProColumns } from '@ant-design/pro-table';
 import { AddModal } from './add-modal';
 import { OperationModal } from './operation-modal';
 import { listColumns } from './columns';
-import { deleteTableRow } from '@/pages/hook/table';
+import { deleteTableRow } from '@/hook/table';
 import { getschoolGrade } from '@/api/school';
 import { getStudentList, deleteStudentInfo } from '@/api/student';
 import { useModel } from 'umi';

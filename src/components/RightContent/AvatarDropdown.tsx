@@ -6,7 +6,7 @@ import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 import { outLogin } from '@/api/common';
 import type { MenuInfo } from 'rc-menu/lib/interface';
-import { clearStorage } from '@/pages/hook/storage';
+import { clearStorage } from '@/hook/storage';
 import avatarImg from '@/assets/images/avatar.png';
 
 const { confirm } = Modal;

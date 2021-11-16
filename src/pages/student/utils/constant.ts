@@ -1,6 +1,6 @@
 import { SEXOPTION } from '@/utils/constant';
 import { isPhoneNum86, isIdCard } from '@vistel/vistel-utils/lib/validator';
-import { getNationOption } from '@/pages/hook/district';
+import { getNationOption } from '@/hook/district';
 
 const nationArr = await getNationOption();
 type StudentFormOptionsParmas = (params: any) => void;

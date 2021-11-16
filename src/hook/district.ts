@@ -1,5 +1,5 @@
 import { getDistrict, getNation } from '@/api/common';
-import { setStorageInfo, getCascader } from '@/pages/hook/storage';
+import { setStorageInfo, getCascader } from '@/hook/storage';
 
 /**
  * @desc 给级联options child的添加第一个节点：全部

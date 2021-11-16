@@ -29,3 +29,34 @@ export async function getScreeningGradeList(planId: number | string) {
     method: 'GET',
   });
 }
+
+/** 获取筛查学生告知书PDF地址 GET /school/vision/screening/export/notice */
+export async function getScreeningNoticeUrl(params: API.ObjectType) {
+  return request<API.RequestResult>('/school/vision/screening/export/notice', {
+    method: 'GET',
+    params,
+  });
+}
+
+/** 获取机构信息 GET /school/vision/screening/screeningOrg */
+export async function getScreeningOrg(screeningOrgId: number | string) {
+  return request<API.RequestResult>(`/school/vision/screening/screeningOrg/${screeningOrgId}`, {
+    method: 'GET',
+  });
+}
+
+/** 更新机构 PUT /school/vision/screening/update/screeningOrg */
+export async function updateScreeningNotice(data: API.ObjectType) {
+  return request<API.RequestResult>('/school/vision/screening/update/screeningOrg', {
+    method: 'PUT',
+    data,
+  });
+}
+
+/** 获取筛查学生二维码PDF地址 GET /school/vision/screening/export/notice */
+export async function getScreeningQrcodeUrl(params: API.ObjectType) {
+  return request<API.RequestResult>('/school/vision/screening/export/QRCode', {
+    method: 'GET',
+    params,
+  });
+}

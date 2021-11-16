@@ -5,7 +5,7 @@ import type { RunTimeLayoutConfig, RequestConfig } from 'umi';
 import { history, request as requestFn } from 'umi';
 import RightContent from '@/components/RightContent';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { getToken, getUser, getRefreshToken, clearStorage, setToken } from '@/pages/hook/storage';
+import { getToken, getUser, getRefreshToken, clearStorage, setToken } from '@/hook/storage';
 import { checkStatus } from '@/axios/check-status';
 import { toFormData } from './utils/common';
 import { refreshToken } from './api/common';

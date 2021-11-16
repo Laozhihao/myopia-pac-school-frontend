@@ -6,7 +6,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { listColumns } from './columns';
-import { deleteTableRow } from '@/pages/hook/table';
+import { deleteTableRow } from '@/hook/table';
 import { getInfoList, readInfoNotice, deleteInfoItem } from '@/api/info';
 import styles from './index.less';
 

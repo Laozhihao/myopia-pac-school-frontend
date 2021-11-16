@@ -28,10 +28,13 @@ declare namespace API {
     otherEyeDiseases?: string[]; // 其他眼病
   };
 
-  // 筛查列表
+  // 视力筛查列表
   type ScreenListItem = {
+    notificationConfig?: Record<string, any>;
+    qrCodeFileUrl?: string; // 图片url
     schoolStatisticId?: string;
     planId?: string;
+    schoolId?: string;
     title?: string;
     startTime?: string;
     endTime?: string;

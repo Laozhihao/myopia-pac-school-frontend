@@ -2,11 +2,20 @@ import type { FormInstance } from 'antd';
 import { Modal, Button, Cascader, Form, Row, Col, Image } from 'antd';
 import styles from './add-modal.less';
 import qrcodeImg from '@/assets/images/qrcode.jpg';
-import React, { Fragment, useMemo, useState } from 'react';
+import type { ProFormInstance } from '@ant-design/pro-form';
+import React, { Fragment, useEffect, useMemo, useState, useRef } from 'react';
 import { StepsForm, ProFormText, ProFormTextArea, ProFormUploadButton } from '@ant-design/pro-form';
 import RightTips from './right-tips';
 import { getschoolGrade } from '@/api/school';
+import { uploadFile } from '@/api/common';
+import {
+  getScreeningNoticeUrl,
+  getScreeningQrcodeUrl,
+  updateScreeningNotice,
+  getScreeningOrg,
+} from '@/api/screen';
 import type { SubmitterProps } from '@ant-design/pro-form/lib/components/Submitter';
+import { useRequest } from 'umi';
 
 // 分布表单类型
 type ElePropsType = {
@@ -19,7 +28,14 @@ type ElePropsType = {
 
 export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const [gradeOptions, setGradeOptions] = useState([]); // 年级级联
-  // const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState(0);
+  const [fileList, setFileList] = useState<any[]>([]);
+  const [orgInfo, setOrgInfo] = useState<API.ObjectType>(); // 机构信息
+  const [selectArr, setSelectArr] = useState<any[]>([]); // 选中的年级班级
+  const [loading, setLoading] = useState(false); // 预览下载loading
+  const [refresh, setRefresh] = useState(false);
+
+  const ref = useRef<ProFormInstance>();
 
   const [initForm, setInitForm] = useState<API.ObjectType>({
     title: '学生视力筛查告家长书',
@@ -35,7 +51,6 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       label: '告知书模板',
       title: '标题',
       value: 'title',
-      // defaultVal: '学生视力筛查告家长书',
       placeholder: '大标题名称',
       limit: 20,
       step: 1,
@@ -44,7 +59,6 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     {
       value: 'subTitle',
       title: '副标题',
-      // defaultVal: '疾控部门',
       placeholder: '副标题名称',
       limit: 30,
       step: 2,
@@ -79,22 +93,109 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     '有问题可在线咨询医生进行解答',
   ];
 
+  const bottonList = [
+    { label: '打印告知书', key: 'notice', isStep: true },
+    { label: '打印筛查二维码', key: 'qrCode', isStep: false, type: 1 },
+    { label: '打印VS666设备专属筛查二维码', key: 'equipmentCode', isStep: false, type: 2 },
+    { label: '打印虚拟学生二维码', key: 'studentCode', isStep: false, type: 3 },
+  ];
+
   useMemo(async () => {
     const gradeArr = await getschoolGrade({ schoolId: 2 });
     setGradeOptions(gradeArr?.data || []);
-    setInitForm({});
   }, []);
 
+  useEffect(() => {
+    if (props?.currentRow && current && !orgInfo) {
+      getScreeningOrg(props?.currentRow?.screeningOrgId).then((res) => {
+        setOrgInfo({ ...res?.data });
+      });
+    }
+  }, [props?.visible, current]);
+
+  useEffect(() => {
+    if (props?.currentRow && current) {
+      ref?.current?.setFieldsValue({ ...initForm, ...props?.currentRow?.notificationConfigm });
+      setInitForm({ ...initForm, ...props?.currentRow?.notificationConfig });
+      // console.log('11')
+    }
+  }, [props?.visible, props?.currentRow, current]);
+
   /**
-   * @desc 打印二维码
+   * @desc 预览pdf
    */
-  const onPrint = (eleProps: ElePropsType) => {
-    eleProps?.form?.validateFields().then((value) => {
-      if (value) {
-        // eleProps.step = 1;
-        // console.log('验证', eleProps)
-      }
-    });
+  const openPdf = (url: any) => {
+    url && window.open(`https://s-myopia-pac-mgmt.tulab.cn/pdf/viewer.html?file=${url}`);
+  };
+
+  // 用fetches管理并发请求的多个loading 就无须声明多个loading变量 二维码
+  const { run, fetches } = useRequest(getScreeningQrcodeUrl, {
+    manual: true,
+    fetchKey: (...params: any[]) => params[0].type,
+    onSuccess: (result) => {
+      openPdf(result.url);
+    },
+  });
+
+  /**
+   * @desc 预览告知书/二维码  1-二维码 2-VS666 3-虚拟学生二维码
+   */
+  const onHandle = async (type?: number, obj?: API.ObjectType) => {
+    const [gradeId, classId] = selectArr;
+    const parm = {
+      gradeId,
+      classId,
+      schoolId: props?.currentRow?.schoolId,
+      screeningPlanId: props?.currentRow?.planId,
+      type,
+    };
+    // 告知书
+    if (!type) {
+      const datas = { ...props?.currentRow, ...orgInfo, notificationConfig: { ...obj } };
+      setLoading(true);
+      await updateScreeningNotice(datas);
+      setRefresh(true); // 编辑过 返回列表需要刷新
+      const res = await getScreeningNoticeUrl(parm);
+      setLoading(false);
+      openPdf(res?.data?.url);
+    } else run(parm);
+  };
+
+  /**
+   * @desc 打印告知书/二维码
+   */
+  const onPrint = (eleProps: ElePropsType, next?: boolean, type?: number) => {
+    eleProps?.form
+      ?.validateFields()
+      .then((value) => {
+        if (value) {
+          // 下一步
+          if (next) setCurrent(1);
+          else onHandle(type, current ? { ...eleProps?.form?.getFieldsValue() } : undefined); // 打印
+        }
+      })
+      .catch(() => {});
+  };
+
+  /**
+   * @desc 上传图片的props
+   */
+  const uploaderProps = {
+    beforeUpload: (file: { type: string; name: any }) => {
+      setFileList([file]);
+      return false;
+    },
+    onPreview: () => {
+      console.log('onPreview');
+    },
+    onChange: async () => {
+      const formData = new FormData();
+      fileList.forEach((item: string | Blob) => {
+        formData.append('file', item);
+      });
+      const { data } = await uploadFile(formData);
+      setInitForm({ ...initForm, qrCodeFileId: data.fileId });
+    },
   };
 
   return (
@@ -104,57 +205,48 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       bodyStyle={{ maxHeight: 650, overflow: 'auto' }}
       visible={props.visible}
       footer={null}
-      onCancel={() => props.onCancel()}
+      destroyOnClose
+      onCancel={() => props.onCancel(refresh)}
       className={styles.modal}
     >
       <StepsForm
-        // current={current}
+        current={current}
         stepsProps={{
           type: 'navigation',
         }}
         submitter={{
           render: (eleProps) => {
-            if (eleProps.step === 0) {
-              return [
+            if (!eleProps.step) {
+              return bottonList.map((item) => (
                 <Button
+                  loading={item.type ? fetches[item.type!]?.loading : undefined}
                   type="primary"
-                  key="notice"
-                  onClick={() => {
-                    eleProps.onSubmit?.((value: any) => console.log(value, '123'));
-                  }}
+                  key={item.key}
+                  onClick={() => onPrint(eleProps, item.isStep, item?.type)}
                 >
-                  打印告知书
-                </Button>,
-                <Button type="primary" key="code" onClick={() => onPrint(eleProps)}>
-                  打印二维码
-                </Button>,
-              ];
+                  {item.label}
+                </Button>
+              ));
             }
-
             return [
-              <Button key="pre" onClick={() => eleProps.onPre?.()}>
+              <Button key="pre" onClick={() => setCurrent(0)}>
                 上一步
               </Button>,
               <Button
+                loading={loading}
                 type="primary"
                 key="print"
-                onClick={() => {
-                  console.log(eleProps?.form?.getFieldsValue(), '123');
-                }}
+                onClick={() => onPrint(eleProps)}
               >
-                保存打印
+                预览下载
               </Button>,
             ];
           },
         }}
       >
         <StepsForm.StepForm
-          // onFinish={async (value) => {
-          //   console.log(value, 'zd')
-          //   // return true;
-          // }}
           name="firstForm"
-          title={'选择'}
+          title="选择"
           stepProps={{
             description: '按学校-年级进行打印，选择告知书或二维码打印',
           }}
@@ -168,12 +260,14 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
               options={gradeOptions}
               placeholder="请选择"
               fieldNames={{ label: 'name', value: 'id', children: 'child' }}
+              onChange={setSelectArr}
             />
           </Form.Item>
         </StepsForm.StepForm>
         <StepsForm.StepForm
+          formRef={ref}
           name="secordForm"
-          title={'预览-保存'}
+          title="预览-保存"
           stepProps={{
             description: '预览打印样板，点击保存打印',
           }}
@@ -188,7 +282,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                       placeholder={`请输入${item.placeholder}`}
                       name={item.value}
                       rules={item.rules}
-                      initialValue={initForm[item.value]}
+                      // initialValue={initForm[item.value]}
                     />
                   </Col>
                   <Col span={8}>
@@ -208,7 +302,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                 </div>
               </Col>
               <Col span={8} style={{ display: 'flex' }}>
-                <span style={{ marginTop: '5px' }}>筛查二维码：</span>
+                <span style={{ marginTop: 5 }}>筛查二维码：</span>
                 <Image width={128} height={128} src={qrcodeImg} />
               </Col>
             </Row>
@@ -218,7 +312,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                   <Col span={16}>
                     <ProFormText
                       name={item.value}
-                      initialValue={initForm[item.value]}
+                      // initialValue={initForm[item.value]}
                       placeholder={`请输入${item.placeholder ?? item.title}`}
                       fieldProps={{ maxLength: item.limit }}
                       rules={item.rules}
@@ -234,7 +328,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
             <Row>
               <Col span={16}>
                 <ProFormTextArea
-                  name="text"
+                  name="content"
                   fieldProps={{ maxLength: FormNoticeTemp[0].limit }}
                   placeholder="请输入告知书内容"
                   rules={[{ required: true, message: '请输入告知书内容' }]}
@@ -258,7 +352,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                   name="upload"
                   max={1}
                   title={'上传图片'}
-                  fieldProps={{ listType: 'picture-card', isImageUrl: () => false }}
+                  fieldProps={{ listType: 'picture-card', ...uploaderProps }}
                 />
               </Col>
             </Row>

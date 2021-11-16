@@ -5,9 +5,9 @@ import { message } from 'antd';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { useRef, useState, useEffect, useMemo } from 'react';
 import { studentFormOptions } from '../utils/constant';
-import { getCascaderOption } from '@/pages/hook/district';
+import { getCascaderOption } from '@/hook/district';
 import { editStudentInfo } from '@/api/student';
-import { getBirthday } from '@/pages/hook/table';
+import { getBirthday } from '@/hook/table';
 
 export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props) => {
   const modalRef = useRef<ProFormInstance>();

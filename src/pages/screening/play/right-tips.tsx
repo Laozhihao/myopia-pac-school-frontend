@@ -12,7 +12,7 @@ type FormTipsType = {
 const RightTips: React.FC<FormTipsType> = (props) => {
   return (
     <div className={styles.tip}>
-      <Image width={30} height={14} src={lineImg} />
+      <Image width={30} height={14} src={lineImg} preview={false} />
       <span className={styles.step}>{props.step}</span>
       <div className={styles.text}>
         <span className={styles.title}>{props.title}</span>

@@ -5,7 +5,7 @@ import ProForm, { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { history, useModel, useRequest } from 'umi';
 import { getSchoolDetail, editSchoolDetail, getschoolGrade } from '@/api/school';
-import { getCascaderOption } from '@/pages/hook/district';
+import { getCascaderOption } from '@/hook/district';
 import styles from './index.less';
 import LazyCascader from '@/pages/components/lazy-cascader';
 

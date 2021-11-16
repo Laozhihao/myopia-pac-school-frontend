@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import type { ActionType } from '@ant-design/pro-table';
+import type { ProFormInstance } from '@ant-design/pro-form';
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';
 import { listColumns } from './columns';
@@ -11,11 +11,11 @@ import { escape2Html } from '@/utils/common';
 import { getScreeningList } from '@/api/screen';
 
 const TableList: React.FC = () => {
-  // const [currentRow, setCurrentRow] = useState();
+  const [currentRow, setCurrentRow] = useState<API.ScreenListItem>();
   const [createModalVisible, handleModalVisible] = useState(false);
   const [textModalVisible, setTextModalVisible] = useState(false); // 筛查内容visible
   const [textHtml, setTextHtml] = useState('');
-  const actionRef = useRef<ActionType>();
+  const ref = useRef<ProFormInstance>();
 
   const onShow = (dom: any) => {
     setTextHtml(escape2Html(dom));
@@ -28,10 +28,15 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: (...params) => {
-        const [, record] = params;
+      render: (_, record) => {
         return [
-          <a key={record?.planId} onClick={() => handleModalVisible(true)}>
+          <a
+            key="print"
+            onClick={() => {
+              handleModalVisible(true);
+              setCurrentRow(record);
+            }}
+          >
             打印二维码/告知书
           </a>,
           <Link
@@ -48,7 +53,7 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<API.ScreenListItem, API.PageParams>
-        actionRef={actionRef}
+        formRef={ref}
         tableStyle={{ paddingTop: 30 }}
         rowKey="planId"
         search={false}
@@ -81,8 +86,10 @@ const TableList: React.FC = () => {
       <AddModal
         title="打印告知书/二维码"
         visible={createModalVisible}
-        onCancel={() => {
+        currentRow={currentRow}
+        onCancel={(flag) => {
           handleModalVisible(false);
+          flag && ref?.current?.submit();
         }}
       />
       <Modal

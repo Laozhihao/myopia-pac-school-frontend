@@ -12,7 +12,7 @@ import logoImg from '@/assets/images/login-logo.png';
 import Slider from '@/components/VerifySlider/index.js';
 import '@/components/VerifySlider/index.less';
 import type { LoginParams } from '@/api/typings';
-import { setStorageInfo, setToken } from '@/pages/hook/storage';
+import { setStorageInfo, setToken } from '@/hook/storage';
 
 // token前缀 Bearer
 let verifyCount = 0;

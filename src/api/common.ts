@@ -55,3 +55,12 @@ export async function unreadCount() {
     method: 'GET',
   });
 }
+
+/** 上传图片 GET /management/notice/unreadCount */
+export async function uploadFile(data: FormData) {
+  return request<API.RequestResult>('/management/common/fileUpload', {
+    method: 'POST',
+    data,
+    requestType: 'form',
+  });
+}

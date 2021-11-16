@@ -6,7 +6,7 @@ import ProTable from '@ant-design/pro-table';
 import { listColumns } from './columns';
 import { PlusOutlined } from '@ant-design/icons';
 import { AddModal } from './add-modal';
-import { deleteTableRow } from '@/pages/hook/table';
+import { deleteTableRow } from '@/hook/table';
 import { getsGradeList, deleteClass, deleteGrade } from '@/api/school';
 import { useModel } from 'umi';
 import type { ActionType } from '@ant-design/pro-table';

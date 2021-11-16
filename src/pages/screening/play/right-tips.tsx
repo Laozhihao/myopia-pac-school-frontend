@@ -1,17 +1,19 @@
 import { Image } from 'antd';
 import lineImg from '@/assets/images/line.png';
 import styles from './right-tips.less';
+import type { CSSProperties } from 'react';
 
 type FormTipsType = {
   limit?: number; // input限制长度
   title?: string;
   step?: number;
   text?: string;
+  style?: CSSProperties;
 };
 
 const RightTips: React.FC<FormTipsType> = (props) => {
   return (
-    <div className={styles.tip}>
+    <div className={styles.tip} style={props.style}>
       <Image width={30} height={14} src={lineImg} preview={false} />
       <span className={styles.step}>{props.step}</span>
       <div className={styles.text}>

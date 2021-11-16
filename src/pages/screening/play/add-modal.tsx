@@ -131,7 +131,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   // 用fetches管理并发请求的多个loading 就无须声明多个loading变量 二维码
   const { run, fetches } = useRequest(getScreeningQrcodeUrl, {
     manual: true,
-    fetchKey: (...params: any[]) => params[0].type,
+    fetchKey: (params) => params.type,
     onSuccess: (result) => {
       openPdf(result.url);
     },
@@ -276,7 +276,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
             {FormPreTemp.map((item) => (
               <Fragment key={item.value}>
                 {item.label}
-                <Row align={'middle'}>
+                <Row align={'top'}>
                   <Col span={16}>
                     <ProFormText
                       placeholder={`请输入${item.placeholder}`}
@@ -335,7 +335,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                 />
               </Col>
               <Col span={8}>
-                <RightTips {...FormNoticeTemp[0]} />
+                <RightTips style={{ top: 'calc(50% - 23px)' }} {...FormNoticeTemp[0]} />
               </Col>
             </Row>
             <Row className={styles.foot} align={'middle'}>

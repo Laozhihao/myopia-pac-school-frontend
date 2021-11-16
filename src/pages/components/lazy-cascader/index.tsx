@@ -53,6 +53,7 @@ const LazyCascader: React.FC<LazyCascaderProps> = (props) => {
   const getValueProps = (selectOptions: (number | string)[]) => {
     if (!selectOptions || (selectOptions && !selectOptions.length)) return {}; // 无回显地区
     const currentOrigin = findTarget(props.options!, selectOptions[0])!;
+    if (!currentOrigin) return {};
     const targetIndex = filterOption.findIndex((subItem) => subItem.value === selectOptions[0])!;
     filterOption.splice(targetIndex, 1, findAndChangeFileds(currentOrigin, props.fieldNames));
     return {

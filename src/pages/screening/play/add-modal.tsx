@@ -118,7 +118,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   }, [props?.visible, current]);
 
   useEffect(() => {
-    if (props?.currentRow && ref?.current && !isAssignment) {
+    if (props?.currentRow && ref?.current && !isAssignment && props?.visible) {
       ref?.current?.setFieldsValue({ ...initForm, ...props?.currentRow?.notificationConfig });
       setInitForm({ ...initForm, ...props?.currentRow?.notificationConfig });
       setIsAssignment(true); // 已赋值
@@ -210,9 +210,9 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
 
   const onCancel = () => {
     props.onCancel(refresh);
-    // setCurrent(0);
-    // setRefresh(false);
-    // setIsAssignment(false);
+    setCurrent(0);
+    setRefresh(false);
+    setIsAssignment(false);
   };
 
   return (

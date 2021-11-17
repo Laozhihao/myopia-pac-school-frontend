@@ -1,7 +1,7 @@
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, message } from 'antd';
 import { Link } from 'umi';
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, createContext } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import ProTable from '@ant-design/pro-table';
@@ -13,6 +13,9 @@ import { deleteTableRow } from '@/hook/table';
 import { getschoolGrade } from '@/api/school';
 import { getStudentList, deleteStudentInfo } from '@/api/student';
 
+export const TableListCtx = createContext<{ ref?: any }>({});
+let searchForm = {}; // 搜索表单项
+
 const TableList: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false); // 新增/编辑弹窗
   const [operationVisible, setOperationVisible] = useState(false); // 导入/导出
@@ -20,8 +23,6 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.StudentListItem>(); // 当前行数据
   const [gradeOption, setGradeOption] = useState<API.ObjectType[]>([]);
   const ref = useRef<ProFormInstance>();
-
-  let searchForm = {}; // 搜索表单项
 
   /**
    * @desc 获取年级班级
@@ -54,12 +55,12 @@ const TableList: React.FC = () => {
   const onSearch = () => {
     const formVal = ref?.current?.getFieldsFormatValue?.();
     const [gradeId, classId] = formVal?.gradeName || [];
-    Object.assign(searchForm, {
+    searchForm = {
       gradeId,
       classId,
       [formVal?.select]: formVal?.input,
       visionLabel: formVal?.warningLevel,
-    });
+    };
     ref?.current?.submit();
   };
 
@@ -109,75 +110,81 @@ const TableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<API.StudentListItem, API.PageParams>
-        rowKey="id"
-        pagination={{ pageSize: 10 }}
-        options={false}
-        formRef={ref}
-        form={{ span: 8, labelWidth: 120 }}
-        search={{
-          collapseRender: false,
-          collapsed: false,
-          optionRender: () => [
-            <Button key="reset" onClick={onReset}>
-              重 置
+      <TableListCtx.Provider
+        value={{
+          ref: ref,
+        }}
+      >
+        <ProTable<API.StudentListItem, API.PageParams>
+          rowKey="id"
+          pagination={{ pageSize: 10 }}
+          options={false}
+          formRef={ref}
+          form={{ span: 8, labelWidth: 120 }}
+          search={{
+            collapseRender: false,
+            collapsed: false,
+            optionRender: () => [
+              <Button key="reset" onClick={onReset}>
+                重 置
+              </Button>,
+              <Button key="search" type="primary" onClick={onSearch}>
+                搜 索
+              </Button>,
+            ],
+          }}
+          columnsStateMap={{
+            sno: {
+              fixed: 'left',
+            },
+            option: {
+              fixed: 'right',
+            },
+          }}
+          toolBarRender={() => [
+            <Button
+              type="primary"
+              key="export"
+              onClick={() => {
+                showModal('export');
+              }}
+            >
+              <UploadOutlined /> 导出
             </Button>,
-            <Button key="search" type="primary" onClick={onSearch}>
-              搜 索
+            <Button
+              type="primary"
+              key="import"
+              onClick={() => {
+                showModal('import');
+              }}
+            >
+              <DownloadOutlined /> 导入
             </Button>,
-          ],
-        }}
-        columnsStateMap={{
-          sno: {
-            fixed: 'left',
-          },
-          option: {
-            fixed: 'right',
-          },
-        }}
-        toolBarRender={() => [
-          <Button
-            type="primary"
-            key="export"
-            onClick={() => {
-              showModal('export');
-            }}
-          >
-            <UploadOutlined /> 导出
-          </Button>,
-          <Button
-            type="primary"
-            key="import"
-            onClick={() => {
-              showModal('import');
-            }}
-          >
-            <DownloadOutlined /> 导入
-          </Button>,
-          <Button
-            type="primary"
-            key="add"
-            onClick={() => {
-              onAdd(undefined);
-            }}
-          >
-            <PlusOutlined /> 新增
-          </Button>,
-        ]}
-        request={async (params) => {
-          const datas = await getStudentList({
-            ...searchForm,
-            current: params.current,
-            size: params.pageSize,
-          });
-          return {
-            data: datas.data.records,
-            success: true,
-            total: datas.data.total,
-          };
-        }}
-        columns={columns}
-      />
+            <Button
+              type="primary"
+              key="add"
+              onClick={() => {
+                onAdd(undefined);
+              }}
+            >
+              <PlusOutlined /> 新增
+            </Button>,
+          ]}
+          request={async (params) => {
+            const datas = await getStudentList({
+              ...searchForm,
+              current: params.current,
+              size: params.pageSize,
+            });
+            return {
+              data: datas.data.records,
+              success: true,
+              total: datas.data.total,
+            };
+          }}
+          columns={columns}
+        />
+      </TableListCtx.Provider>
       <AddModal
         visible={modalVisible}
         currentRow={currentRow}

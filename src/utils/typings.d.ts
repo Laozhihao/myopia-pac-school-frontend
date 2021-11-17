@@ -37,6 +37,7 @@ declare namespace API {
   type CurrentUser = {
     username?: string;
     orgId?: number; // 学校id
+    orgName?: string;
   };
 
   // 弹窗类型

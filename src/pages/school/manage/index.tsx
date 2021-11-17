@@ -30,16 +30,11 @@ const SchoolManage: React.FC = () => {
     },
   });
 
-  const getschoolList = (params: API.ObjectType) => {
-    getschoolGrade(params).then((res) => {
-      setGradeOption(res?.data);
-    });
-  };
-
   useMemo(async () => {
     if (currentUser?.orgId) {
       run(currentUser!.orgId);
-      getschoolList({ schoolId: currentUser!.orgId });
+      const { data = [] } = await getschoolGrade();
+      setGradeOption(data);
     }
     setAreaOption(await getCascaderOption());
   }, []);
@@ -49,12 +44,13 @@ const SchoolManage: React.FC = () => {
    */
   const onEdit = async (values: API.ObjectType) => {
     const { region = [] } = values;
+    const [provinceCode, cityCode, areaCode, townCode] = region;
     const parm = {
       ...schoolInfo,
-      provinceCode: region[0] ?? '',
-      cityCode: region[1] ?? '',
-      areaCode: region[2] ?? '',
-      townCode: region[3] ?? '',
+      provinceCode,
+      cityCode,
+      areaCode,
+      townCode,
       ...values,
     };
     await editSchoolDetail(parm);

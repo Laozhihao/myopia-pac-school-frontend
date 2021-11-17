@@ -1,6 +1,9 @@
 import { Modal, Image } from 'antd';
 import Img from '@/assets/images/class_seat.png';
+import monitorImg from '@/assets/images/monitor.png';
+import abnormalImg from '@/assets/images/abnormal.png';
 import styles from './add-modal.less';
+import { Fragment } from 'react';
 
 export const AddModal: React.FC<API.ModalItemType & { tabKey?: string }> = (props) => {
   // 课座椅标准
@@ -13,6 +16,7 @@ export const AddModal: React.FC<API.ModalItemType & { tabKey?: string }> = (prop
     '椅子高度：120cm×0.24=29cm',
   ];
 
+  // 视力筛查情况
   const screenItem: API.ObjectType[] = [
     {
       title: '一、字段解说：',
@@ -37,16 +41,66 @@ export const AddModal: React.FC<API.ModalItemType & { tabKey?: string }> = (prop
     },
   ];
 
+  // 视力情况
+  const situationItem = {
+    commentary: [
+      '近视：有效实际筛查学生数中近视的学生总数，公式=（根据标准判断为近视的学生数+佩戴角膜塑形镜的学生数） / 有效实际筛查学生数 *100%',
+      '轻度近视：有效实际筛查学生数轻度近视的学生总数，公式=根据标准判断为轻度近视的学生数 / 有效实际筛查学生数 *100%',
+      '中度近视：有效实际筛查学生数中度近视的学生总数，公式=根据标准判断为中度近视的学生数 / 有效实际筛查学生数 *100%',
+      '轻度近视：有效实际筛查学生数高度近视的学生总数，公式=根据标准判断为高度近视的学生数 / 有效实际筛查学生数 *100%',
+      '视力低下：有效实际筛查学生数中视力低下的学生总数，公式=视力低下的学生数 / 有效实际筛查学生数数 *100%',
+      '平均视力：有效实际筛查学生数的平均视力，公式= 调查眼的视力之和 / 有效实际筛查学生数的调查眼数 *100%',
+      '戴镜情况：实际筛查学生数中戴眼镜的学生总数，公式=戴眼镜的学生数 / 实际筛查学生数 *100%',
+    ],
+    myopia: [
+      {
+        title: '1、近视判断标准：',
+        detail: [
+          '视力正常：-0.50D≤SE≤0.50D',
+          '轻度近视：-3.00D＜SE≤-0.50D',
+          '中度近视：-6.00D＜SE≤-3.00D',
+          '重度近视：SE＜-6.00D',
+        ],
+      },
+      {
+        title: '2、视力低下判断标准：',
+        detail: [
+          '*＜3岁 视力低于4.6',
+          '*＜4岁 视力低于4.7',
+          '*＜6岁 视力低于4.9',
+          '*＞6岁 视力低于5.0',
+        ],
+      },
+    ],
+  };
+
+  // 视力监测
+  const monitorItem = [
+    '加入预警学生数：实际筛查学生数中符合0-3级预警的学生总数，公式=加入预警学生数 / 实际筛查学生数 *100%',
+    '0级预警学生数：实际筛查学生数中符合0级预警的学生总数，公式=0级预警的学生数 / 实际筛查学生数 *100%',
+    '1级预警学生数：实际筛查学生数中符合1级预警的学生总数，公式=1级预警的学生数 / 实际筛查学生数 *100%',
+    '2级预警学生数：实际筛查学生数中符合2级预警的学生总数，公式=2级预警的学生数 / 实际筛查学生数 *100%',
+    '3级预警学生数：实际筛查学生数中符合3级预警的学生总数，公式=3级预警的学生数 / 实际筛查学生数 *100%',
+    '远视储备不足：实际筛查学生数中符合远视储备不足的学生总数，公式=远视储备不足的学生数 / 实际筛查学生数 *100%',
+  ];
+
+  // 视力异常
+  const abnormalItem = [
+    '建议就诊学生数：实际筛查学生数中符合建议就诊的学生总数，公式=建议就诊的学生数 / 实际筛查学生数 *100%',
+    '去医院就诊数：实际筛查学生数中去医院就诊的学生总数，公式=去医院就诊的学生总数 / 实际筛查学生数 *100%',
+    '绑定公众号数：实际筛查学生数中家长绑定了公众号的学生总数，公式=绑定了公众号的学生总数 / 实际筛查学生数 *100%',
+  ];
+
   // 详细说明种类
   const FormTemp = {
     // 课座椅标准
     standard: () => (
-      <div className={styles.standard}>
+      <div>
         <p className={styles.title}>一、课桌椅标准</p>
         <Image width={750} src={Img} />
         <p className={styles.title}>二、可调节课桌椅建议桌椅高度</p>
-        {standardItem.map((item) => (
-          <p style={{ padding: 5 }} key={item}>
+        {standardItem.map((item, index) => (
+          <p style={{ padding: 5 }} key={index}>
             {item}
           </p>
         ))}
@@ -57,29 +111,100 @@ export const AddModal: React.FC<API.ModalItemType & { tabKey?: string }> = (prop
     // 视力筛查情况
     screen: () => (
       <>
-        {screenItem.map((item: API.ObjectType) => (
-          <div className={styles.screen}>
-            <p key={item.title} className={styles.title}>
-              {item.title}
-            </p>
-            {item.describe.map((eleItem: string | HTMLElement) =>
+        {screenItem.map((item, index) => (
+          <div className={styles.modular} key={index}>
+            <p className={styles.title}>{item.title}</p>
+            {item.describe.map((eleItem: any, eleIndex: any) =>
               typeof eleItem === 'string' ? (
-                <p key={eleItem} className={styles.subtitle}>
+                <p key={eleIndex} className={styles.subtitle}>
                   {eleItem}
                 </p>
               ) : (
-                eleItem
+                <Fragment key={eleIndex}>{eleItem}</Fragment>
               ),
             )}
           </div>
         ))}
       </>
     ),
+
+    // 视力情况
+    situation: () => (
+      <>
+        <p className={styles.title}>
+          一、字段解说：
+          <span style={{ color: 'red', fontSize: 13, fontWeight: 400 }}>
+            *仅对有效实际筛查学生数进行统计分析
+          </span>
+        </p>
+        {situationItem.commentary.map((item, index) => (
+          <p className={styles.subtitle} key={index}>
+            {item}
+          </p>
+        ))}
+        <p className={styles.title} style={{ marginTop: 20 }}>
+          二、近视、视力低下、戴镜等判断：
+        </p>
+        <div className={styles.situation}>
+          {situationItem.myopia.map((item, eleIndex) => (
+            <div key={eleIndex}>
+              <p>{item.title}</p>
+              {item.detail.map((eleItem) => (
+                <p key={eleItem}>{eleItem}</p>
+              ))}
+            </div>
+          ))}
+        </div>
+        <p className={styles.subtitle}>
+          3、戴镜判断标准：选择了佩戴框架眼睛、佩戴隐形眼睛、佩戴角膜塑形镜
+        </p>
+      </>
+    ),
+
+    // 视力监测
+    monitor: () => (
+      <>
+        <div className={styles.modular}>
+          <p className={styles.title}>一、字段解说：</p>
+          {monitorItem.map((item) => (
+            <p className={styles.subtitle} key={item}>
+              {item}
+            </p>
+          ))}
+        </div>
+        <p className={styles.title}>二、0-3级预警判断、远视储备不足判断：</p>
+        <p className={styles.title}>1、远视储备不足判断</p>
+        <ul>
+          <li>3-5岁（3≤年龄＜6）：0＜SE≤+1.00D</li>
+          <li>6岁及以上（年龄≥6）：0＜SE≤+0.50D</li>
+        </ul>
+        <p className={styles.title}>2、0-3级预警判断（等效球镜SE，柱镜DC）</p>
+        <Image width={750} src={monitorImg} />
+      </>
+    ),
+
+    // 视力异常
+    abnormal: () => (
+      <>
+        <div className={styles.modular}>
+          <p className={styles.title}>一、字段解说：</p>
+          {abnormalItem.map((item) => (
+            <p className={styles.subtitle} key={item}>
+              {item}
+            </p>
+          ))}
+        </div>
+        <p className={styles.title}>
+          二、建议就诊判断标准：<span>数据来源于：儿童青少年近视防控适宜技术指南</span>
+        </p>
+        <Image width={750} src={abnormalImg} />
+      </>
+    ),
   };
   return (
     <Modal
       title={props.title}
-      width={800}
+      width={1000}
       visible={props.visible}
       footer={null}
       onCancel={() => props.onCancel()}

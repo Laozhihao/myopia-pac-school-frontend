@@ -2,7 +2,7 @@ import type { ProColumns } from '@ant-design/pro-table';
 import { formatLength } from '@/utils/common';
 import { SCREENSTATUS, DATE, EMPTY } from '@/utils/constant';
 import moment from 'moment';
-// DATE, EMPTY
+
 export const listColumns: (show: (dom: any) => void) => ProColumns<API.ScreenListItem>[] = (
   show,
 ) => [

@@ -1,13 +1,15 @@
 import type { FormInstance } from 'antd';
-import { Modal, Button, Cascader, Form, Row, Col, Image } from 'antd';
+import { Modal, Button, Cascader, Form, Row, Col, Image, Upload } from 'antd';
 import styles from './add-modal.less';
 import qrcodeImg from '@/assets/images/qrcode.jpg';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import React, { Fragment, useEffect, useMemo, useState, useRef } from 'react';
-import { StepsForm, ProFormText, ProFormTextArea, ProFormUploadButton } from '@ant-design/pro-form';
+import { StepsForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import RightTips from './right-tips';
 import { getschoolGrade } from '@/api/school';
 import { uploadFile } from '@/api/common';
+import UploadDefaultImg from '@/assets/images/code.png';
+
 import {
   getScreeningNoticeUrl,
   getScreeningQrcodeUrl,
@@ -33,7 +35,9 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const [orgInfo, setOrgInfo] = useState<API.ObjectType>(); // 机构信息
   const [selectArr, setSelectArr] = useState<any[]>([]); // 选中的年级班级
   const [loading, setLoading] = useState(false); // 预览下载loading
-  const [refresh, setRefresh] = useState(false);
+  const [refresh, setRefresh] = useState(false); // 刷新列表
+  const [isAssignment, setIsAssignment] = useState(false); // 赋值标志位
+  const [imgUrl, setImgUrl] = useState<string>();
 
   const ref = useRef<ProFormInstance>();
 
@@ -84,7 +88,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     },
   ];
 
-  const FormNoticeTemp = [{ title: '正文', value: 'content', limit: 15, step: 5 }];
+  const FormNoticeTemp = [{ title: '正文', value: 'content', limit: 500, step: 5 }];
 
   const prompt = [
     '查看孩子的眼健康档案',
@@ -101,8 +105,8 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   ];
 
   useMemo(async () => {
-    const gradeArr = await getschoolGrade({ schoolId: 2 });
-    setGradeOptions(gradeArr?.data || []);
+    const { data = [] } = await getschoolGrade();
+    setGradeOptions(data);
   }, []);
 
   useEffect(() => {
@@ -114,12 +118,16 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   }, [props?.visible, current]);
 
   useEffect(() => {
-    if (props?.currentRow && current) {
-      ref?.current?.setFieldsValue({ ...initForm, ...props?.currentRow?.notificationConfigm });
+    if (props?.currentRow && ref?.current && !isAssignment) {
+      ref?.current?.setFieldsValue({ ...initForm, ...props?.currentRow?.notificationConfig });
       setInitForm({ ...initForm, ...props?.currentRow?.notificationConfig });
-      // console.log('11')
+      setIsAssignment(true); // 已赋值
     }
   }, [props?.visible, props?.currentRow, current]);
+
+  useEffect(() => {
+    setImgUrl(props?.currentRow?.qrCodeFileUrl);
+  }, [props?.visible, props?.currentRow]);
 
   /**
    * @desc 预览pdf
@@ -128,7 +136,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     url && window.open(`https://s-myopia-pac-mgmt.tulab.cn/pdf/viewer.html?file=${url}`);
   };
 
-  // 用fetches管理并发请求的多个loading 就无须声明多个loading变量 二维码
+  // 用fetches管理并发请求的多个loading 就无须声明多个loading变量 (二维码请求)
   const { run, fetches } = useRequest(getScreeningQrcodeUrl, {
     manual: true,
     fetchKey: (params) => params.type,
@@ -151,7 +159,11 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     };
     // 告知书
     if (!type) {
-      const datas = { ...props?.currentRow, ...orgInfo, notificationConfig: { ...obj } };
+      const datas = {
+        ...props?.currentRow,
+        ...orgInfo,
+        notificationConfig: { ...obj, qrCodeFileId: initForm.qrCodeFileId },
+      };
       setLoading(true);
       await updateScreeningNotice(datas);
       setRefresh(true); // 编辑过 返回列表需要刷新
@@ -185,9 +197,6 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       setFileList([file]);
       return false;
     },
-    onPreview: () => {
-      console.log('onPreview');
-    },
     onChange: async () => {
       const formData = new FormData();
       fileList.forEach((item: string | Blob) => {
@@ -195,7 +204,15 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       });
       const { data } = await uploadFile(formData);
       setInitForm({ ...initForm, qrCodeFileId: data.fileId });
+      setImgUrl(data.url);
     },
+  };
+
+  const onCancel = () => {
+    props.onCancel(refresh);
+    // setCurrent(0);
+    // setRefresh(false);
+    // setIsAssignment(false);
   };
 
   return (
@@ -206,7 +223,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       visible={props.visible}
       footer={null}
       destroyOnClose
-      onCancel={() => props.onCancel(refresh)}
+      onCancel={onCancel}
       className={styles.modal}
     >
       <StepsForm
@@ -282,7 +299,6 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                       placeholder={`请输入${item.placeholder}`}
                       name={item.value}
                       rules={item.rules}
-                      // initialValue={initForm[item.value]}
                     />
                   </Col>
                   <Col span={8}>
@@ -312,7 +328,6 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                   <Col span={16}>
                     <ProFormText
                       name={item.value}
-                      // initialValue={initForm[item.value]}
                       placeholder={`请输入${item.placeholder ?? item.title}`}
                       fieldProps={{ maxLength: item.limit }}
                       rules={item.rules}
@@ -348,12 +363,15 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                 </ul>
               </Col>
               <Col className={styles.upload_col} span={6}>
-                <ProFormUploadButton
+                <Upload
                   name="upload"
-                  max={1}
-                  title={'上传图片'}
-                  fieldProps={{ listType: 'picture-card', ...uploaderProps }}
-                />
+                  listType="picture-card"
+                  className="avatar-uploader"
+                  showUploadList={false}
+                  {...uploaderProps}
+                >
+                  <img src={imgUrl ?? UploadDefaultImg} alt="avatar" style={{ width: '100%' }} />
+                </Upload>
               </Col>
             </Row>
           </>

@@ -30,8 +30,8 @@ export const REVIEWOPTIONS = {
 
 // 筛查状态
 export const SCREENSTATUS = {
-  0: { text: '未发布' },
-  1: { text: '已发布' },
+  0: '未发布',
+  1: '已发布',
 };
 
 export const STUDENTSELECTOPTIONS = [

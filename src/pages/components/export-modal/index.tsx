@@ -9,6 +9,7 @@ export const ExportModal: React.FC<API.ModalItemType> = (props) => {
       width={props?.width ?? 550}
       visible={props.visible}
       onOk={props.onOk}
+      destroyOnClose
       onCancel={() => props.onCancel()}
     >
       {props.children}

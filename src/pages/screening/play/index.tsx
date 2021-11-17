@@ -1,8 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import type { ProFormInstance } from '@ant-design/pro-form';
 import ProTable from '@ant-design/pro-table';
-import type { ProColumns } from '@ant-design/pro-table';
+import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { listColumns } from './columns';
 import { AddModal } from './add-modal';
 import { Link } from 'umi';
@@ -15,7 +14,7 @@ const TableList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState(false);
   const [textModalVisible, setTextModalVisible] = useState(false); // 筛查内容visible
   const [textHtml, setTextHtml] = useState('');
-  const ref = useRef<ProFormInstance>();
+  const ref = useRef<ActionType>();
 
   const onShow = (dom: any) => {
     setTextHtml(escape2Html(dom));
@@ -53,12 +52,12 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<API.ScreenListItem, API.PageParams>
-        formRef={ref}
         tableStyle={{ paddingTop: 30 }}
         rowKey="planId"
         search={false}
         pagination={{ pageSize: 10 }}
         options={false}
+        actionRef={ref}
         request={async (params) => {
           const datas = await getScreeningList({
             current: params.current,
@@ -89,7 +88,7 @@ const TableList: React.FC = () => {
         currentRow={currentRow}
         onCancel={(flag) => {
           handleModalVisible(false);
-          flag && ref?.current?.submit();
+          flag && ref?.current?.reload();
         }}
       />
       <Modal

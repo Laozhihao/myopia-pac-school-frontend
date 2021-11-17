@@ -1,7 +1,7 @@
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, message } from 'antd';
 import { Link } from 'umi';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import ProTable from '@ant-design/pro-table';
@@ -12,12 +12,8 @@ import { listColumns } from './columns';
 import { deleteTableRow } from '@/hook/table';
 import { getschoolGrade } from '@/api/school';
 import { getStudentList, deleteStudentInfo } from '@/api/student';
-import { useModel } from 'umi';
 
 const TableList: React.FC = () => {
-  const { initialState } = useModel('@@initialState');
-  const { currentUser } = initialState!;
-
   const [modalVisible, setModalVisible] = useState(false); // 新增/编辑弹窗
   const [operationVisible, setOperationVisible] = useState(false); // 导入/导出
   const [typeKey, setTypeKey] = useState(''); // 导入/导出标志位
@@ -28,18 +24,11 @@ const TableList: React.FC = () => {
   let searchForm = {}; // 搜索表单项
 
   /**
-   * @desc 获取年级班级 todo: 接口替换
+   * @desc 获取年级班级
    */
-
-  const init = (params: API.ObjectType) => {
-    getschoolGrade(params).then((res) => {
-      setGradeOption(res.data);
-    });
-  };
-
-  useEffect(() => {
-    init({ schoolId: currentUser!.orgId });
-    // init({ schoolId: 2 });
+  useMemo(async () => {
+    const { data = [] } = await getschoolGrade();
+    setGradeOption(data);
   }, []);
 
   /**
@@ -64,9 +53,10 @@ const TableList: React.FC = () => {
    */
   const onSearch = () => {
     const formVal = ref?.current?.getFieldsFormatValue?.();
+    const [gradeId, classId] = formVal?.gradeName || [];
     Object.assign(searchForm, {
-      gradeId: formVal?.gradeName?.[0],
-      classId: formVal?.gradeName?.[1],
+      gradeId,
+      classId,
       [formVal?.select]: formVal?.input,
       visionLabel: formVal?.warningLevel,
     });
@@ -202,8 +192,10 @@ const TableList: React.FC = () => {
       <OperationModal
         visible={operationVisible}
         typeKey={typeKey}
-        onCancel={() => {
+        gradeOption={gradeOption}
+        onCancel={(refresh) => {
           setOperationVisible(false);
+          refresh && onSearch();
         }}
       />
     </PageContainer>

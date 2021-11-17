@@ -59,16 +59,18 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
    */
   const onConfirm = async (value: any) => {
     const { gradeIds = [], region = [] } = value;
+    const [gradeId, classId] = gradeIds;
+    const [provinceCode, cityCode, areaCode, townCode] = region;
     const parm = {
       ...value,
       id: props?.currentRow?.id ?? '',
       studentId: props?.currentRow?.studentId ?? '',
-      gradeId: gradeIds[0] ?? '',
-      classId: gradeIds[1] ?? '',
-      provinceCode: region[0] ?? '',
-      cityCode: region[1] ?? '',
-      areaCode: region[2] ?? '',
-      townCode: region[3] ?? '',
+      gradeId,
+      classId,
+      provinceCode,
+      cityCode,
+      areaCode,
+      townCode,
     };
     await editStudentInfo(parm);
     message.success(props?.currentRow ? '编辑成功' : '新增成功');

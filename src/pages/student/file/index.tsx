@@ -88,13 +88,13 @@ const FileList: React.FC = () => {
 
   useMemo(async () => {
     setAreaOption(await getCascaderOption());
-    const gradeArr = await getschoolGrade({ schoolId: 2 });
+    const { data = [] } = await getschoolGrade();
     setStudentForm((value) => {
       return {
         ...value,
         listTypeInfo: {
           ...value.listTypeInfo,
-          gradeOptions: gradeArr?.data ?? [],
+          gradeOptions: data,
         },
       };
     });
@@ -113,16 +113,18 @@ const FileList: React.FC = () => {
     region?: never[] | undefined;
   }) => {
     const { gradeIds = [], region = [] } = value;
+    const [gradeId, classId] = gradeIds;
+    const [provinceCode, cityCode, areaCode, townCode] = region;
     const parm = {
       ...value,
       id: basicInfo.id ?? '',
       studentId: basicInfo.studentId ?? '',
-      gradeId: gradeIds[0] ?? '',
-      classId: gradeIds[1] ?? '',
-      provinceCode: region[0] ?? '',
-      cityCode: region[1] ?? '',
-      areaCode: region[2] ?? '',
-      townCode: region[3] ?? '',
+      gradeId,
+      classId,
+      provinceCode,
+      cityCode,
+      areaCode,
+      townCode,
     };
     await editStudentInfo(parm);
     message.success('更新成功');

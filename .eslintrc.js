@@ -13,5 +13,6 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'off',
     'prefer-promise-reject-errors': 'off',
     '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
+    'react/no-array-index-key': 'off',
   },
 };

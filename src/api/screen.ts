@@ -60,3 +60,10 @@ export async function getScreeningQrcodeUrl(params: API.ObjectType) {
     params,
   });
 }
+
+/** 获取筛查详情 GET /school/vision/screening/plan/{screeningPlanId} */
+export async function getScreeningDetail(screeningPlanId: number | string) {
+  return request<API.RequestResult>(`/school/vision/screening/plan/${screeningPlanId}`, {
+    method: 'GET',
+  });
+}

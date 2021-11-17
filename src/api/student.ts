@@ -37,3 +37,19 @@ export async function getStudentScreen(id: number | string) {
     method: 'GET',
   });
 }
+
+/** 导出 /school/student */
+export async function exportStudent(params?: API.ObjectType) {
+  return request<API.RequestResult>('/school/student/export', {
+    method: 'GET',
+    params,
+  });
+}
+
+/** 导入 /school/student */
+export async function importStudent(data?: any) {
+  return request<API.RequestResult>('/school/student/import', {
+    method: 'POST',
+    data,
+  });
+}

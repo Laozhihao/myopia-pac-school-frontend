@@ -12,8 +12,9 @@ import { ExportModal } from '@/pages/components/export-modal';
 import { useState } from 'react';
 import { getScreeningResult } from '@/api/screen';
 import styles from './index.less';
-import { EMPTY } from '@/utils/constant';
-import { getScreeningWarn, getScreeningGradeList } from '@/api/screen';
+import { EMPTY, DATE, SCREENSTATUS } from '@/utils/constant';
+import { getScreeningWarn, getScreeningGradeList, getScreeningDetail } from '@/api/screen';
+import moment from 'moment';
 
 const { TabPane } = Tabs;
 
@@ -33,6 +34,7 @@ const ScreeningResult: React.FC = () => {
   const [planId, setPlanId] = useState<string>(); // 计划id
   const [resultInfo, setResultInfo] = useState<API.ScreenResultListItem[]>([]); // 结果分析
   const [gradeOption, setGradeOption] = useState<any[]>([]);
+  const [schoolDetail, setSchoolDetail] = useState<API.ObjectType>({});
   const ref = useRef<ProFormInstance>();
 
   let searchForm = {}; // 搜索表单项
@@ -81,14 +83,19 @@ const ScreeningResult: React.FC = () => {
   useMemo(() => {
     const { query: { id, screeningPlanId } = {} } = history.location;
     setPlanId(screeningPlanId as string);
-    id &&
+    if (id) {
       getScreeningResult(id as string).then((res) => {
         setResultInfo([res?.data]);
       });
-    screeningPlanId &&
+    }
+    if (screeningPlanId) {
       getScreeningGradeList(screeningPlanId as string).then((res) => {
         setGradeOption(res?.data);
       });
+      getScreeningDetail(screeningPlanId as string).then((res) => {
+        setSchoolDetail(res?.data);
+      });
+    }
   }, []);
 
   /**
@@ -105,9 +112,10 @@ const ScreeningResult: React.FC = () => {
    */
   const onSearch = () => {
     const formVal = ref?.current?.getFieldsFormatValue?.();
+    const [gradeId, classId] = formVal?.gradeName || [];
     Object.assign(searchForm, {
-      gradeId: formVal?.gradeName?.[0],
-      classId: formVal?.gradeName?.[1],
+      gradeId,
+      classId,
       visionLabel: formVal?.warningLevel,
       isReview: formVal?.isReview ? !!Number(formVal?.isReview) : undefined,
       isBindMq: formVal?.isBindMq ? !!Number(formVal?.isBindMq) : undefined,
@@ -119,9 +127,13 @@ const ScreeningResult: React.FC = () => {
     <PageContainer>
       <Card>
         <p>
-          筛查标题： 2020年上半年度全省视力筛查通知
-          <span className={styles.notice_tab}>筛查时间段：2020-01-01 至 2020-06-01 </span>
-          <span>状态：未开始</span>
+          筛查标题： {schoolDetail?.title}
+          <span className={styles.notice_tab}>
+            筛查时间段：
+            {schoolDetail?.startTime ? moment(schoolDetail?.startTime).format(DATE) : EMPTY} 至{' '}
+            {schoolDetail?.endTime ? moment(schoolDetail?.endTime).format(DATE) : EMPTY}
+          </span>
+          <span>状态：{SCREENSTATUS[schoolDetail?.releaseStatus]}</span>
         </p>
         <Tabs defaultActiveKey="1">
           <TabPane tab="结果统计分析" key="1">
@@ -130,13 +142,12 @@ const ScreeningResult: React.FC = () => {
                 <p className={styles.table_title}>
                   {item.title}
                   <span onClick={() => showModal({ tabKey: item.key, title: item.title })}>
-                    <QuestionCircleOutlined />
+                    <QuestionCircleOutlined style={{ marginLeft: 5 }} />
                   </span>
                 </p>
                 <ProTable<API.ScreenResultListItem>
                   className={styles.table}
                   columns={item.columns}
-                  // key={item.key}
                   rowKey="id"
                   search={false}
                   options={false}

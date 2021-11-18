@@ -1,10 +1,11 @@
 import { request } from 'umi';
 
 /** 登录 POST /auth/login */
-export async function login(body: FormData) {
+export async function login(body: FormData, options?: Record<string, any>) {
   return request<API.RequestToken>('/auth/login', {
     method: 'POST',
     data: body,
+    ...(options || {}),
   });
 }
 
@@ -16,23 +17,26 @@ export async function outLogin() {
 }
 
 /** 用户信息 POST /management/user/userId */
-export async function getUserInfo(userId: number) {
+export async function getUserInfo(userId: number, options?: Record<string, any>) {
   return request<API.RequestResult>(`/management/user/${userId}`, {
     method: 'GET',
+    ...(options || {}),
   });
 }
 
 /** 地区 GET data/district.json */
-export async function getDistrict() {
+export async function getDistrict(options?: Record<string, any>) {
   return request<any[]>('data/district.json', {
     method: 'GET',
+    ...(options || {}),
   });
 }
 
 /** 民族 GET /management/student/nation */
-export async function getNation() {
+export async function getNation(options?: Record<string, any>) {
   return request<any[]>('/management/student/nation', {
     method: 'GET',
+    ...(options || {}),
   });
 }
 

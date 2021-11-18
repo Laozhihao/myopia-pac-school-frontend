@@ -6,8 +6,21 @@ import {
   REVIEWOPTIONS,
   EMPTY,
   TABLESEXOPTION,
+  EMPTY_TEXT,
 } from '@/utils/constant';
-import { getPercentage, getTotalNumber } from '@/utils/common';
+import { visionColumn } from '@/utils/columns';
+import { getPercentage, getTotalNumber, getFixedNum } from '@/utils/common';
+
+// 幼儿园类型
+const kindergartenType = 5;
+
+/**
+ * @desc 处理课桌椅几号显示
+ * @param record 行记录
+ * @param type 课桌椅类型key
+ */
+const getTypeNumShow = (record: any, type: string) =>
+  record[type].map((n: any) => (record.schoolAge === kindergartenType ? `幼${n}` : n)).join('或');
 
 export const firstColumns: ProColumns<API.ScreenResultListItem>[] = [
   {
@@ -154,9 +167,15 @@ export const fourthColumns: ProColumns<API.ScreenResultListItem>[] = [
   },
 ];
 
-export const warnColumns: (gradeOption: any[]) => ProColumns<API.ScreenWarnListItem>[] = (
-  gradeOption: any[],
-) => [
+type WarnColumnsType = {
+  gradeOption?: any[]; // 年级班级
+  show?: (dom: any) => void; // 查看医生反馈func
+};
+
+export const warnColumns: (params: WarnColumnsType) => ProColumns<API.ScreenWarnListItem>[] = ({
+  gradeOption,
+  show,
+}) => [
   {
     title: '学号',
     dataIndex: 'sno',
@@ -189,11 +208,7 @@ export const warnColumns: (gradeOption: any[]) => ProColumns<API.ScreenWarnListI
     },
     renderText: (val: string, record) => `${val}-${record?.className}`,
   },
-  // {
-  //   title: '视力情况',
-  //   dataIndex: 'name',
-  //   search: false,
-  // },
+  ...visionColumn,
   {
     title: '视力预警',
     dataIndex: 'warningLevel',
@@ -213,19 +228,41 @@ export const warnColumns: (gradeOption: any[]) => ProColumns<API.ScreenWarnListI
     valueEnum: REVIEWOPTIONS,
     renderText: (val: boolean) => `${val ? '已去医院' : '未去医院'}`,
   },
-  // {
-  //   title: '复查反馈',
-  //   dataIndex: 'name',
-  //   search: false,
-  // },
-  // {
-  //   title: '防控建议-课桌椅',
-  //   dataIndex: 'name',
-  //   search: false,
-  // },
-  // {
-  //   title: '防控建议-座位调整',
-  //   dataIndex: 'name',
-  //   search: false,
-  // },
+  {
+    title: '复查反馈',
+    dataIndex: 'visitResult',
+    search: false,
+    render: (_, record) => {
+      return record?.visitResult ? <a onClick={() => show?.(record)}>查看</a> : EMPTY_TEXT;
+    },
+  },
+  {
+    title: '防控建议-课桌椅',
+    dataIndex: 'height',
+    search: false,
+    render: (_, record) => {
+      // todo 样式待调整
+      return record?.height ? (
+        <>
+          <div>{getFixedNum(record?.height, 1)}cm</div>
+          <div>
+            <div>
+              课桌：{getTypeNumShow(record, 'deskType')}号，建议桌面高：{record?.deskAdviseHeight}
+            </div>
+            <div>
+              课椅：{getTypeNumShow(record, 'chairType')}号，建议座面高：{record?.chairAdviseHeight}
+            </div>
+          </div>
+        </>
+      ) : (
+        EMPTY_TEXT
+      );
+    },
+  },
+  {
+    title: '防控建议-座位调整',
+    dataIndex: 'myopiaLevel',
+    search: false,
+    renderText: (val?: number | string) => (val ? '与黑板相距5-6米' : EMPTY_TEXT),
+  },
 ];

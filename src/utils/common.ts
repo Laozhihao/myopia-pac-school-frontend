@@ -53,3 +53,10 @@ export function getPercentage(moleculeVal = 0, denominatorVal = 0, company = '%'
 export function getTotalNumber(arr: any[]) {
   return arr.reduce((a, b) => a + b);
 }
+
+/**
+ * @desc 获取保留指定位数的小数点数据，默认保留两位
+ * @param {number} num - 数据
+ * @param {number} digit - 保留几位小数
+ */
+export const getFixedNum = (num: number | string, digit = 2) => Number(num).toFixed(digit);

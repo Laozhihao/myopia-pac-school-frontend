@@ -1,5 +1,6 @@
 // 空
 export const EMPTY = '--';
+export const EMPTY_TEXT = '无';
 
 // 时间格式
 export const DATE = 'YYYY-MM-DD';

@@ -11,7 +11,7 @@ const NoticeIconView = () => {
   const [visble, setVisble] = useState(false);
   const { run } = useRequest(unreadCount, {
     manual: true,
-    // pollingInterval: 3000,
+    pollingInterval: 3000,
     onSuccess: (result) => {
       setNotices(result);
     },

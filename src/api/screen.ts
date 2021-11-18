@@ -67,3 +67,11 @@ export async function getScreeningDetail(screeningPlanId: number | string) {
     method: 'GET',
   });
 }
+
+/** 获取筛查详情 POST /school/vision/screening/export/student/warning/archive */
+export async function exportScreeningStudent(params: API.ObjectType) {
+  return request<API.RequestResult>('/school/vision/screening/export/student/warning/archive', {
+    method: 'GET',
+    params,
+  });
+}

@@ -12,6 +12,7 @@ import { listColumns } from './columns';
 import { deleteTableRow } from '@/hook/table';
 import { getschoolGrade } from '@/api/school';
 import { getStudentList, deleteStudentInfo } from '@/api/student';
+import { EMPTY } from '@/utils/constant';
 
 export const TableListCtx = createContext<{ ref?: any }>({});
 let searchForm = {}; // 搜索表单项
@@ -59,7 +60,7 @@ const TableList: React.FC = () => {
       gradeId,
       classId,
       [formVal?.select]: formVal?.input,
-      visionLabel: formVal?.warningLevel,
+      visionLabel: formVal?.visionLabel,
     };
     ref?.current?.submit();
   };
@@ -112,7 +113,7 @@ const TableList: React.FC = () => {
     <PageContainer>
       <TableListCtx.Provider
         value={{
-          ref: ref,
+          ref,
         }}
       >
         <ProTable<API.StudentListItem, API.PageParams>
@@ -121,6 +122,7 @@ const TableList: React.FC = () => {
           options={false}
           formRef={ref}
           form={{ span: 8, labelWidth: 120 }}
+          columnEmptyText={EMPTY}
           search={{
             collapseRender: false,
             collapsed: false,

@@ -7,7 +7,7 @@ const Settings: LayoutSettings & {
   colorWeak: false,
   title: '近视防控',
   pwa: false,
-  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+  logo: './logo@2x.png',
   iconfontUrl: '',
   layout: 'side',
   contentWidth: 'Fluid',

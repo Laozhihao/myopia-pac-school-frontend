@@ -133,7 +133,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
    * @desc 预览pdf
    */
   const openPdf = (url: any) => {
-    url && window.open(`https://s-myopia-pac-mgmt.tulab.cn/pdf/viewer.html?file=${url}`);
+    url && window.open(`/pdf/viewer.html?file=${url}`);
   };
 
   // 用fetches管理并发请求的多个loading 就无须声明多个loading变量 (二维码请求)

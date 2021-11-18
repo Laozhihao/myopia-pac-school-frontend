@@ -1,5 +1,6 @@
 import type { ProColumns } from '@ant-design/pro-table';
 import { MYOPIAWARNOPTION, STUDENTSELECTOPTIONS, TABLESEXOPTION } from '@/utils/constant';
+import { visionColumn } from '@/utils/columns';
 import { Cascader } from 'antd';
 import { InputGroup } from '@/pages/components/input-group';
 
@@ -52,15 +53,10 @@ export const listColumns: (gradeOption: any[]) => ProColumns<API.StudentListItem
       );
     },
   },
-  {
-    title: '视力情况',
-    dataIndex: 'gradeType',
-    search: false,
-    // renderText: (val: string) => `${val}${'万'}`,
-  },
+  ...visionColumn,
   {
     title: '视力预警',
-    dataIndex: 'warningLevel',
+    dataIndex: 'visionLabel',
     valueEnum: MYOPIAWARNOPTION,
     order: 1,
   },

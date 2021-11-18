@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, Fragment } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Tabs, Card, Button } from 'antd';
+import { Tabs, Card, Button, Modal, message } from 'antd';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { firstColumns, secondColumns, thirdColumns, fourthColumns, warnColumns } from './columns';
 import ProTable from '@ant-design/pro-table';
@@ -10,9 +10,9 @@ import { history, Link } from 'umi';
 import { AddModal } from './add-modal';
 import { ExportModal } from '@/pages/components/export-modal';
 import { useState } from 'react';
-import { getScreeningResult } from '@/api/screen';
+import { getScreeningResult, exportScreeningStudent } from '@/api/screen';
 import styles from './index.less';
-import { EMPTY, DATE, SCREENSTATUS } from '@/utils/constant';
+import { EMPTY, DATE, SCREENSTATUS, GLASSESTYPE, EMPTY_TEXT } from '@/utils/constant';
 import { getScreeningWarn, getScreeningGradeList, getScreeningDetail } from '@/api/screen';
 import moment from 'moment';
 
@@ -22,6 +22,12 @@ type DetailType = {
   visible?: boolean; // 弹窗visible
   tabKey?: string; // key
   title?: string; // 标题
+};
+
+type VisitResultType = {
+  visible: boolean;
+  glassesSuggest?: string;
+  visitResult?: string;
 };
 
 const ScreeningResult: React.FC = () => {
@@ -35,6 +41,11 @@ const ScreeningResult: React.FC = () => {
   const [resultInfo, setResultInfo] = useState<API.ScreenResultListItem[]>([]); // 结果分析
   const [gradeOption, setGradeOption] = useState<any[]>([]);
   const [schoolDetail, setSchoolDetail] = useState<API.ObjectType>({});
+  const [visitResultInfo, setVisitResultInfo] = useState<VisitResultType>({
+    visible: false,
+    glassesSuggest: '',
+    visitResult: '',
+  }); // 医院复查反馈弹窗
   const ref = useRef<ProFormInstance>();
 
   let searchForm = {}; // 搜索表单项
@@ -51,8 +62,16 @@ const ScreeningResult: React.FC = () => {
     { title: '视力异常跟踪', columns: fourthColumns, key: 'abnormal' },
   ];
 
+  /**
+   * @desc 查看医生建议
+   */
+  const showVisitResult = (row: API.ScreenWarnListItem) => {
+    const { glassesSuggest, visitResult } = row;
+    setVisitResultInfo({ glassesSuggest, visitResult, visible: true });
+  };
+
   const studentWarnColumns: ProColumns<API.ScreenWarnListItem>[] = [
-    ...warnColumns(gradeOption),
+    ...warnColumns({ gradeOption, show: showVisitResult }),
     {
       title: '操作',
       dataIndex: 'option',
@@ -121,6 +140,19 @@ const ScreeningResult: React.FC = () => {
       isBindMq: formVal?.isBindMq ? !!Number(formVal?.isBindMq) : undefined,
     });
     ref?.current?.submit();
+  };
+
+  /**
+   * @desc 导出
+   */
+  const onExport = async () => {
+    const parm = {
+      planId: resultInfo[0].screeningPlanId,
+      screeningOrgId: resultInfo[0].screeningOrgId,
+    };
+    await exportScreeningStudent(parm);
+    setExportVisible(false);
+    message.success('导出成功');
   };
 
   return (
@@ -241,11 +273,21 @@ const ScreeningResult: React.FC = () => {
         onCancel={() => {
           setExportVisible(false);
         }}
+        onOk={onExport}
       >
         <p className={styles.content}>
           导出内容：在所选择筛查计划下的筛查学生的预警跟踪反馈情况表。
         </p>
       </ExportModal>
+      <Modal
+        title="医生复查反馈"
+        {...visitResultInfo}
+        onCancel={() => setVisitResultInfo({ ...visitResultInfo, visible: false })}
+        footer={null}
+      >
+        <p>建议配镜：{GLASSESTYPE[visitResultInfo?.glassesSuggest!] ?? EMPTY_TEXT}</p>
+        <p>医生诊断：{visitResultInfo?.visitResult}</p>
+      </Modal>
     </PageContainer>
   );
 };

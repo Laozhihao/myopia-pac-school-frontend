@@ -43,6 +43,7 @@ export const OperationModal: React.FC<
   const onExport = (obj?: API.ObjectType) => {
     exportStudent(obj).then(() => {
       message.success('导出成功');
+      setExportType(1);
       props.onCancel();
     });
   };
@@ -106,7 +107,10 @@ export const OperationModal: React.FC<
     <ExportModal
       visible={props.visible}
       title={'学生数据'}
-      onCancel={props.onCancel}
+      onCancel={() => {
+        setExportType(1);
+        props.onCancel();
+      }}
       onOk={onComfirm}
     >
       <div className={styles.content}>

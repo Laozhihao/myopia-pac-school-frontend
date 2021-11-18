@@ -1,11 +1,19 @@
 declare namespace API {
+  // 视力情况
+  type MyopiaType = {
+    glassesType?: string; // 戴镜类型
+    hyperopiaLevel?: string; // 远视情况
+    astigmatismLevel?: string; // 散光情况
+    visionLabel?: string; // 视力标签
+    myopiaLevel?: string; // 近视等级
+  };
+
   // 学生管理列表
   type StudentListItem = {
     id?: number;
     sno?: number;
     name?: boolean;
     gender?: number;
-    myopiaLevel?: string;
     gradeName?: string;
     className?: string;
     screeningCount?: number;
@@ -13,7 +21,7 @@ declare namespace API {
     numOfVisits?: string;
     parentPhone?: string;
     address?: string;
-  };
+  } & MyopiaType;
 
   // 档案管理列表
   type FileListItem = {
@@ -49,6 +57,8 @@ declare namespace API {
   // 筛查结果列表
   type ScreenResultListItem = {
     id?: string;
+    screeningPlanId?: number | string; // 计划id
+    screeningOrgId?: number | string; // 筛查计划id
     planScreeningNumbers?: number; // 预计筛查学生数
     realScreeningNumbers?: number; // 实际筛查学生数
     validScreeningNumbers: number; // 有效实际筛查学生数
@@ -78,10 +88,14 @@ declare namespace API {
     gender?: number;
     gradeName?: string;
     className?: string;
-    warningLevel?: string; // 视力标签
+    visitResult?: string; // 就诊结论(医生反馈)
     isBindMq?: boolean; // 公众号绑定
     isReview?: boolean; // 医院复查
-  };
+    glassesSuggest?: string; // 配镜建议
+    height?: number | string; // 课座椅高度
+    deskAdviseHeight?: string; // 建议桌面高
+    chairAdviseHeight?: string; // 建议座面高
+  } & MyopiaType;
 
   // 消息列表
   type NoticeListItem = {

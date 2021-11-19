@@ -26,7 +26,7 @@ export async function getUserInfo(userId: number, options?: Record<string, any>)
 
 /** 地区 GET data/district.json */
 export async function getDistrict(options?: Record<string, any>) {
-  return request<any[]>('data/district.json', {
+  return request<any[]>('/data/district.json', {
     method: 'GET',
     ...(options || {}),
   });

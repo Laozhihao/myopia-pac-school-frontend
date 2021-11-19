@@ -55,4 +55,7 @@ export default defineConfig({
       REACT_APP_RUNTIME: 'production',
     },
   },
+  history: {
+    type: 'hash',
+  },
 });

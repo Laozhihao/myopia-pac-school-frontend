@@ -50,4 +50,9 @@ export default defineConfig({
       'root-entry-name': 'default',
     },
   },
+  define: {
+    'process.env': {
+      REACT_APP_RUNTIME: 'develop',
+    },
+  },
 });

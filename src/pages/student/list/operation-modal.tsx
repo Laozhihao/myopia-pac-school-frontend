@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import type { FormInstance } from 'antd/es/form';
 import { exportStudent, importStudent } from '@/api/student';
 import { useModel } from 'umi';
+import { getPopupContainer } from '@/hook/ant-config';
 
 const { Dragger } = Upload;
 const { Option } = Select;
@@ -33,7 +34,9 @@ export const OperationModal: React.FC<
       return false;
     },
     onChange(file: any) {
-      setFileList([file.file]);
+      setFileList(() => {
+        return file?.fileList[0]?.originFileObj ? [file?.fileList[0]?.originFileObj] : [];
+      });
     },
   };
 
@@ -128,7 +131,7 @@ export const OperationModal: React.FC<
         {exportType === 2 ? (
           <Form ref={formRef}>
             <Form.Item name="gradeId" rules={[{ required: true, message: '请选择年级' }]}>
-              <Select allowClear placeholder="请选择年级">
+              <Select allowClear placeholder="请选择年级" getPopupContainer={getPopupContainer}>
                 {gradeOption.map((item) => (
                   <Option key={item.id} value={item.id}>
                     {item.name}

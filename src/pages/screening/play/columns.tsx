@@ -14,7 +14,7 @@ export const listColumns: (show: (dom: any) => void) => ProColumns<API.ScreenLis
   {
     title: '筛查标题',
     dataIndex: 'title',
-    renderText: (val: string) => formatLength(val),
+    renderText: (val: string) => (val ? formatLength(val) : EMPTY),
   },
   {
     title: '筛查时间段',

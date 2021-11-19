@@ -31,8 +31,9 @@ export const REVIEWOPTIONS = {
 
 // 筛查状态
 export const SCREENSTATUS = {
-  0: '未发布',
-  1: '已发布',
+  0: '未开始',
+  1: '进行中',
+  2: '已结束',
 };
 
 export const STUDENTSELECTOPTIONS = [

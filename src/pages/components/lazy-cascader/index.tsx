@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import type { CascaderProps } from 'antd';
 import { Cascader, Form } from 'antd';
 import type { DataNode } from 'rc-cascader';
+import { getPopupContainer } from '@/hook/ant-config';
 
 interface LazyCascaderProps {
   label?: string;
@@ -82,6 +83,7 @@ const LazyCascader: React.FC<LazyCascaderProps> = (props) => {
       <Cascader
         options={filterOption}
         loadData={cascaderLoadData}
+        getPopupContainer={getPopupContainer}
         placeholder="请选择"
         {...props.originProps}
       />

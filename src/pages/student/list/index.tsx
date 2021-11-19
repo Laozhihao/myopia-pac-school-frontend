@@ -135,6 +135,9 @@ const TableList: React.FC = () => {
               </Button>,
             ],
           }}
+          scroll={{
+            x: '100vw',
+          }}
           columnsStateMap={{
             sno: {
               fixed: 'left',

@@ -17,6 +17,9 @@ export const studentFormOptions = (validatorCb: StudentFormOptionsParmas) => ({
           message: '请输入用户名',
         },
       ],
+      fieldProps: {
+        maxLength: 18,
+      },
       col: 24,
     },
     {
@@ -30,6 +33,9 @@ export const studentFormOptions = (validatorCb: StudentFormOptionsParmas) => ({
           message: '请输入姓名',
         },
       ],
+      fieldProps: {
+        maxLength: 20,
+      },
     },
     {
       label: '性别',

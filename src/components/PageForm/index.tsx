@@ -6,6 +6,7 @@ import {
 } from '@ant-design/pro-form';
 import { Row, Col, Form, Cascader, Select } from 'antd';
 import { useEffect, useState } from 'react';
+import { getPopupContainer } from '@/hook/ant-config';
 
 const { Option } = Select;
 
@@ -24,7 +25,7 @@ const PageForm: React.FC<API.PropsType> = (props) => {
 
   // 表单种类
   const FormTemp = {
-    input: ({ label, value, rules, tooltip, required }: API.FilterListType) => (
+    input: ({ label, value, rules, tooltip, required, fieldProps }: API.FilterListType) => (
       <ProFormText
         name={value}
         label={label}
@@ -32,6 +33,7 @@ const PageForm: React.FC<API.PropsType> = (props) => {
         rules={rules}
         required={required}
         placeholder={`请输入${label}`}
+        fieldProps={fieldProps}
       />
     ),
 
@@ -43,7 +45,7 @@ const PageForm: React.FC<API.PropsType> = (props) => {
     // 下拉选择
     select: ({ label, value, list, rules, required, fieldNames }: API.FilterListType) => (
       <Form.Item label={label} rules={rules} name={value} required={required}>
-        <Select placeholder="请选择">
+        <Select placeholder="请选择" getPopupContainer={getPopupContainer}>
           {props.listTypeInfo[list].map((item) => (
             <Option value={item[fieldNames?.value]} key={item[fieldNames?.value]}>
               {item[fieldNames?.label]}
@@ -56,7 +58,12 @@ const PageForm: React.FC<API.PropsType> = (props) => {
     // 级联
     cascader: ({ label, value, list, rules, fieldNames }: API.FilterListType) => (
       <Form.Item label={label} rules={rules} name={value}>
-        <Cascader options={props.listTypeInfo[list]} placeholder="请选择" fieldNames={fieldNames} />
+        <Cascader
+          options={props.listTypeInfo[list]}
+          placeholder="请选择"
+          fieldNames={fieldNames}
+          getPopupContainer={getPopupContainer}
+        />
       </Form.Item>
     ),
 

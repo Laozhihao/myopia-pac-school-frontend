@@ -219,7 +219,8 @@ export const warnColumns: (params: WarnColumnsType) => ProColumns<API.ScreenWarn
     title: '绑定公众号',
     dataIndex: 'isBindMq',
     valueEnum: BINDOPTIONS,
-    renderText: (val: boolean) => `${val ? '已绑定' : '未绑定'}`,
+    renderText: (val: boolean | null | undefined) =>
+      `${typeof val === 'boolean' ? (val ? '已绑定' : '未绑定') : EMPTY}`,
     order: 2,
   },
   {

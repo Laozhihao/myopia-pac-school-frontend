@@ -89,6 +89,11 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   ];
 
   const FormNoticeTemp = [{ title: '正文', value: 'content', limit: 500, step: 5 }];
+  const FormUploadTemp = {
+    title: '医院公众号二维码',
+    text: '可进行更改大小不能超过5M宽度不能小于100px格式：png、jpg、jpeg',
+    step: 6,
+  };
 
   const prompt = [
     '查看孩子的眼健康档案',
@@ -372,6 +377,9 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                 >
                   <img src={imgUrl ?? UploadDefaultImg} alt="avatar" style={{ width: '100%' }} />
                 </Upload>
+              </Col>
+              <Col span={8}>
+                <RightTips style={{ top: 'calc(50% - 23px)' }} {...FormUploadTemp} />
               </Col>
             </Row>
           </>

@@ -12,4 +12,9 @@ export default defineConfig({
     babelPlugins: [],
     babelOptions: {},
   },
+  define: {
+    'process.env': {
+      REACT_APP_RUNTIME: 'production',
+    },
+  },
 });

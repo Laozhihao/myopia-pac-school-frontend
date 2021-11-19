@@ -18,7 +18,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const { run } = useRequest(getGradeCode, {
     manual: true,
     onSuccess: (result) => {
-      setGradeOption(result);
+      setGradeOption(result || []);
     },
   });
 

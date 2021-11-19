@@ -1,6 +1,6 @@
 import { Modal, Image } from 'antd';
 import Img from '@/assets/images/class_seat.png';
-import monitorImg from '@/assets/images/monitor.png';
+import monitorImg from '@/assets/images/monitor.jpg';
 import abnormalImg from '@/assets/images/abnormal.png';
 import styles from './add-modal.less';
 import { Fragment } from 'react';

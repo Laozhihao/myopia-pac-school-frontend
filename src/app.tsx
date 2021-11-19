@@ -80,7 +80,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
 // request运行时配置
 export const request: RequestConfig = {
   // timeout: 1000,
-  prefix: process.env.REACT_APP_RUNTIME === 'ONLINE' ? '' : '/api',
+  prefix: process.env.REACT_APP_RUNTIME === 'production' ? '' : '/api',
   errorConfig: {},
   middlewares: [],
   requestInterceptors: [
@@ -114,7 +114,7 @@ export const request: RequestConfig = {
         try {
           const { data } = await refreshToken(
             toFormData({
-              client_id: '1',
+              client_id: '2',
               client_secret: '123456',
               refresh_token,
             }),

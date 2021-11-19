@@ -14,7 +14,7 @@ export default defineConfig({
   },
   define: {
     'process.env': {
-      REACT_APP_RUNTIME: 'production',
+      REACT_APP_RUNTIME: 'develop',
     },
   },
 });

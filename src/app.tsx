@@ -142,7 +142,7 @@ export const request: RequestConfig = {
       if (response.headers.get('Content-type') === 'application/json') {
         // umi封装resquest 导致不能直接拿res中的一些其他信息
         const data = await response.clone().json();
-        if (response.status !== 200) {
+        if (response.status !== HttpStatusEnum.SUCCESS_REQUEST) {
           return data.message
             ? Promise.reject(data)
             : Promise.reject({ message: checkStatus(response) });

@@ -65,6 +65,13 @@ const SchoolManage: React.FC = () => {
     !value.length && ref?.current?.setFieldsValue({ address: '' });
   };
 
+  /**
+   * @desc 年级班级管理
+   */
+  const onManagement = () => {
+    history.push('/school/grade');
+  };
+
   return (
     <PageContainer className={styles.container}>
       <Row gutter={24}>
@@ -110,7 +117,6 @@ const SchoolManage: React.FC = () => {
                 fieldNames={{ label: 'name', value: 'code', children: 'child' }}
                 originProps={{
                   onChange: changeRegion,
-                  // onChange: (value: any) => setAddressFlag(!value.length),
                 }}
               />
               <ProFormTextArea
@@ -128,7 +134,7 @@ const SchoolManage: React.FC = () => {
             title="班级年级"
             bordered={false}
             extra={
-              <Button type="primary" size="small" onClick={() => history.push('/school/grade')}>
+              <Button type="primary" size="small" onClick={onManagement}>
                 年级班级管理
               </Button>
             }

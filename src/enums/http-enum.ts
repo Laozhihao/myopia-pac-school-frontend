@@ -32,6 +32,7 @@ export enum ContentTypeEnum {
 
 // 常见的http状态码集合
 export enum HttpStatusEnum {
+  SUCCESS_REQUEST = 200,
   ERROR_REQUEST = 400,
   UNAUTHORIZED = 401,
   FORBID = 403,

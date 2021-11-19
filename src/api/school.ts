@@ -1,23 +1,23 @@
 import { request } from 'umi';
 
-/** 学校详情 GET management/school */
+/** 学校详情 GET /school/management */
 export async function getSchoolDetail(schoolId: number, options?: API.ObjectType) {
-  return request<API.RequestResult>(`/management/school/${schoolId}`, {
+  return request<API.RequestResult>(`/school/management/school/${schoolId}`, {
     method: 'GET',
     ...(options || {}),
   });
 }
 
-/** 编辑学校 PUT management/school */
-export async function editSchoolDetail(body: API.ObjectType, options?: API.ObjectType) {
-  return request<API.RequestResult>('/management/school', {
+/** 编辑学校 PUT /school/management */
+export async function editSchoolDetail(data: API.ObjectType, options?: API.ObjectType) {
+  return request<API.RequestResult>('/school/management/school', {
     method: 'PUT',
-    data: body,
+    data,
     ...(options || {}),
   });
 }
 
-/** 年级班级（级联） GET management/school */
+/** 年级班级（级联） GET /school/management */
 export async function getschoolGrade(options?: API.ObjectType) {
   return request<API.RequestResult>('/school/management/grade/all', {
     method: 'GET',
@@ -25,7 +25,7 @@ export async function getschoolGrade(options?: API.ObjectType) {
   });
 }
 
-/** 年级班级（分页） GET management/schoolGrade/list */
+/** 年级班级（分页） GET /school/management/grade/list */
 export async function getsGradeList(params: API.ObjectType, options?: API.ObjectType) {
   return request<API.RequestResult>('/school/management/grade/list', {
     method: 'GET',
@@ -34,7 +34,7 @@ export async function getsGradeList(params: API.ObjectType, options?: API.Object
   });
 }
 
-/** 创建年级列表 GET management/schoolGrade/getGradeCode */
+/** 创建年级列表 GET /school/management/grade/getGradeCode */
 export async function getGradeCode(options?: API.ObjectType) {
   return request<API.RequestResult>('/school/management/grade/getGradeCode', {
     method: 'GET',
@@ -51,7 +51,7 @@ export async function addGrade(data: API.ObjectType, options?: API.ObjectType) {
   });
 }
 
-/** 删除年级 DELETE /school/management/grade/ */
+/** 删除年级 DELETE /school/management */
 export async function deleteGrade(id: number, options?: API.ObjectType) {
   return request<API.RequestResult>(`/school/management/grade/${id}`, {
     method: 'DELETE',
@@ -59,7 +59,7 @@ export async function deleteGrade(id: number, options?: API.ObjectType) {
   });
 }
 
-/** 新增班级 POST /school/management/grade */
+/** 新增班级 POST /school/management */
 export async function addClass(data: API.ObjectType, options?: API.ObjectType) {
   return request<API.RequestResult>('/school/management', {
     method: 'POST',

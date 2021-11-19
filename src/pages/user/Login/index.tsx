@@ -114,7 +114,7 @@ const Login: React.FC = () => {
             <img className={styles.img} src={asideImg} alt="" />
           </div>
           <div className={styles.content}>
-            <p className={styles.title}>近视防控学校端</p>
+            <p className={styles.title}>近视防控学校管理平台</p>
             <p className={styles.sub_title}>欢迎使用</p>
             <ProForm
               requiredMark={false}

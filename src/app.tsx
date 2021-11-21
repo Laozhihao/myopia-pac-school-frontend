@@ -9,6 +9,7 @@ import { getToken, getUser, getRefreshToken, clearStorage, setToken } from '@/ho
 import { checkStatus } from '@/axios/check-status';
 import { toFormData } from './utils/common';
 import { refreshToken } from './api/common';
+import Logo from '@/assets/images/logo@2x.png';
 
 const loginPath = '/user/login';
 
@@ -57,6 +58,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         {initialState?.settings?.collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
       </div>
     ),
+    logo: <img style={{ width: '34px', objectFit: 'contain' }} alt="近视防控管理系统" src={Logo} />,
     disableContentMargin: false,
     collapsedButtonRender: false,
     onPageChange: () => {
@@ -67,7 +69,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       }
     },
     menuHeaderRender: undefined,
-    pageTitleRender: false,
+    pageTitleRender: () => '近视防控管理系统',
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     breadcrumbProps: {

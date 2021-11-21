@@ -7,7 +7,6 @@ const Settings: LayoutSettings & {
   colorWeak: false,
   title: '近视防控',
   pwa: false,
-  logo: './logo@2x.png',
   iconfontUrl: '',
   layout: 'side',
   contentWidth: 'Fluid',

@@ -38,14 +38,14 @@ const FileList: React.FC = () => {
 
   const [areaOption, setAreaOption] = useState<any[]>();
   const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
-  const [basicInfo, setBasicInfo] = useState<API.ObjectType>({});
   const [cardInfo, setCardInfo] = useState<FileCardPropsParams>({
     visible: false,
     resultId: 32682,
     templateId: 2,
   });
-  const [studentForm, setStudentForm] = useState<API.PropsType>(studentFormOptions(validatorCb));
+  const [studentForm, setStudentForm] = useState<API.PropsType>(studentFormOptions(validatorCb, 2));
   const actionRef = useRef<ActionType>();
+  const { query: { id, studentId } = {} } = history.location; // id studentId
 
   const columns: ProColumns<API.FileListItem>[] = [
     ...listColumns,
@@ -74,7 +74,6 @@ const FileList: React.FC = () => {
     onSuccess: (result: any) => {
       const info = {};
       setAddressFlag(!result?.provinceCode); // 编辑地址
-      setBasicInfo(result);
       const { gradeId, classId, provinceCode, cityCode, areaCode, townCode } = result || {};
       const addressArr = [provinceCode, cityCode, areaCode, townCode].filter((item) => item); // 地区
       const gradeArr = [gradeId, classId].filter((item) => item); // 年级
@@ -101,9 +100,9 @@ const FileList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const { query: { id } = {} } = history.location;
-    id && run(id as string);
-  }, []);
+    console.log(formRef?.current, '1');
+    // id && run(id as string);
+  }, [formRef?.current]);
 
   /**
    * @desc 更改基本资料
@@ -117,8 +116,8 @@ const FileList: React.FC = () => {
     const [provinceCode, cityCode, areaCode, townCode] = region;
     const parm = {
       ...value,
-      id: basicInfo.id ?? '',
-      studentId: basicInfo.studentId ?? '',
+      id,
+      studentId,
       gradeId,
       classId,
       provinceCode,
@@ -128,7 +127,7 @@ const FileList: React.FC = () => {
     };
     await editStudentInfo(parm);
     message.success('更新成功');
-    run(basicInfo.id);
+    run(id as string);
   };
 
   /**
@@ -142,7 +141,16 @@ const FileList: React.FC = () => {
   return (
     <PageContainer>
       <Card>
-        <Tabs defaultActiveKey="1">
+        <Tabs
+          defaultActiveKey={
+            history?.location?.query?.tabKey ? history?.location?.query?.tabKey.toString() : '1'
+          }
+          onChange={() => {
+            setTimeout(() => {
+              console.log(formRef, 'onchange');
+            }, 0);
+          }}
+        >
           <TabPane tab="基本资料" key="1">
             <ProForm
               formRef={formRef}
@@ -196,11 +204,11 @@ const FileList: React.FC = () => {
                 },
               }}
               request={async () => {
-                const datas = await getStudentScreen(basicInfo.studentId);
+                const datas = studentId ? await getStudentScreen(studentId as string) : undefined;
                 return {
-                  data: datas.data.items || [],
+                  data: datas?.data.items || [],
                   success: true,
-                  total: datas.data.total || 0,
+                  total: datas?.data.total || 0,
                 };
               }}
               columns={columns}

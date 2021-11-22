@@ -2,6 +2,7 @@ import type { ProColumns } from '@ant-design/pro-table';
 import { Cascader } from 'antd';
 import {
   MYOPIAWARNOPTION,
+  MYOPIAWARNSELECTOPTION,
   BINDOPTIONS,
   REVIEWOPTIONS,
   EMPTY,
@@ -10,7 +11,7 @@ import {
 } from '@/utils/constant';
 import { visionColumn } from '@/utils/columns';
 import { getPercentage, getTotalNumber, getFixedNum } from '@/utils/common';
-
+import { convertData } from '@/utils/common';
 // 幼儿园类型
 const kindergartenType = 5;
 
@@ -200,7 +201,7 @@ export const warnColumns: (params: WarnColumnsType) => ProColumns<API.ScreenWarn
     renderFormItem: () => {
       return (
         <Cascader
-          options={gradeOption}
+          options={convertData(gradeOption, 'classes')}
           placeholder="请选择"
           fieldNames={{ label: 'name', value: 'id', children: 'classes' }}
         />
@@ -213,6 +214,10 @@ export const warnColumns: (params: WarnColumnsType) => ProColumns<API.ScreenWarn
     title: '视力预警',
     dataIndex: 'warningLevel',
     valueEnum: MYOPIAWARNOPTION,
+    valueType: 'select',
+    fieldProps: {
+      options: MYOPIAWARNSELECTOPTION,
+    },
     order: 1,
   },
   {

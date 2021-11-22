@@ -23,6 +23,16 @@ export const MYOPIAWARNOPTION = {
   3: { text: '3级预警', status: 'Error' },
 };
 
+// 视力预警 下拉
+
+export const MYOPIAWARNSELECTOPTION = [
+  { label: '0级预警', value: 0 },
+  { label: '0级预警 远视储备不足', value: 4 },
+  { label: '1级预警', value: 1 },
+  { label: '2级预警', value: 2 },
+  { label: '3级预警', value: 3 },
+];
+
 // 医院复查
 export const REVIEWOPTIONS = {
   0: '未去医院',
@@ -43,8 +53,8 @@ export const STUDENTSELECTOPTIONS = [
 
 // 性别 （pro表格）
 export const TABLESEXOPTION = {
-  0: { text: '男' },
-  1: { text: '女' },
+  0: '男',
+  1: '女',
 };
 
 // 性别 （JSON表单）

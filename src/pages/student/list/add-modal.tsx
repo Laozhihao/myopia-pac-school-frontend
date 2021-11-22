@@ -24,35 +24,39 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
   const [studentForm, setStudentForm] = useState<API.PropsType>(studentFormOptions(validatorCb));
 
   useMemo(async () => {
-    setStudentForm((value) => {
-      return {
-        ...value,
-        listTypeInfo: {
-          ...value.listTypeInfo,
-          gradeOptions: props.option,
-        },
-      };
-    });
-  }, [props.option]);
+    if (props.visible) {
+      setStudentForm((value) => {
+        return {
+          ...studentFormOptions(validatorCb, props?.currentRow ? 2 : 1),
+          listTypeInfo: {
+            ...value.listTypeInfo,
+            gradeOptions: props.option,
+          },
+        };
+      });
+    }
+  }, [props.option, props.visible]);
 
   useMemo(async () => {
     setAreaOption(await getCascaderOption());
   }, []);
 
   useEffect(() => {
-    setAddressFlag(!props?.currentRow?.provinceCode); // 编辑地址
-    const info = {};
-    if (props?.currentRow) {
-      const { gradeId, classId, provinceCode, cityCode, areaCode, townCode } = props?.currentRow;
-      const addressArr = [provinceCode, cityCode, areaCode, townCode].filter((item) => item); // 过滤掉空值
-      const gradeArr = [gradeId, classId].filter((item) => item);
-      Object.assign(info, {
-        gradeIds: gradeArr, // 回显年级班级
-        region: addressArr, // 回显地区
-      });
+    if (props.visible) {
+      setAddressFlag(!props?.currentRow?.provinceCode); // 编辑地址
+      const info = {};
+      if (props?.currentRow) {
+        const { gradeId, classId, provinceCode, cityCode, areaCode, townCode } = props?.currentRow;
+        const addressArr = [provinceCode, cityCode, areaCode, townCode].filter((item) => item); // 过滤掉空值
+        const gradeArr = [gradeId, classId].filter((item) => item);
+        Object.assign(info, {
+          gradeIds: gradeArr, // 回显年级班级
+          region: addressArr, // 回显地区
+        });
+      }
+      modalRef?.current?.setFieldsValue({ ...props?.currentRow, ...info });
     }
-    modalRef?.current?.setFieldsValue({ ...props?.currentRow, ...info });
-  }, [props?.currentRow, props.visible]);
+  }, [props.visible]);
 
   /**
    * @desc 新增/编辑

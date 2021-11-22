@@ -58,7 +58,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         {initialState?.settings?.collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
       </div>
     ),
-    logo: <img style={{ width: '34px', objectFit: 'contain' }} alt="近视防控管理系统" src={Logo} />,
+    logo: <img style={{ width: '34px', objectFit: 'contain' }} alt="近视防控学校平台" src={Logo} />,
     disableContentMargin: false,
     collapsedButtonRender: false,
     onPageChange: () => {
@@ -69,7 +69,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       }
     },
     menuHeaderRender: undefined,
-    pageTitleRender: () => '近视防控管理系统',
+    pageTitleRender: () => '近视防控学校平台',
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     breadcrumbProps: {
@@ -81,7 +81,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
 
 // request运行时配置
 export const request: RequestConfig = {
-  // timeout: 1000,
+  timeout: 30000,
   prefix: process.env.REACT_APP_RUNTIME === 'production' ? '' : '/api',
   errorConfig: {},
   middlewares: [],

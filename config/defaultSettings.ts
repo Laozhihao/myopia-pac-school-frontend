@@ -5,7 +5,7 @@ const Settings: LayoutSettings & {
   logo?: string;
 } = {
   colorWeak: false,
-  title: '近视防控',
+  title: '近视防控学校平台',
   pwa: false,
   iconfontUrl: '',
   layout: 'side',

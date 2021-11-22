@@ -11,6 +11,7 @@ declare namespace API {
   // 学生管理列表
   type StudentListItem = {
     id?: number;
+    studentId?: number; // 学生id
     sno?: number;
     name?: boolean;
     gender?: number;

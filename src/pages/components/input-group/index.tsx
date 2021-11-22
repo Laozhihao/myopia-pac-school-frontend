@@ -11,6 +11,7 @@ export type InputItemType = {
   width?: number; // 宽度
   inputName?: string; // input 值
   option: Record<string, any>[]; // select 的 option
+  onPressEnter?: () => void; // 按下回车后的callback 事件 不绑定在ref 上是为了灵活性
 };
 
 export const InputGroup: React.FC<InputItemType> = (props) => {
@@ -31,7 +32,7 @@ export const InputGroup: React.FC<InputItemType> = (props) => {
         </Select>
       </Form.Item>
       <Form.Item name={props.inputName} style={{ width: 'inherit' }}>
-        <Input placeholder="请输入" />
+        <Input placeholder="请输入" onPressEnter={props?.onPressEnter} />
       </Form.Item>
     </Input.Group>
   );

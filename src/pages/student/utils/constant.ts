@@ -5,7 +5,12 @@ import { getNationOption } from '@/hook/district';
 const nationArr = await getNationOption();
 type StudentFormOptionsParmas = (params: any) => void;
 
-export const studentFormOptions = (validatorCb: StudentFormOptionsParmas) => ({
+/**
+ * @desc 学生列表共同动态表单数据
+ * @param validatorCb 身份证验证回调
+ * @param type 1新增 2编辑
+ */
+export const studentFormOptions = (validatorCb: StudentFormOptionsParmas, type = 1) => ({
   filterList: [
     {
       label: '学号',
@@ -76,11 +81,12 @@ export const studentFormOptions = (validatorCb: StudentFormOptionsParmas) => ({
         {
           validator(_: any, value: any) {
             if (value && !isIdCard(value)) return Promise.reject('请输入正确的身份证号');
-            value && validatorCb?.(value); // 获取出生日期
+            if (value && type === 1) validatorCb?.(value); // 获取出生日期
             return Promise.resolve();
           },
         },
       ],
+      fieldProps: type === 2 ? { type: 'password' } : undefined,
       col: 24,
     },
     {

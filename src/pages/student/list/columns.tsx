@@ -1,87 +1,21 @@
 import type { ProColumns } from '@ant-design/pro-table';
-import { EMPTY, MYOPIAWARNOPTION, STUDENTSELECTOPTIONS, TABLESEXOPTION } from '@/utils/constant';
+import {
+  EMPTY,
+  MYOPIAWARNOPTION,
+  MYOPIAWARNSELECTOPTION,
+  STUDENTSELECTOPTIONS,
+  TABLESEXOPTION,
+} from '@/utils/constant';
 import { visionColumn } from '@/utils/columns';
-import { formatLength } from '@/utils/common';
-import { Cascader } from 'antd';
+import { formatLength, convertData } from '@/utils/common';
+import { Cascader, Button } from 'antd';
 import { InputGroup } from '@/pages/components/input-group';
+import { history } from 'umi';
 
-// const options = [
-//   {
-//     id: '1',
-//     name: 'Zhejiang',
-//     children: [
-//       {
-//         id: '2',
-//         name: 'Hangzhou',
-//         children: [
-//           {
-//             id: '3',
-//             name: 'West Lake',
-//           },
-//         ],
-//       },
-//     ],
-//   },
-//   {
-//     id: '5',
-//     name: 'zhengedd',
-//   },
-//   {
-//     id: '7',
-//     name: 'Jiangsu',
-//     children: [
-//       {
-//         id: '9',
-//         name: 'Nanjing',
-//         children: [
-//           {
-//             id: '10',
-//             name: 'Zhong Hua Men',
-//           },
-//         ],
-//       },
-//     ],
-//   },
-// ];
-
-// const options = [
-//   {
-//     value: '1',
-//     label: 'Zhejiang',
-//     children: [
-//       {
-//         value: '2',
-//         label: 'Hangzhou',
-//         children: [
-//           {
-//             value: '3',
-//             label: 'West Lake',
-//           },
-//         ],
-//       },
-//     ],
-//   },
-//   {
-//     value: 'jiangsu',
-//     label: 'Jiangsu',
-//     children: [
-//       {
-//         value: 'nanjing',
-//         label: 'Nanjing',
-//         children: [
-//           {
-//             value: 'zhonghuamen',
-//             label: 'Zhong Hua Men',
-//           },
-//         ],
-//       },
-//     ],
-//   },
-// ];
-
-export const listColumns: (gradeOption: any[]) => ProColumns<API.StudentListItem>[] = (
+export const listColumns: (
   gradeOption: any[],
-) => [
+  onSearch?: () => void,
+) => ProColumns<API.StudentListItem>[] = (gradeOption: any[], onSearch) => [
   {
     title: '学号',
     dataIndex: 'sno',
@@ -106,11 +40,11 @@ export const listColumns: (gradeOption: any[]) => ProColumns<API.StudentListItem
     renderFormItem: () => {
       return (
         <Cascader
-          options={gradeOption}
+          options={convertData(gradeOption)}
           placeholder="请选择"
           fieldNames={{ label: 'name', value: 'id', children: 'child' }}
+          changeOnSelect={true}
         />
-        // <Cascader options={options}  placeholder="Please select" changeOnSelect={true} fieldNames={{ label: 'name', value: 'id', children: 'children' }}/>
       );
     },
     renderText: (val: string, record) => `${val}-${record?.className}`,
@@ -126,6 +60,7 @@ export const listColumns: (gradeOption: any[]) => ProColumns<API.StudentListItem
           selectName={'select'}
           selectInitial={'name'}
           inputName={'input'}
+          onPressEnter={onSearch}
         />
       );
     },
@@ -135,12 +70,26 @@ export const listColumns: (gradeOption: any[]) => ProColumns<API.StudentListItem
     title: '视力预警',
     dataIndex: 'visionLabel',
     valueEnum: MYOPIAWARNOPTION,
+    valueType: 'select',
+    fieldProps: {
+      options: MYOPIAWARNSELECTOPTION,
+    },
     order: 1,
   },
   {
     title: '筛查次数',
     dataIndex: 'screeningCount',
     search: false,
+    renderText: (val: number, record) => (
+      <Button
+        type="link"
+        onClick={() =>
+          history.push(`student/file?id=${record?.id}&studentId=${record?.studentId}&tabKey=2`)
+        }
+      >
+        {val || 0}
+      </Button>
+    ),
   },
   {
     title: '最新筛查日期',

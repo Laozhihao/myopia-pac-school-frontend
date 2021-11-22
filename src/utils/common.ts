@@ -60,3 +60,19 @@ export function getTotalNumber(arr: any[]) {
  * @param {number} digit - 保留几位小数
  */
 export const getFixedNum = (num: number | string, digit = 2) => Number(num).toFixed(digit);
+
+/**
+ * @desc 级联数据转换 number 类型的id 转换成string
+ * @param {string} option - option 列表
+ * @param {string} children - option 子集名称
+ */
+export const convertData = (option?: any[], children = 'child') => {
+  if (!option || !option.length) return [];
+  option?.forEach((item: any) => {
+    item.id = item.id.toString();
+    if (item[children]) {
+      convertData(item.children);
+    }
+  });
+  return option;
+};

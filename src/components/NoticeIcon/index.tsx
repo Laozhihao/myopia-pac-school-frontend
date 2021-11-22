@@ -3,6 +3,7 @@ import { useRequest, history } from 'umi';
 import { unreadCount } from '@/api/common';
 import NoticeIcon from './NoticeIcon';
 import styles from './index.less';
+import { NoticeRead } from '@/api/screen';
 
 const Info = '/info-center';
 const Notice = '/screening';
@@ -28,6 +29,7 @@ const NoticeIconView = () => {
       if (history.location.pathname === Info) return;
       history.push(Info);
     } else {
+      item && NoticeRead([item?.id]);
       if (history.location.pathname === Notice) return;
       history.push(Notice);
     }

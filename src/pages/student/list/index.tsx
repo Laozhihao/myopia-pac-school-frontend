@@ -85,7 +85,7 @@ const TableList: React.FC = () => {
   };
 
   const columns: ProColumns<API.StudentListItem>[] = [
-    ...listColumns(gradeOption),
+    ...listColumns(gradeOption, onSearch),
     {
       title: '操作',
       dataIndex: 'option',
@@ -102,7 +102,7 @@ const TableList: React.FC = () => {
         <a key="delete" onClick={() => onDelete(record)}>
           删除
         </a>,
-        <Link key="manage" to={`/student/file?id=${record.id}`}>
+        <Link key="manage" to={`/student/file?id=${record.id}&studentId=${record?.studentId}`}>
           档案管理
         </Link>,
       ],
@@ -182,9 +182,9 @@ const TableList: React.FC = () => {
               size: params.pageSize,
             });
             return {
-              data: datas.data.records,
+              data: datas.data.records || [],
               success: true,
-              total: datas.data.total,
+              total: datas.data.total || 0,
             };
           }}
           columns={columns}

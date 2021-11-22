@@ -75,3 +75,11 @@ export async function exportScreeningStudent(params: API.ObjectType) {
     params,
   });
 }
+
+/** 已读筛查通知 POST /school/notice/read */
+export async function NoticeRead(data: API.ObjectType) {
+  return request<API.RequestResult>('/school/notice/read', {
+    method: 'POST',
+    data,
+  });
+}

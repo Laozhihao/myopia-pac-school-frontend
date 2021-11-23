@@ -100,9 +100,8 @@ const FileList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(formRef?.current, '1');
-    // id && run(id as string);
-  }, [formRef?.current]);
+    id && run(id as string);
+  }, []);
 
   /**
    * @desc 更改基本资料
@@ -151,7 +150,7 @@ const FileList: React.FC = () => {
             }, 0);
           }}
         >
-          <TabPane tab="基本资料" key="1">
+          <TabPane tab="基本资料" key="1" forceRender={true}>
             <ProForm
               formRef={formRef}
               style={{ width: '50%' }}

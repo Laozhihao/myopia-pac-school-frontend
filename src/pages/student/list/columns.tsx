@@ -8,7 +8,7 @@ import {
 } from '@/utils/constant';
 import { visionColumn } from '@/utils/columns';
 import { formatLength, convertData } from '@/utils/common';
-import { Cascader, Button } from 'antd';
+import { Cascader, Button, Badge } from 'antd';
 import { InputGroup } from '@/pages/components/input-group';
 import { history } from 'umi';
 
@@ -69,7 +69,12 @@ export const listColumns: (
   {
     title: '视力预警',
     dataIndex: 'visionLabel',
-    valueEnum: MYOPIAWARNOPTION,
+    renderText: (val?: number) =>
+      typeof val === 'number' && [0, 1, 2, 3, 4].includes(val) ? (
+        <Badge status={MYOPIAWARNOPTION[val]?.status} text={MYOPIAWARNOPTION[val]?.text} />
+      ) : (
+        EMPTY
+      ),
     valueType: 'select',
     fieldProps: {
       options: MYOPIAWARNSELECTOPTION,

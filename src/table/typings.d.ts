@@ -4,7 +4,7 @@ declare namespace API {
     glassesType?: string; // 戴镜类型
     hyperopiaLevel?: string; // 远视情况
     astigmatismLevel?: string; // 散光情况
-    visionLabel?: string; // 视力标签
+    visionLabel?: string | number; // 视力标签
     myopiaLevel?: string; // 近视等级
   };
 

@@ -18,6 +18,7 @@ import { getCascaderOption } from '@/hook/district';
 import { getschoolGrade } from '@/api/school';
 import { getBirthday } from '@/hook/table';
 import { AddModal } from './add-modal';
+import { EMPTY } from '@/utils/constant';
 
 const { TabPane } = Tabs;
 export type FileCardPropsParams = {
@@ -53,9 +54,7 @@ const FileList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      fieldProps: {
-        fixed: 'right',
-      },
+      width: 150,
       render: () => {
         return [
           <a key="print" onClick={() => setCardInfo({ ...cardInfo, visible: true })}>
@@ -186,8 +185,10 @@ const FileList: React.FC = () => {
               search={false}
               pagination={{ pageSize: 10 }}
               options={false}
+              columnEmptyText={EMPTY}
+              // sticky={true}
               scroll={{
-                x: '100vw',
+                x: 'max-content',
               }}
               columnsStateMap={{
                 screeningDate: {

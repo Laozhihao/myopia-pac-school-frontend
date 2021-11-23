@@ -105,8 +105,6 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const bottonList = [
     { label: '打印告知书', key: 'notice', isStep: true },
     { label: '打印筛查二维码', key: 'qrCode', isStep: false, type: 1 },
-    { label: '打印VS666设备专属筛查二维码', key: 'equipmentCode', isStep: false, type: 2 },
-    { label: '打印虚拟学生二维码', key: 'studentCode', isStep: false, type: 3 },
   ];
 
   useMemo(async () => {
@@ -304,6 +302,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                       placeholder={`请输入${item.placeholder}`}
                       name={item.value}
                       rules={item.rules}
+                      fieldProps={{ maxLength: item.limit }}
                     />
                   </Col>
                   <Col span={8}>
@@ -375,7 +374,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                   showUploadList={false}
                   {...uploaderProps}
                 >
-                  <img src={imgUrl ?? UploadDefaultImg} alt="avatar" style={{ width: '100%' }} />
+                  <img src={imgUrl ?? UploadDefaultImg} alt="avatar" className={styles.image} />
                 </Upload>
               </Col>
               <Col span={8}>

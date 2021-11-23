@@ -1,5 +1,5 @@
 import type { ProColumns } from '@ant-design/pro-table';
-import { Cascader } from 'antd';
+import { Cascader, Badge } from 'antd';
 import {
   MYOPIAWARNOPTION,
   MYOPIAWARNSELECTOPTION,
@@ -213,7 +213,12 @@ export const warnColumns: (params: WarnColumnsType) => ProColumns<API.ScreenWarn
   {
     title: '视力预警',
     dataIndex: 'warningLevel',
-    valueEnum: MYOPIAWARNOPTION,
+    renderText: (val?: number) =>
+      typeof val === 'number' && [0, 1, 2, 3, 4].includes(val) ? (
+        <Badge status={MYOPIAWARNOPTION[val]?.status} text={MYOPIAWARNOPTION[val]?.text} />
+      ) : (
+        EMPTY
+      ),
     valueType: 'select',
     fieldProps: {
       options: MYOPIAWARNSELECTOPTION,

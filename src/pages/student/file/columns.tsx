@@ -1,6 +1,8 @@
 import type { ProColumns } from '@ant-design/pro-table';
 import { EMPTY } from '@/utils/constant';
-import { MYOPIAWARNOPTION, MYOPIATYPE, HYPEROPIATYPE, ASTIGMATISMTYPE } from '@/utils/constant';
+import { MYOPIAWARNOPTION } from '@/utils/constant';
+import { Badge } from 'antd';
+import { visionResultColumn } from '@/utils/columns';
 
 export const listColumns: ProColumns<API.FileListItem>[] = [
   {
@@ -36,7 +38,7 @@ export const listColumns: ProColumns<API.FileListItem>[] = [
     renderText: (val: any[]) => `${val[0]?.cyl ?? EMPTY} / ${val[1]?.cyl ?? EMPTY}`,
   },
   {
-    title: '等效球镜（右/左',
+    title: '等效球镜（右/左)',
     dataIndex: 'details',
     renderText: (val: any[]) => `${val[0]?.se ?? EMPTY} / ${val[1]?.se ?? EMPTY}`,
   },
@@ -45,19 +47,17 @@ export const listColumns: ProColumns<API.FileListItem>[] = [
     dataIndex: 'details',
     renderText: (val: any[]) => `${val[0]?.axial ?? EMPTY} / ${val[1]?.axial ?? EMPTY}`,
   },
-  {
-    title: '视力结论',
-    dataIndex: 'myopiaLevel',
-    hideInForm: true,
-    renderText: (val: string, record) =>
-      `${MYOPIATYPE[val] ?? EMPTY} / ${HYPEROPIATYPE[record?.hyperopiaLevel!] ?? EMPTY} / ${
-        ASTIGMATISMTYPE[record?.astigmatismLevel!] ?? EMPTY
-      }`,
-  },
+  ...visionResultColumn,
   {
     title: '视力预警',
     dataIndex: 'warningLevel',
-    valueEnum: MYOPIAWARNOPTION,
+    width: 150,
+    renderText: (val?: number) =>
+      typeof val === 'number' && [0, 1, 2, 3, 4].includes(val) ? (
+        <Badge status={MYOPIAWARNOPTION[val]?.status} text={MYOPIAWARNOPTION[val]?.text} />
+      ) : (
+        EMPTY
+      ),
   },
   {
     title: '其他眼病',

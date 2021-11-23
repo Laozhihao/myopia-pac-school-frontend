@@ -5,9 +5,11 @@ import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { listColumns } from './columns';
 import { AddModal } from './add-modal';
 import { Link } from 'umi';
-import { Modal } from 'antd';
+import { Modal, Button, Tooltip } from 'antd';
 import { escape2Html } from '@/utils/common';
 import { getScreeningList } from '@/api/screen';
+import styles from './index.less';
+import { EMPTY } from '@/utils/constant';
 
 const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ScreenListItem>();
@@ -38,12 +40,21 @@ const TableList: React.FC = () => {
           >
             打印二维码/告知书
           </a>,
-          <Link
-            to={`/screening/result/?id=${record?.schoolStatisticId}&screeningPlanId=${record?.planId}`}
-            key="result"
-          >
-            筛查结果
-          </Link>,
+
+          record?.schoolStatisticId ? (
+            <Link
+              to={`/screening/result/?id=${record?.schoolStatisticId}&screeningPlanId=${record?.planId}`}
+              key="result"
+            >
+              筛查结果
+            </Link>
+          ) : (
+            <Tooltip title="当前没有筛查结果" key="tooltip">
+              <Button disabled type="link">
+                筛查结果
+              </Button>
+            </Tooltip>
+          ),
         ];
       },
     },
@@ -58,6 +69,7 @@ const TableList: React.FC = () => {
         pagination={{ pageSize: 10 }}
         options={false}
         actionRef={ref}
+        columnEmptyText={EMPTY}
         request={async (params) => {
           const datas = await getScreeningList({
             current: params.current,
@@ -94,11 +106,11 @@ const TableList: React.FC = () => {
       <Modal
         title="筛查内容"
         visible={textModalVisible}
-        onOk={() => {}}
+        width={800}
         onCancel={() => setTextModalVisible(false)}
         footer={null}
       >
-        <div dangerouslySetInnerHTML={{ __html: textHtml }} />
+        <div dangerouslySetInnerHTML={{ __html: textHtml }} className={styles.content} />
       </Modal>
     </PageContainer>
   );

@@ -28,10 +28,10 @@ export const createStorage = ({ prefixKey = '', storage = localStorage } = {}) =
      * @param expire
      */
     set(key: string, value: any, expire: number | null = DEFAULT_CACHE_TIME) {
-      const SCALE = 1000;
+      // const SCALE = 1000;
       const stringData = JSON.stringify({
         value,
-        expire: expire !== null ? new Date().getTime() + expire * SCALE : null,
+        expire: expire !== null ? new Date().getTime() + expire * 1000 : null,
       });
       this.storage.setItem(this.getKey(key), stringData);
     }

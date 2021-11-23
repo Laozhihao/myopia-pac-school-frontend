@@ -144,11 +144,6 @@ const FileList: React.FC = () => {
           defaultActiveKey={
             history?.location?.query?.tabKey ? history?.location?.query?.tabKey.toString() : '1'
           }
-          onChange={() => {
-            setTimeout(() => {
-              console.log(formRef, 'onchange');
-            }, 0);
-          }}
         >
           <TabPane tab="基本资料" key="1" forceRender={true}>
             <ProForm

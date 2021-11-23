@@ -7,6 +7,7 @@ import type { NoticeIconTabProps } from './NoticeList';
 import NoticeList from './NoticeList';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
+import noticeImg from '@/assets/images/notice.png';
 
 const { TabPane } = Tabs;
 
@@ -118,7 +119,7 @@ const NoticeIcon: React.FC<NoticeIconProps> & {
 };
 
 NoticeIcon.defaultProps = {
-  emptyImage: 'https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg',
+  emptyImage: noticeImg,
 };
 
 NoticeIcon.Tab = NoticeList;

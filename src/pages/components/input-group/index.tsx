@@ -32,7 +32,7 @@ export const InputGroup: React.FC<InputItemType> = (props) => {
         </Select>
       </Form.Item>
       <Form.Item name={props.inputName} style={{ width: 'inherit' }}>
-        <Input placeholder="请输入" onPressEnter={props?.onPressEnter} />
+        <Input placeholder="请输入" onPressEnter={props?.onPressEnter} allowClear />
       </Form.Item>
     </Input.Group>
   );

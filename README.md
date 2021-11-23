@@ -2,7 +2,7 @@
 
 ## 技术栈及使用要求
 
-> 1. 基于 react + axios + typescript + ant-design + ant-design-pro + scss + dumi + umi 构建的应用项目
+> 1. 基于 react 17.0 + axios + typescript 4.2.2 + ant-design 4.17.0 + ant-design-pro + scss + dumi 1.1.7 + umi 3.5.0 构建的应用项目
 > 2. 开发时请确保已了解或掌握以上技术要求！
 
 ## 代码约束
@@ -59,8 +59,7 @@ src：项目源码。开发的时候代码写在这里。
  |    |--school # 学校管理
  |    |--screening # 筛查管理
  |    |--student # 学生管理
- |--App.vue # 项目根视图
- |--main.ts # 项目入口文件
+ |--app.tsx # 项目入口文件
 
 ```
 

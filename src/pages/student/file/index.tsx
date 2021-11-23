@@ -186,7 +186,6 @@ const FileList: React.FC = () => {
               pagination={{ pageSize: 10 }}
               options={false}
               columnEmptyText={EMPTY}
-              // sticky={true}
               scroll={{
                 x: 'max-content',
               }}

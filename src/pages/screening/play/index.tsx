@@ -4,7 +4,7 @@ import ProTable from '@ant-design/pro-table';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { listColumns } from './columns';
 import { AddModal } from './add-modal';
-import { Link } from 'umi';
+import { history } from 'umi';
 import { Modal, Button, Tooltip } from 'antd';
 import { escape2Html } from '@/utils/common';
 import { getScreeningList } from '@/api/screen';
@@ -42,15 +42,21 @@ const TableList: React.FC = () => {
           </a>,
 
           record?.schoolStatisticId ? (
-            <Link
-              to={`/screening/result/?id=${record?.schoolStatisticId}&screeningPlanId=${record?.planId}`}
+            <Button
+              type="link"
+              size="small"
               key="result"
+              onClick={() =>
+                history.push(
+                  `/screening/result/?id=${record?.schoolStatisticId}&screeningPlanId=${record?.planId}`,
+                )
+              }
             >
               筛查结果
-            </Link>
+            </Button>
           ) : (
             <Tooltip title="当前没有筛查结果" key="tooltip">
-              <Button disabled type="link">
+              <Button disabled type="link" size="small">
                 筛查结果
               </Button>
             </Tooltip>

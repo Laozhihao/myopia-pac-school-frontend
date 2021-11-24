@@ -3,6 +3,10 @@ import { EMPTY } from '@/utils/constant';
 import { MYOPIAWARNOPTION } from '@/utils/constant';
 import { Badge } from 'antd';
 import { visionResultColumn } from '@/utils/columns';
+import { getFixedNum } from '@/utils/common';
+
+const typeNumberHandle = (val: any, digit: number, unit?: string) =>
+  typeof val === 'number' ? `${getFixedNum(val, digit)}${unit ?? ''}` : EMPTY;
 
 export const listColumns: ProColumns<API.FileListItem>[] = [
   {
@@ -16,36 +20,44 @@ export const listColumns: ProColumns<API.FileListItem>[] = [
     dataIndex: 'glassesType',
   },
   {
-    title: '裸眼视力（右/左)',
-    dataIndex: 'details',
-    renderText: (val: any[]) => `${val[0]?.lateriality ?? EMPTY} / ${val[1]?.lateriality ?? EMPTY}`,
-  },
-  {
-    title: '矫正视力（右/左）',
+    title: '裸眼视力（左/右）',
     dataIndex: 'details',
     renderText: (val: any[]) =>
-      `${val[0]?.correctedVision ?? EMPTY} / ${val[1]?.correctedVision ?? EMPTY}`,
+      `${typeNumberHandle(val[0]?.nakedVision, 1)} / ${typeNumberHandle(val[1]?.nakedVision, 1)}`,
   },
   {
-    title: '球镜（右/左)',
+    title: '矫正视力（左/右）',
     dataIndex: 'details',
-    renderText: (val: any[]) => `${val[0]?.sph ?? EMPTY} / ${val[1]?.sph ?? EMPTY}`,
+    renderText: (val: any[]) =>
+      `${typeNumberHandle(val[0]?.correctedVision, 1)} / ${typeNumberHandle(
+        val[1]?.correctedVision,
+        1,
+      )}`,
+  },
+  {
+    title: '球镜（左/右）',
+    dataIndex: 'details',
+    renderText: (val: any[]) =>
+      `${typeNumberHandle(val[0]?.sph, 2, 'D')} / ${typeNumberHandle(val[1]?.sph, 2, 'D')}`,
   },
 
   {
-    title: '柱镜（右/左)',
+    title: '柱镜（左/右）',
     dataIndex: 'details',
-    renderText: (val: any[]) => `${val[0]?.cyl ?? EMPTY} / ${val[1]?.cyl ?? EMPTY}`,
+    renderText: (val: any[]) =>
+      `${typeNumberHandle(val[0]?.cyl, 2, 'D')} / ${typeNumberHandle(val[1]?.cyl, 2, 'D')}`,
   },
   {
-    title: '等效球镜（右/左)',
+    title: '等效球镜（左/右）',
     dataIndex: 'details',
-    renderText: (val: any[]) => `${val[0]?.se ?? EMPTY} / ${val[1]?.se ?? EMPTY}`,
+    renderText: (val: any[]) =>
+      `${typeNumberHandle(val[0]?.se, 2, 'D')} / ${typeNumberHandle(val[1]?.se, 2, 'D')}`,
   },
   {
-    title: '轴位（右/左)',
+    title: '轴位（左/右）',
     dataIndex: 'details',
-    renderText: (val: any[]) => `${val[0]?.axial ?? EMPTY} / ${val[1]?.axial ?? EMPTY}`,
+    renderText: (val: any[]) =>
+      `${typeNumberHandle(val[0]?.axial, 2, '°')} / ${typeNumberHandle(val[1]?.axial, 2, '°')}`,
   },
   ...visionResultColumn,
   {
@@ -54,7 +66,7 @@ export const listColumns: ProColumns<API.FileListItem>[] = [
     width: 150,
     renderText: (val?: number) =>
       typeof val === 'number' && [0, 1, 2, 3, 4].includes(val) ? (
-        <Badge status={MYOPIAWARNOPTION[val]?.status} text={MYOPIAWARNOPTION[val]?.text} />
+        <Badge color={MYOPIAWARNOPTION[val]?.color} text={MYOPIAWARNOPTION[val]?.text} />
       ) : (
         EMPTY
       ),

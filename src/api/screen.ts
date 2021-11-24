@@ -68,9 +68,25 @@ export async function getScreeningDetail(screeningPlanId: number | string) {
   });
 }
 
-/** 获取筛查详情 POST /school/vision/screening/export/student/warning/archive */
+/** 导出学生跟踪数据 GET /school/vision/screening/export/student/warning/archive */
 export async function exportScreeningStudent(params: API.ObjectType) {
   return request<API.RequestResult>('/school/vision/screening/export/student/warning/archive', {
+    method: 'GET',
+    params,
+  });
+}
+
+/** 导出筛查报告 GET /school/vision/screening/school/export */
+export async function exportScreeningReport(params: API.ObjectType) {
+  return request<API.RequestResult>('/school/vision/screening/school/export', {
+    method: 'GET',
+    params,
+  });
+}
+
+/** 导出筛查数据 GET /school/vision/screening/plan/export */
+export async function exportScreeningData(params: API.ObjectType) {
+  return request<API.RequestResult>('/school/vision/screening/plan/export', {
     method: 'GET',
     params,
   });

@@ -78,17 +78,6 @@ const InfoCenter: React.FC = () => {
             setSelectedRows(rows);
           },
         }}
-        scroll={{
-          x: '100vw',
-        }}
-        columnsStateMap={{
-          name: {
-            fixed: 'left',
-          },
-          callNo: {
-            fixed: 'right',
-          },
-        }}
         toolBarRender={() => [
           <Button key="primary" type="primary" ghost onClick={() => refreshInit(selectedRows)}>
             <CheckOutlined />已 读

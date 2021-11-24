@@ -215,7 +215,7 @@ export const warnColumns: (params: WarnColumnsType) => ProColumns<API.ScreenWarn
     dataIndex: 'warningLevel',
     renderText: (val?: number) =>
       typeof val === 'number' && [0, 1, 2, 3, 4].includes(val) ? (
-        <Badge status={MYOPIAWARNOPTION[val]?.status} text={MYOPIAWARNOPTION[val]?.text} />
+        <Badge color={MYOPIAWARNOPTION[val]?.color} text={MYOPIAWARNOPTION[val]?.text} />
       ) : (
         EMPTY
       ),

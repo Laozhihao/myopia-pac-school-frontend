@@ -16,11 +16,11 @@ export const BINDOPTIONS = {
 
 // 视力预警
 export const MYOPIAWARNOPTION = {
-  0: { text: '0级预警', status: 'success' },
-  4: { text: '0级预警 远视储备不足', status: 'success' },
-  1: { text: '1级预警', status: 'warning' },
-  2: { text: '2级预警', status: 'error' },
-  3: { text: '3级预警', status: 'error' },
+  0: { text: '0级预警', color: 'green' },
+  4: { text: '0级预警 远视储备不足', color: 'lime' },
+  1: { text: '1级预警', color: 'orange' },
+  2: { text: '2级预警', color: 'magenta' },
+  3: { text: '3级预警', color: 'red' },
 };
 
 // 视力预警 下拉

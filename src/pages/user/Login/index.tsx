@@ -16,6 +16,7 @@ import { setStorageInfo, setToken } from '@/hook/storage';
 
 // token前缀 Bearer
 let verifyCount = 0;
+let verifyRejectCb: (reason?: any) => void = () => {};
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -40,6 +41,7 @@ const Login: React.FC = () => {
    */
   const onCancel = () => {
     verifyCount = 0;
+    verifyRejectCb?.();
     setVisible(false);
     const captchaEl: any = document.querySelector('#captcha');
     captchaEl.innerHTML = '';
@@ -49,6 +51,7 @@ const Login: React.FC = () => {
    * @desc 验证成功
    */
   const verifySuccess = (cb: (value?: unknown) => void) => {
+    verifyRejectCb = () => {};
     onCancel();
     cb();
   };
@@ -70,6 +73,7 @@ const Login: React.FC = () => {
    */
   const onVerify = () => {
     return new Promise((resolve, reject) => {
+      verifyRejectCb = reject;
       setVisible(true);
       Slider.initOptions({
         el: document.getElementById('captcha'),

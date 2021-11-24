@@ -10,7 +10,12 @@ import { history, Link } from 'umi';
 import { AddModal } from './add-modal';
 import { ExportModal } from '@/pages/components/export-modal';
 import { useState } from 'react';
-import { getScreeningResult, exportScreeningStudent } from '@/api/screen';
+import {
+  getScreeningResult,
+  exportScreeningStudent,
+  exportScreeningReport,
+  exportScreeningData,
+} from '@/api/screen';
 import styles from './index.less';
 import { EMPTY, DATE, SCREENSTATUS, GLASSESTYPE, EMPTY_TEXT } from '@/utils/constant';
 import { getScreeningWarn, getScreeningGradeList, getScreeningDetail } from '@/api/screen';
@@ -30,6 +35,8 @@ type VisitResultType = {
   visitResult?: string;
 };
 
+let searchForm = {}; // 搜索表单项
+
 const ScreeningResult: React.FC = () => {
   const [exportVisible, setExportVisible] = useState(false); // 导出visible
   const [detailInfo, setDetailInfo] = useState<DetailType>({
@@ -37,18 +44,18 @@ const ScreeningResult: React.FC = () => {
     tabKey: '',
     title: '',
   }); // 弹窗props
-  const [planId, setPlanId] = useState<string>(); // 计划id
   const [resultInfo, setResultInfo] = useState<API.ScreenResultListItem[]>([]); // 结果分析
   const [gradeOption, setGradeOption] = useState<any[]>([]);
-  const [schoolDetail, setSchoolDetail] = useState<API.ObjectType>({});
+  const [schoolDetail, setSchoolDetail] = useState<API.ObjectType>({}); // 筛查详情
   const [visitResultInfo, setVisitResultInfo] = useState<VisitResultType>({
     visible: false,
     glassesSuggest: '',
     visitResult: '',
   }); // 医院复查反馈弹窗
+  const [exportType, setExportType] = useState(0); // 导出弹窗类型 0 筛查报告 1 筛查数据 2 学生跟踪数据
   const ref = useRef<ProFormInstance>();
 
-  let searchForm = {}; // 搜索表单项
+  const { query: { id, screeningPlanId } = {} } = history.location;
 
   const tableOptions = [
     { title: '视力筛查情况', columns: firstColumns, key: 'screen' },
@@ -61,6 +68,12 @@ const ScreeningResult: React.FC = () => {
     { title: '视力监测预警', columns: thirdColumns, key: 'monitor' },
     { title: '视力异常跟踪', columns: fourthColumns, key: 'abnormal' },
   ];
+
+  const exportOptions = {
+    0: { title: '筛查报告', content: '在所选择筛查计划下的筛查报告' },
+    1: { title: '筛查数据', content: '在所选择筛查计划下的全部筛查原始数据' },
+    2: { title: '学生预警跟踪数据', content: '在所选择筛查计划下的筛查学生的预警跟踪反馈情况表' },
+  };
 
   /**
    * @desc 查看医生建议
@@ -100,8 +113,6 @@ const ScreeningResult: React.FC = () => {
   };
 
   useMemo(() => {
-    const { query: { id, screeningPlanId } = {} } = history.location;
-    setPlanId(screeningPlanId as string);
     if (id) {
       getScreeningResult(id as string).then((res) => {
         setResultInfo([res?.data]);
@@ -143,16 +154,29 @@ const ScreeningResult: React.FC = () => {
   };
 
   /**
-   * @desc 导出
+   * @desc 确定导出
    */
-  const onExport = async () => {
-    const parm = {
-      planId: resultInfo[0].screeningPlanId,
-      screeningOrgId: resultInfo[0].screeningOrgId,
-    };
-    await exportScreeningStudent(parm);
+  const onConfirm = async () => {
+    const { srcScreeningNoticeId: screeningNoticeId, id: planId, screeningOrgId } = schoolDetail;
+    const parm = exportType
+      ? exportType === 1
+        ? { planId }
+        : { planId, screeningOrgId }
+      : { screeningNoticeId, planId };
+    const func = exportType
+      ? exportType === 1
+        ? exportScreeningData
+        : exportScreeningStudent
+      : exportScreeningReport;
+    await func(parm);
     setExportVisible(false);
     message.success('导出成功');
+  };
+
+  // 结果统计分析导出
+  const onExport = (val: number) => {
+    setExportType(val);
+    setExportVisible(true);
   };
 
   return (
@@ -169,6 +193,14 @@ const ScreeningResult: React.FC = () => {
         </p>
         <Tabs defaultActiveKey="1">
           <TabPane tab="结果统计分析" key="1">
+            <div className={styles.btn}>
+              <Button type="primary" style={{ marginRight: 10 }} onClick={() => onExport(0)}>
+                导出筛查报告
+              </Button>
+              <Button type="primary" onClick={() => onExport(1)}>
+                导出筛查数据
+              </Button>
+            </div>
             {tableOptions.map((item) => (
               <Fragment key={item.key}>
                 <p className={styles.table_title}>
@@ -213,7 +245,7 @@ const ScreeningResult: React.FC = () => {
               request={async (params) => {
                 const datas = await getScreeningWarn({
                   ...searchForm,
-                  planId,
+                  planId: screeningPlanId,
                   current: params.current,
                   size: params.pageSize,
                 });
@@ -245,7 +277,7 @@ const ScreeningResult: React.FC = () => {
                     type="primary"
                     key="primary"
                     onClick={() => {
-                      setExportVisible(true);
+                      onExport(2);
                     }}
                   >
                     <UploadOutlined /> 导出
@@ -269,15 +301,13 @@ const ScreeningResult: React.FC = () => {
       />
       <ExportModal
         visible={exportVisible}
-        title="学生预警跟踪数据"
+        title={exportOptions[exportType].title}
         onCancel={() => {
           setExportVisible(false);
         }}
-        onOk={onExport}
+        onOk={onConfirm}
       >
-        <p className={styles.content}>
-          导出内容：在所选择筛查计划下的筛查学生的预警跟踪反馈情况表。
-        </p>
+        <p className={styles.content}>导出内容：{exportOptions[exportType].content}</p>
       </ExportModal>
       <Modal
         title="医生复查反馈"

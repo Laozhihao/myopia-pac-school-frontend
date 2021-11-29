@@ -223,6 +223,7 @@ export const warnColumns: (params: WarnColumnsType) => ProColumns<API.ScreenWarn
     fieldProps: {
       options: MYOPIAWARNSELECTOPTION,
     },
+    width: 200,
     order: 1,
   },
   {

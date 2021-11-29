@@ -61,7 +61,7 @@ export const listColumns: ProColumns<API.FileListItem>[] = [
   {
     title: '视力预警',
     dataIndex: 'warningLevel',
-    width: 150,
+    width: 200,
     renderText: (val?: number) =>
       typeof val === 'number' && [0, 1, 2, 3, 4].includes(val) ? (
         <Badge color={MYOPIAWARNOPTION[val]?.color} text={MYOPIAWARNOPTION[val]?.text} />

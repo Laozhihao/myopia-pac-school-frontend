@@ -41,11 +41,10 @@ export async function getNation(options?: Record<string, any>) {
 }
 
 /** 刷新token POST /auth/refresh/token */
-export async function refreshToken(data: FormData) {
+export async function refreshToken(params?: Record<string, any>) {
   return request<API.RequestToken>('/auth/refresh/token', {
     method: 'POST',
-    data,
-    requestType: 'form',
+    params,
   });
 }
 

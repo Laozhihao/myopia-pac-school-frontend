@@ -7,7 +7,6 @@ import RightContent from '@/components/RightContent';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { getToken, getUser, getRefreshToken, clearStorage, setToken } from '@/hook/storage';
 import { checkStatus } from '@/axios/check-status';
-import { toFormData } from './utils/common';
 import { refreshToken } from './api/common';
 import Logo from '@/assets/images/logo@2x.png';
 
@@ -114,13 +113,11 @@ export const request: RequestConfig = {
           return response;
         }
         try {
-          const { data } = await refreshToken(
-            toFormData({
-              client_id: '2',
-              client_secret: '123456',
-              refresh_token,
-            }),
-          );
+          const { data } = await refreshToken({
+            client_id: '2',
+            client_secret: '123456',
+            refresh_token,
+          });
           setToken(data!.tokenInfo);
           return await requestFn(options.url, {
             ...options,

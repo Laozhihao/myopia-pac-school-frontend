@@ -151,7 +151,7 @@ const ScreeningResult: React.FC = () => {
       classId,
       visionLabel: formVal?.warningLevel,
       isReview: formVal?.isReview ? !!Number(formVal?.isReview) : undefined,
-      isBindMq: formVal?.isBindMq ? !!Number(formVal?.isBindMq) : undefined,
+      isBindMp: formVal?.isBindMp ? !!Number(formVal?.isBindMp) : undefined,
     });
     ref?.current?.submit();
   };

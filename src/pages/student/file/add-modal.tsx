@@ -10,7 +10,7 @@ export const AddModal: React.FC<API.ModalItemType & FileCardPropsParams> = (prop
   // 获取当前域名
   useMemo(() => {
     const { protocol, host } = location;
-    const hostPath = `${protocol}//${host.replace(/mgmt/, 'report')}`;
+    const hostPath = `${protocol}//${host.replace(/school/, 'report')}`;
     setCurrentHostPath(hostPath);
   }, []);
 

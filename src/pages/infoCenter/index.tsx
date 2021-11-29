@@ -67,6 +67,7 @@ const InfoCenter: React.FC = () => {
         actionRef={ref}
         className={styles.table}
         rowKey="id"
+        rowClassName={(record) => (record.status === 1 ? 'row-gray' : '')}
         search={false}
         pagination={{ pageSize: 10 }}
         tableAlertRender={false}

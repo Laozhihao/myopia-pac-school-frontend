@@ -54,7 +54,7 @@ export const secondColumns: ProColumns<API.ScreenResultListItem>[] = [
       `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
   },
   {
-    title: '轻度近视（人数/占比）',
+    title: '低度近视（人数/占比）',
     dataIndex: 'myopiaLevelLight',
     renderText: (val: number, record) =>
       `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
@@ -66,7 +66,7 @@ export const secondColumns: ProColumns<API.ScreenResultListItem>[] = [
       `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
   },
   {
-    title: '高度近视（人数/占比）',
+    title: '重度近视（人数/占比）',
     dataIndex: 'myopiaLevelHigh',
     renderText: (val: number, record) =>
       `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
@@ -227,7 +227,7 @@ export const warnColumns: (params: WarnColumnsType) => ProColumns<API.ScreenWarn
   },
   {
     title: '绑定公众号',
-    dataIndex: 'isBindMq',
+    dataIndex: 'isBindMp',
     valueEnum: BINDOPTIONS,
     renderText: (val: boolean | null | undefined) =>
       `${typeof val === 'boolean' ? (val ? '已绑定' : '未绑定') : EMPTY}`,

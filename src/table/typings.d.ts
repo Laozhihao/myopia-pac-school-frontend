@@ -92,7 +92,7 @@ declare namespace API {
     gradeName?: string;
     className?: string;
     visitResult?: string; // 就诊结论(医生反馈)
-    isBindMq?: boolean; // 公众号绑定
+    isBindMp?: boolean; // 公众号绑定
     isReview?: boolean; // 医院复查
     glassesSuggest?: string; // 配镜建议
     height?: number | string; // 课座椅高度

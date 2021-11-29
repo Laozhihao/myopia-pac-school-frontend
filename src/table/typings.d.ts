@@ -26,6 +26,8 @@ declare namespace API {
 
   // 档案管理列表
   type FileListItem = {
+    templateId: string | number;
+    resultId: string | number;
     screeningTitle?: string;
     screeningDate?: string;
     glassesType?: string;
@@ -35,7 +37,7 @@ declare namespace API {
     hyperopiaLevel?: string; // 远视情况
     astigmatismLevel?: string; // 散光情况
     otherEyeDiseases?: string[]; // 其他眼病
-  };
+  } & MyopiaType;
 
   // 视力筛查列表
   type ScreenListItem = {

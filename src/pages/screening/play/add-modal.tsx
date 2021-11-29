@@ -6,7 +6,7 @@ import type { ProFormInstance } from '@ant-design/pro-form';
 import React, { Fragment, useEffect, useMemo, useState, useRef } from 'react';
 import { StepsForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import RightTips from './right-tips';
-import { getschoolGrade } from '@/api/school';
+import { getScreeningGradeList } from '@/api/screen';
 import { uploadFile } from '@/api/common';
 import UploadDefaultImg from '@/assets/images/code.png';
 
@@ -108,9 +108,12 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   ];
 
   useMemo(async () => {
-    const { data = [] } = await getschoolGrade();
-    setGradeOptions(data);
-  }, []);
+    if (props?.visible) {
+      const { planId: screeningPlanId } = props?.currentRow || {};
+      const { data = [] } = await getScreeningGradeList(screeningPlanId);
+      setGradeOptions(data);
+    }
+  }, [props?.visible, props?.currentRow]);
 
   useEffect(() => {
     if (props?.currentRow && current && !orgInfo) {
@@ -279,7 +282,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
             <Cascader
               options={gradeOptions}
               placeholder="请选择"
-              fieldNames={{ label: 'name', value: 'id', children: 'child' }}
+              fieldNames={{ label: 'name', value: 'id', children: 'classes' }}
               onChange={setSelectArr}
             />
           </Form.Item>

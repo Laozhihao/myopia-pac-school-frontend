@@ -55,9 +55,18 @@ const FileList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       width: 150,
-      render: () => {
+      render: (_, record) => {
         return [
-          <a key="print" onClick={() => setCardInfo({ ...cardInfo, visible: true })}>
+          <a
+            key="print"
+            onClick={() =>
+              setCardInfo({
+                resultId: record.resultId,
+                templateId: record.templateId,
+                visible: true,
+              })
+            }
+          >
             打印档案卡
           </a>,
         ];

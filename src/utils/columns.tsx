@@ -20,7 +20,7 @@ export const visionColumn: ProColumns<API.MyopiaType>[] = [
 ];
 
 // 视力结论 戴镜
-export const visionResultColumn: ProColumns<API.MyopiaType>[] = [
+export const visionResultColumn: ProColumns<API.FileListItem>[] = [
   {
     title: '视力结论',
     dataIndex: 'myopiaLevel',

@@ -1,5 +1,5 @@
 import { Modal, Spin, Button } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { FileCardPropsParams } from './index';
 
 export const AddModal: React.FC<API.ModalItemType & FileCardPropsParams> = (props) => {
@@ -7,16 +7,21 @@ export const AddModal: React.FC<API.ModalItemType & FileCardPropsParams> = (prop
   const [iframeSrc, setIframeSrc] = useState(''); // iframe 嵌套页
   const [currentHostPath, setCurrentHostPath] = useState(''); // 域名
 
-  useEffect(() => {
-    setLoading(true);
-    // 获取当前域名
+  // 获取当前域名
+  useMemo(() => {
     const { protocol, host } = location;
     const hostPath = `${protocol}//${host.replace(/mgmt/, 'report')}`;
     setCurrentHostPath(hostPath);
-    setIframeSrc(
-      `${hostPath}?resultId=${props.resultId}&templateId=${props.templateId}&crossStatus=true`,
-    );
   }, []);
+
+  useEffect(() => {
+    if (props.visible) {
+      setLoading(true);
+      setIframeSrc(
+        `${currentHostPath}?resultId=${props.resultId}&templateId=${props.templateId}&crossStatus=true`,
+      );
+    }
+  }, [props.visible]);
 
   // Iframe加载完成
   const loadHandler = () => {

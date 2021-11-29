@@ -3,10 +3,7 @@ import { EMPTY } from '@/utils/constant';
 import { MYOPIAWARNOPTION } from '@/utils/constant';
 import { Badge } from 'antd';
 import { visionResultColumn } from '@/utils/columns';
-import { getFixedNum, formatLength } from '@/utils/common';
-
-const typeNumberHandle = (val: any, digit: number, unit?: string) =>
-  typeof val === 'number' ? `${getFixedNum(val, digit)}${unit ?? ''}` : EMPTY;
+import { formatLength, typeNumberHandle, symbolHandle } from '@/utils/common';
 
 export const listColumns: ProColumns<API.FileListItem>[] = [
   {
@@ -38,20 +35,20 @@ export const listColumns: ProColumns<API.FileListItem>[] = [
     title: '球镜（左/右）',
     dataIndex: 'details',
     renderText: (val: any[]) =>
-      `${typeNumberHandle(val[1]?.sph, 2, 'D')} / ${typeNumberHandle(val[0]?.sph, 2, 'D')}`,
+      `${symbolHandle(val[1]?.sph, 2, 'D')} / ${symbolHandle(val[0]?.sph, 2, 'D')}`,
   },
 
   {
     title: '柱镜（左/右）',
     dataIndex: 'details',
     renderText: (val: any[]) =>
-      `${typeNumberHandle(val[1]?.cyl, 2, 'D')} / ${typeNumberHandle(val[0]?.cyl, 2, 'D')}`,
+      `${symbolHandle(val[1]?.cyl, 2, 'D')} / ${symbolHandle(val[0]?.cyl, 2, 'D')}`,
   },
   {
     title: '等效球镜（左/右）',
     dataIndex: 'details',
     renderText: (val: any[]) =>
-      `${typeNumberHandle(val[1]?.se, 2, 'D')} / ${typeNumberHandle(val[0]?.se, 2, 'D')}`,
+      `${symbolHandle(val[1]?.se, 2, 'D')} / ${symbolHandle(val[0]?.se, 2, 'D')}`,
   },
   {
     title: '轴位（左/右）',
@@ -60,6 +57,7 @@ export const listColumns: ProColumns<API.FileListItem>[] = [
       `${typeNumberHandle(val[1]?.axial, 0, '°')} / ${typeNumberHandle(val[0]?.axial, 0, '°')}`,
   },
   ...visionResultColumn,
+
   {
     title: '视力预警',
     dataIndex: 'warningLevel',

@@ -1,3 +1,5 @@
+import { EMPTY } from '@/utils/constant';
+
 /**
  * @desc 数据转成form data格式
  * @param params 需要转的对象
@@ -60,6 +62,26 @@ export function getTotalNumber(arr: any[]) {
  * @param {number} digit - 保留几位小数
  */
 export const getFixedNum = (num: number | string, digit = 2) => Number(num).toFixed(digit);
+
+/**
+ * @desc 获取保留指定位数的小数点数据，默认保留两位 加上单位
+ * @param val - 数据
+ * @param digit - 保留几位小数
+ * @param unit - 单位
+ */
+export const typeNumberHandle = (val: any, digit: number, unit?: string) =>
+  typeof val === 'number' ? `${getFixedNum(val, digit)}${unit ?? ''}` : EMPTY;
+
+/**
+ * @desc 特殊数据加上+ 符号
+ * @param val - 数据
+ * @param digit - 保留几位小数
+ * @param unit - 单位
+ */
+export const symbolHandle = (val: any, digit: number, unit?: string) =>
+  val !== null && Number(val) >= 0
+    ? `+${typeNumberHandle(val, digit, unit)}`
+    : typeNumberHandle(val, digit, unit);
 
 /**
  * @desc 级联数据转换 number 类型的id 转换成string

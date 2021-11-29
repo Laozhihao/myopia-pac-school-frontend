@@ -41,8 +41,8 @@ const FileList: React.FC = () => {
   const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
   const [cardInfo, setCardInfo] = useState<FileCardPropsParams>({
     visible: false,
-    resultId: 32682,
-    templateId: 2,
+    resultId: '',
+    templateId: '', // 模板id
   });
   const [studentForm, setStudentForm] = useState<API.PropsType>(studentFormOptions(validatorCb, 2));
   const actionRef = useRef<ActionType>();

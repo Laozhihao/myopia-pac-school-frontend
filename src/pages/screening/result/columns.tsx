@@ -237,14 +237,14 @@ export const warnColumns: (params: WarnColumnsType) => ProColumns<API.ScreenWarn
     title: '医院复查',
     dataIndex: 'isReview',
     valueEnum: REVIEWOPTIONS,
-    renderText: (val: boolean) => `${val ? '已去医院' : '未去医院'}`,
+    renderText: (val: boolean) => `${val ? '已去' : '未去'}`,
   },
   {
     title: '复查反馈',
     dataIndex: 'visitResult',
     search: false,
     render: (_, record) => {
-      return record?.visitResult ? <a onClick={() => show?.(record)}>查看</a> : EMPTY_TEXT;
+      return record?.visitResult ? <a onClick={() => show?.(record)}>查看</a> : EMPTY;
     },
   },
   {

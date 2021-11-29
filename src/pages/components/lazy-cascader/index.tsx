@@ -53,12 +53,13 @@ const LazyCascader: React.FC<LazyCascaderProps> = (props) => {
 
   const getValueProps = (selectOptions: (number | string)[]) => {
     if (!selectOptions || (selectOptions && !selectOptions.length)) return {}; // 无回显地区
-    const currentOrigin = findTarget(props.options!, selectOptions[0])!;
+    const newSelectOptions = [...new Set(selectOptions)]; // 避免直辖市的省市code 一致无法回显
+    const currentOrigin = findTarget(props.options!, newSelectOptions[0])!;
     if (!currentOrigin) return {};
-    const targetIndex = filterOption.findIndex((subItem) => subItem.value === selectOptions[0])!;
+    const targetIndex = filterOption.findIndex((subItem) => subItem.value === newSelectOptions[0])!;
     filterOption.splice(targetIndex, 1, findAndChangeFileds(currentOrigin, props.fieldNames));
     return {
-      value: selectOptions,
+      value: newSelectOptions,
       options: [...filterOption],
     };
   };

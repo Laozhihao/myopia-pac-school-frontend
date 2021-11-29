@@ -16,6 +16,7 @@ module.exports = {
     'react/no-array-index-key': 'off',
     'no-param-reassign': 'off',
     'no-nested-ternary': 'off',
+    'no-restricted-globals': 'off',
     '@typescript-eslint/no-magic-numbers': [
       'error',
       {

@@ -68,6 +68,15 @@ export const GLASSESTYPE = {
   0: '不佩戴眼镜',
   1: '佩戴框架眼镜',
   2: '佩戴隐形眼镜',
+  3: '夜戴角膜塑形镜',
+};
+
+// 戴镜类型
+export const GLASSESSUGGESTTYPE = {
+  0: '无',
+  1: '配框架眼镜 ',
+  2: '配OK眼镜',
+  3: '配隐形眼镜',
 };
 
 // 近视情况

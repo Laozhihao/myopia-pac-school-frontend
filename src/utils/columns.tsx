@@ -13,8 +13,8 @@ export const visionColumn: ProColumns<API.MyopiaType>[] = [
       myopiaLevel && descArr.push(MYOPIATYPE[myopiaLevel]);
       hyperopiaLevel && descArr.push(HYPEROPIATYPE[hyperopiaLevel]);
       astigmatismLevel && descArr.push(ASTIGMATISMTYPE[astigmatismLevel]);
-      const descStr = descArr.length ? `，${descArr.join('、')}` : '';
-      return !val ? EMPTY : `${GLASSESTYPE[val]}${descStr}`;
+      const descStr = descArr.length ? `${descArr.join('、')}` : '';
+      return `${GLASSESTYPE[val] ?? ''}${GLASSESTYPE[val] && descArr.length ? '，' : ''}${descStr}`;
     },
   },
 ];

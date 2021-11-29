@@ -69,13 +69,13 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <ProTable<API.ScreenListItem, API.PageParams>
-        tableStyle={{ paddingTop: 30 }}
         rowKey="planId"
         search={false}
         pagination={{ pageSize: 10 }}
         options={false}
         actionRef={ref}
         columnEmptyText={EMPTY}
+        toolBarRender={() => [<p className={styles.tips}>数据统计时间：当天的凌晨00：00</p>]}
         request={async (params) => {
           const datas = await getScreeningList({
             current: params.current,

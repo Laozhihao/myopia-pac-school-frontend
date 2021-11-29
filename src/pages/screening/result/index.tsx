@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, Fragment } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Tabs, Card, Button, Modal, message } from 'antd';
+import { Tabs, Card, Button, Modal, message, Row, Col } from 'antd';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { firstColumns, secondColumns, thirdColumns, fourthColumns, warnColumns } from './columns';
 import ProTable from '@ant-design/pro-table';
@@ -17,7 +17,7 @@ import {
   exportScreeningData,
 } from '@/api/screen';
 import styles from './index.less';
-import { EMPTY, DATE, SCREENSTATUS, GLASSESTYPE, EMPTY_TEXT } from '@/utils/constant';
+import { EMPTY, DATE, SCREENSTATUS, GLASSESSUGGESTTYPE, EMPTY_TEXT } from '@/utils/constant';
 import { getScreeningWarn, getScreeningGradeList, getScreeningDetail } from '@/api/screen';
 import moment from 'moment';
 
@@ -91,7 +91,10 @@ const ScreeningResult: React.FC = () => {
       valueType: 'option',
       render: (_, record) => {
         return [
-          <Link key="manage" to={`/student/file?id=${record?.schoolStudentId}`}>
+          <Link
+            key="manage"
+            to={`/student/file?id=${record?.schoolStudentId}&studentId=${record?.studentId}`}
+          >
             档案管理
           </Link>,
         ];
@@ -208,6 +211,7 @@ const ScreeningResult: React.FC = () => {
                   <span onClick={() => showModal({ tabKey: item.key, title: item.title })}>
                     <QuestionCircleOutlined style={{ marginLeft: 5 }} />
                   </span>
+                  <span className={styles.subTitle}>{item.subTitle}</span>
                 </p>
                 <ProTable<API.ScreenResultListItem>
                   className={styles.table}
@@ -315,8 +319,14 @@ const ScreeningResult: React.FC = () => {
         onCancel={() => setVisitResultInfo({ ...visitResultInfo, visible: false })}
         footer={null}
       >
-        <p>建议配镜：{GLASSESTYPE[visitResultInfo?.glassesSuggest!] ?? EMPTY_TEXT}</p>
-        <p>医生诊断：{visitResultInfo?.visitResult}</p>
+        <Row>
+          <Col span={4}>建议配镜：</Col>
+          <Col span={20}>{GLASSESSUGGESTTYPE[visitResultInfo?.glassesSuggest!] ?? EMPTY_TEXT}</Col>
+        </Row>
+        <Row>
+          <Col span={4}>医生诊断：</Col>
+          <Col span={20}>{visitResultInfo?.visitResult}</Col>
+        </Row>
       </Modal>
     </PageContainer>
   );

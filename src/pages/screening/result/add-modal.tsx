@@ -172,13 +172,6 @@ export const AddModal: React.FC<API.ModalItemType & { tabKey?: string }> = (prop
             </p>
           ))}
         </div>
-        <p className={styles.title}>二、0-3级预警判断、远视储备不足判断：</p>
-        <p className={styles.title}>1、远视储备不足判断</p>
-        <ul>
-          <li>3-5岁（3≤年龄＜6）：0＜SE≤+1.00D</li>
-          <li>6岁及以上（年龄≥6）：0＜SE≤+0.50D</li>
-        </ul>
-        <p className={styles.title}>2、0-3级预警判断（等效球镜SE，柱镜DC）</p>
         <Image width={750} src={monitorImg} />
       </>
     ),
@@ -204,7 +197,11 @@ export const AddModal: React.FC<API.ModalItemType & { tabKey?: string }> = (prop
   return (
     <Modal
       title={props.title}
-      width={1000}
+      width={850}
+      bodyStyle={{
+        maxHeight: 700,
+        overflow: 'auto',
+      }}
       visible={props.visible}
       footer={null}
       onCancel={() => props.onCancel()}

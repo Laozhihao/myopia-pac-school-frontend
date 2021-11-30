@@ -54,7 +54,7 @@ export const AddModal: React.FC<API.ModalItemType & FileCardPropsParams> = (prop
       onCancel={() => props.onCancel()}
       width={810}
       footer={null}
-      bodyStyle={{ height: 800, overflow: 'auto' }}
+      bodyStyle={{ height: 460, overflow: 'auto' }}
     >
       <Spin spinning={loading}>
         <Button type="primary" onClick={onPdf} style={{ marginBottom: 20 }}>

@@ -100,7 +100,7 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
         destroyOnClose: true,
         onCancel: () => props.onCancel(false),
         bodyStyle: {
-          height: 600,
+          maxHeight: 400,
           overflow: 'auto',
         },
       }}

@@ -225,7 +225,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     <Modal
       title={props.title}
       width={800}
-      bodyStyle={{ maxHeight: 650, overflow: 'auto' }}
+      bodyStyle={{ maxHeight: 460, overflow: 'auto' }}
       visible={props.visible}
       footer={null}
       destroyOnClose

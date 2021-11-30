@@ -118,7 +118,7 @@ export const request: RequestConfig = {
             client_secret: '123456',
             refresh_token,
           });
-          setToken(data!.tokenInfo);
+          data && setToken(data);
           return await requestFn(options.url, {
             ...options,
             headers: {

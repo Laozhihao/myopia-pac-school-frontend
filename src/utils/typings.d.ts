@@ -12,13 +12,8 @@ declare namespace API {
   // token类型
   type RequestToken = {
     code?: number;
-    data?: TokenData;
+    data?: TokenInfo;
     message?: string;
-  };
-
-  type TokenData = {
-    tokenInfo: TokenInfo;
-    [key?: string]: any;
   };
 
   type TokenInfo = {

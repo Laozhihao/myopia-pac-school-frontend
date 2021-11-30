@@ -45,7 +45,9 @@ export const escape2Html = (str: string) => {
  */
 
 export function getPercentage(moleculeVal = 0, denominatorVal = 0, company = '%') {
-  return `${((moleculeVal / denominatorVal) * 100).toFixed(2)}${company}`;
+  return denominatorVal === 0
+    ? `${(moleculeVal * 100).toFixed(2)}${company}`
+    : `${((moleculeVal / denominatorVal) * 100).toFixed(2)}${company}`;
 }
 
 /**

@@ -87,7 +87,7 @@ export const secondColumns: ProColumns<API.ScreenResultListItem>[] = [
     title: '戴镜情况（人数/占比）',
     dataIndex: 'wearingGlassesNumbers',
     renderText: (val: number, record) =>
-      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
+      `${val} / ${getPercentage(val, record?.realScreeningNumbers)}`,
   },
 ];
 
@@ -111,39 +111,39 @@ export const thirdColumns: ProColumns<API.ScreenResultListItem>[] = [
          record?.visionLabel3Numbers,
          record?.myopiaLevelInsufficient,
        ]),
-       record?.validScreeningNumbers,
+       record?.realScreeningNumbers,
      )} `,
   },
   {
     title: '0级预警（人数/占比）',
     dataIndex: 'visionLabel0Numbers',
     renderText: (val: number, record) =>
-      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
+      `${val} / ${getPercentage(val, record?.realScreeningNumbers)}`,
   },
   {
     title: '1级预警（人数/占比）',
     dataIndex: 'visionLabel1Numbers',
     renderText: (val: number, record) =>
-      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
+      `${val} / ${getPercentage(val, record?.realScreeningNumbers)}`,
   },
   {
     title: '2级预警（人数/占比）',
     dataIndex: 'visionLabel2Numbers',
     renderText: (val: number, record) =>
-      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
+      `${val} / ${getPercentage(val, record?.realScreeningNumbers)}`,
   },
 
   {
     title: '3级预警（人数/占比）',
     dataIndex: 'visionLabel3Numbers',
     renderText: (val: number, record) =>
-      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
+      `${val} / ${getPercentage(val, record?.realScreeningNumbers)}`,
   },
   {
     title: '远视储备不足（人数/占比）',
     dataIndex: 'myopiaLevelInsufficient',
     renderText: (val: number, record) =>
-      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
+      `${val} / ${getPercentage(val, record?.realScreeningNumbers)}`,
   },
 ];
 
@@ -152,19 +152,19 @@ export const fourthColumns: ProColumns<API.ScreenResultListItem>[] = [
     title: '建议就诊学生数（人数/占比）',
     dataIndex: 'treatmentAdviceNumbers',
     renderText: (val: number, record) =>
-      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
+      `${val} / ${getPercentage(val, record?.realScreeningNumbers)}`,
   },
   {
     title: '去医院就诊数（人数/占比）',
     dataIndex: 'reviewNumbers',
     renderText: (val: number, record) =>
-      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
+      `${val} / ${getPercentage(val, record?.realScreeningNumbers)}`,
   },
   {
     title: '绑定公众号数（人数/占比）',
     dataIndex: 'bindMpNumbers',
     renderText: (val: number, record) =>
-      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
+      `${val} / ${getPercentage(val, record?.realScreeningNumbers)}`,
   },
 ];
 

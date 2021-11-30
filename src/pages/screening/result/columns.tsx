@@ -275,6 +275,6 @@ export const warnColumns: (params: WarnColumnsType) => ProColumns<API.ScreenWarn
     title: '防控建议-座位调整',
     dataIndex: 'myopiaLevel',
     search: false,
-    renderText: (val?: number | string) => (val ? '与黑板相距5-6米' : EMPTY_TEXT),
+    renderText: (val?: number | string) => (val && val > 2 ? '与黑板相距5-6米' : EMPTY_TEXT),
   },
 ];

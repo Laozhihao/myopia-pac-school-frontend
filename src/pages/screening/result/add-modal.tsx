@@ -199,7 +199,7 @@ export const AddModal: React.FC<API.ModalItemType & { tabKey?: string }> = (prop
       title={props.title}
       width={850}
       bodyStyle={{
-        maxHeight: 700,
+        maxHeight: 450,
         overflow: 'auto',
       }}
       visible={props.visible}

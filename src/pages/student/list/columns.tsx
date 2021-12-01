@@ -7,7 +7,7 @@ import {
   TABLESEXOPTION,
 } from '@/utils/constant';
 import { visionColumn } from '@/utils/columns';
-import { formatLength, convertData } from '@/utils/common';
+import { convertData } from '@/utils/common';
 import { Cascader, Button, Badge } from 'antd';
 import { InputGroup } from '@/pages/components/input-group';
 import { history } from 'umi';
@@ -25,7 +25,6 @@ export const listColumns: (
     title: '姓名',
     dataIndex: 'name',
     search: false,
-    renderText: (val?: string) => (val ? formatLength(val, 4) : EMPTY),
   },
   {
     title: '性别',

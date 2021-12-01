@@ -94,6 +94,7 @@ export const request: RequestConfig = {
         Authorization: getToken(),
         ...options.headers,
       };
+      url.endsWith('/auth/refresh/token') && delete headers.Authorization;
       return {
         url,
         options: {
@@ -119,7 +120,8 @@ export const request: RequestConfig = {
             refresh_token,
           });
           data && setToken(data);
-          return await requestFn(options.url, {
+
+          return requestFn(options.url, {
             ...options,
             headers: {
               ...options.headers,
@@ -138,7 +140,7 @@ export const request: RequestConfig = {
       return response;
     },
     async (response) => {
-      if (response.headers.get('Content-type') === 'application/json') {
+      if (response?.headers?.get('Content-type') === 'application/json') {
         // umi封装resquest 导致不能直接拿res中的一些其他信息
         const data = await response.clone().json();
         if (response.status !== HttpStatusEnum.SUCCESS_REQUEST) {

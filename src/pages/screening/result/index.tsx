@@ -20,6 +20,7 @@ import styles from './index.less';
 import { EMPTY, DATE, SCREENSTATUS, GLASSESSUGGESTTYPE, EMPTY_TEXT } from '@/utils/constant';
 import { getScreeningWarn, getScreeningGradeList, getScreeningDetail } from '@/api/screen';
 import moment from 'moment';
+import { modalConfig } from '@/hook/ant-config';
 
 const { TabPane } = Tabs;
 
@@ -318,6 +319,7 @@ const ScreeningResult: React.FC = () => {
         {...visitResultInfo}
         onCancel={() => setVisitResultInfo({ ...visitResultInfo, visible: false })}
         footer={null}
+        {...modalConfig}
       >
         <Row>
           <Col span={4}>建议配镜：</Col>

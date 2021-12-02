@@ -10,6 +10,7 @@ import { escape2Html } from '@/utils/common';
 import { getScreeningList } from '@/api/screen';
 import styles from './index.less';
 import { EMPTY } from '@/utils/constant';
+import { modalConfig } from '@/hook/ant-config';
 
 const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ScreenListItem>();
@@ -115,6 +116,7 @@ const TableList: React.FC = () => {
         width={800}
         onCancel={() => setTextModalVisible(false)}
         footer={null}
+        {...modalConfig}
       >
         <div dangerouslySetInnerHTML={{ __html: textHtml }} className={styles.content} />
       </Modal>

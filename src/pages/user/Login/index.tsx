@@ -13,6 +13,7 @@ import Slider from '@/components/VerifySlider/index.js';
 import '@/components/VerifySlider/index.less';
 import type { LoginParams } from '@/api/typings';
 import { setStorageInfo, setToken } from '@/hook/storage';
+import { modalConfig } from '@/hook/ant-config';
 
 // token前缀 Bearer
 let verifyCount = 0;
@@ -182,6 +183,7 @@ const Login: React.FC = () => {
         onCancel={onCancel}
         width="fit-content"
         footer={null}
+        {...modalConfig}
       >
         <div id="captcha" />
       </Modal>

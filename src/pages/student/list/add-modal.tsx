@@ -8,6 +8,7 @@ import { studentFormOptions } from '../utils/constant';
 import { getCascaderOption } from '@/hook/district';
 import { editStudentInfo } from '@/api/student';
 import { getBirthday } from '@/hook/table';
+import { modalConfig } from '@/hook/ant-config';
 
 export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props) => {
   const modalRef = useRef<ProFormInstance>();
@@ -97,12 +98,9 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
       visible={props.visible}
       onFinish={onConfirm}
       modalProps={{
+        ...modalConfig,
         destroyOnClose: true,
         onCancel: () => props.onCancel(false),
-        bodyStyle: {
-          maxHeight: 400,
-          overflow: 'auto',
-        },
       }}
     >
       <PageForm {...studentForm} />

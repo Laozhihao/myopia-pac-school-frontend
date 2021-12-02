@@ -9,12 +9,11 @@ import RightTips from './right-tips';
 import { getScreeningGradeList } from '@/api/screen';
 import { uploadFile } from '@/api/common';
 import UploadDefaultImg from '@/assets/images/code.png';
-
+import { modalConfig } from '@/hook/ant-config';
 import {
   getScreeningNoticeUrl,
   getScreeningQrcodeUrl,
-  updateScreeningNotice,
-  getScreeningOrg,
+  updateScreeningNoticeConfig,
 } from '@/api/screen';
 import type { SubmitterProps } from '@ant-design/pro-form/lib/components/Submitter';
 import { useRequest } from 'umi';
@@ -32,7 +31,6 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const [gradeOptions, setGradeOptions] = useState([]); // 年级级联
   const [current, setCurrent] = useState(0);
   const [fileList, setFileList] = useState<any[]>([]);
-  const [orgInfo, setOrgInfo] = useState<API.ObjectType>(); // 机构信息
   const [selectArr, setSelectArr] = useState<any[]>([]); // 选中的年级班级
   const [loading, setLoading] = useState(false); // 预览下载loading
   const [refresh, setRefresh] = useState(false); // 刷新列表
@@ -116,14 +114,6 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   }, [props?.visible, props?.currentRow]);
 
   useEffect(() => {
-    if (props?.currentRow && current && !orgInfo) {
-      getScreeningOrg(props?.currentRow?.screeningOrgId).then((res) => {
-        setOrgInfo({ ...res?.data });
-      });
-    }
-  }, [props?.visible, current]);
-
-  useEffect(() => {
     if (props?.currentRow && ref?.current && !isAssignment && props?.visible) {
       ref?.current?.setFieldsValue({ ...initForm, ...props?.currentRow?.notificationConfig });
       setInitForm({ ...initForm, ...props?.currentRow?.notificationConfig });
@@ -165,13 +155,8 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     };
     // 告知书
     if (!type) {
-      const datas = {
-        ...props?.currentRow,
-        ...orgInfo,
-        notificationConfig: { ...obj, qrCodeFileId: initForm.qrCodeFileId },
-      };
       setLoading(true);
-      await updateScreeningNotice(datas);
+      await updateScreeningNoticeConfig({ ...obj, qrCodeFileId: initForm.qrCodeFileId });
       setRefresh(true); // 编辑过 返回列表需要刷新
       const res = await getScreeningNoticeUrl(parm);
       setLoading(false);
@@ -225,12 +210,12 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     <Modal
       title={props.title}
       width={800}
-      bodyStyle={{ maxHeight: 460, overflow: 'auto' }}
       visible={props.visible}
       footer={null}
       destroyOnClose
       onCancel={onCancel}
       className={styles.modal}
+      {...modalConfig}
     >
       <StepsForm
         current={current}

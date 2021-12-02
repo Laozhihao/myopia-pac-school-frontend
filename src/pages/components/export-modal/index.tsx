@@ -1,6 +1,7 @@
 import { Modal } from 'antd';
 import styles from './index.less';
 import { InfoCircleOutlined } from '@ant-design/icons';
+import { modalConfig } from '@/hook/ant-config';
 
 export const ExportModal: React.FC<API.ModalItemType> = (props) => {
   return (
@@ -11,6 +12,7 @@ export const ExportModal: React.FC<API.ModalItemType> = (props) => {
       onOk={props.onOk}
       destroyOnClose
       onCancel={() => props.onCancel()}
+      {...modalConfig}
     >
       {props.children}
       <div className={styles.tips}>

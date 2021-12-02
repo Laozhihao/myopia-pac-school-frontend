@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import type { FormInstance } from 'antd/es/form';
 import { exportStudent, importStudent } from '@/api/student';
 import { useModel } from 'umi';
-import { getPopupContainer } from '@/hook/ant-config';
+import { getPopupContainer, modalConfig } from '@/hook/ant-config';
 
 const { Dragger } = Upload;
 const { Option } = Select;
@@ -91,6 +91,7 @@ export const OperationModal: React.FC<
       onOk={onComfirm}
       destroyOnClose
       onCancel={() => props.onCancel()}
+      {...modalConfig}
     >
       <p className={styles.title}>学校： {currentUser?.orgName}学校</p>
       <p className={styles.explain}>说明：请先下载筛查学生数据模板表，按照模板填写后，再上传</p>

@@ -4,6 +4,7 @@ import { getGradeCode, addGrade, addClass } from '@/api/school';
 import { useRequest, useModel } from 'umi';
 import { useEffect, useRef, useState } from 'react';
 import { Select, Form } from 'antd';
+import { modalConfig } from '@/hook/ant-config';
 
 const { Option } = Select;
 
@@ -52,6 +53,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       visible={props.visible}
       onFinish={onComfirm}
       modalProps={{
+        ...modalConfig,
         destroyOnClose: true,
         onCancel: () => props.onCancel(),
       }}

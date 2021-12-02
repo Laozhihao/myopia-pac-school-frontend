@@ -1,6 +1,7 @@
 import { Modal, Spin, Button } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import type { FileCardPropsParams } from './index';
+import { modalConfig } from '@/hook/ant-config';
 
 export const AddModal: React.FC<API.ModalItemType & FileCardPropsParams> = (props) => {
   const [loading, setLoading] = useState(false);
@@ -49,12 +50,11 @@ export const AddModal: React.FC<API.ModalItemType & FileCardPropsParams> = (prop
   return (
     <Modal
       title={props.title}
-      centered
       visible={props.visible}
       onCancel={() => props.onCancel()}
       width={810}
       footer={null}
-      bodyStyle={{ height: 460, overflow: 'auto' }}
+      {...modalConfig}
     >
       <Spin spinning={loading}>
         <Button type="primary" onClick={onPdf} style={{ marginBottom: 20 }}>

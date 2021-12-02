@@ -4,6 +4,7 @@ import monitorImg from '@/assets/images/monitor.jpg';
 import abnormalImg from '@/assets/images/abnormal.png';
 import styles from './add-modal.less';
 import { Fragment } from 'react';
+import { modalConfig } from '@/hook/ant-config';
 
 export const AddModal: React.FC<API.ModalItemType & { tabKey?: string }> = (props) => {
   // 课座椅标准
@@ -198,13 +199,10 @@ export const AddModal: React.FC<API.ModalItemType & { tabKey?: string }> = (prop
     <Modal
       title={props.title}
       width={850}
-      bodyStyle={{
-        maxHeight: 450,
-        overflow: 'auto',
-      }}
       visible={props.visible}
       footer={null}
       onCancel={() => props.onCancel()}
+      {...modalConfig}
     >
       {FormTemp[props?.tabKey!]?.()}
     </Modal>

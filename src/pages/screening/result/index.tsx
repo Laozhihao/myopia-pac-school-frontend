@@ -1,12 +1,12 @@
 import React, { useMemo, useRef, Fragment } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Tabs, Card, Button, Modal, message, Row, Col } from 'antd';
+import { Tabs, Card, Button, Modal, message, Row, Col, Tooltip } from 'antd';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { firstColumns, secondColumns, thirdColumns, fourthColumns, warnColumns } from './columns';
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';
 import { UploadOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import { history, Link } from 'umi';
+import { history } from 'umi';
 import { AddModal } from './add-modal';
 import { ExportModal } from '@/pages/components/export-modal';
 import { useState } from 'react';
@@ -92,12 +92,26 @@ const ScreeningResult: React.FC = () => {
       valueType: 'option',
       render: (_, record) => {
         return [
-          <Link
-            key="manage"
-            to={`/student/file?id=${record?.schoolStudentId}&studentId=${record?.studentId}`}
-          >
-            档案管理
-          </Link>,
+          record?.schoolStudentId ? (
+            <Button
+              type="link"
+              size="small"
+              key="manage"
+              onClick={() =>
+                history.push(
+                  `/student/file?id=${record?.schoolStudentId}&studentId=${record?.studentId}`,
+                )
+              }
+            >
+              档案管理
+            </Button>
+          ) : (
+            <Tooltip title="当前没有档案管理" key="tooltip">
+              <Button disabled type="link" size="small">
+                档案管理
+              </Button>
+            </Tooltip>
+          ),
         ];
       },
     },

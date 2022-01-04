@@ -6,8 +6,8 @@ export const listColumns: ProColumns<API.GradeListItem>[] = [
     dataIndex: 'name',
     width: 400,
   },
-  {
-    title: '座位数',
-    dataIndex: 'seatCount',
-  },
+  // {
+  //   title: '座位数',
+  //   dataIndex: 'seatCount',
+  // },
 ];

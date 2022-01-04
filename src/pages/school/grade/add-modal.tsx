@@ -81,13 +81,13 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
             required
             rules={[{ required: true, message: '请输入班级名称' }]}
           />
-          <ProFormText
+          {/* <ProFormText
             name="seatCount"
             label="班级座位"
             placeholder="请输入"
             required
             rules={[{ required: true, message: '请输入班级座位' }]}
-          />
+          /> */}
         </>
       )}
     </ModalForm>

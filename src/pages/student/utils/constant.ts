@@ -23,7 +23,7 @@ export const studentFormOptions = (validatorCb: StudentFormOptionsParmas, type =
         },
       ],
       fieldProps: {
-        maxLength: 18,
+        maxLength: 20,
       },
       col: 24,
     },

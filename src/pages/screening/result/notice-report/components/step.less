@@ -1,0 +1,75 @@
+.step {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  .step_box {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    .step_num {
+      align-items: center;
+      width: 20px;
+      height: 20px;
+      margin-top: -5px;
+      color: #fff;
+      line-height: 18px;
+      text-align: center;
+      background-color: #096dd9;
+      border-radius: 50%;
+    }
+    .step_color {
+      color: #096dd9;
+      background-color: #e6f7ff;
+    }
+  }
+  .pre {
+    display: flex;
+    justify-content: space-between;
+    width: 355px;
+    height: 56px;
+    padding: 5px 25px;
+    color: #fff;
+    text-align: left;
+    background: url('~@/assets/images/step1-on.png') no-repeat;
+    background-size: contain;
+    .pre_t {
+      height: 20px;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 20px;
+    }
+    .pre-b {
+      font-size: 12px;
+    }
+  }
+  .pre_img {
+    color: #096dd9;
+    background: url('~@/assets/images/step1-off.png') no-repeat;
+    background-size: contain;
+  }
+  .next {
+    display: flex;
+    justify-content: space-between;
+    width: 355px;
+    height: 56px;
+    padding: 5px 25px;
+    color: #096dd9;
+    text-align: left;
+    background: url('~@/assets/images/step2-off.png') no-repeat;
+    background-size: contain;
+    .pre_t {
+      height: 20px;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 20px;
+    }
+    .pre_b {
+      font-size: 12px;
+    }
+  }
+  .next_img {
+    color: #fff;
+    background: url('~@/assets/images/step2-on.png') no-repeat;
+    background-size: contain;
+  }
+}

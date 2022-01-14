@@ -62,7 +62,6 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
   };
 
   const gradeChange = async (value: any[]) => {
-    console.log(value);
     const gradeId = value[0];
     const classId = value[1].toString().indexOf('all') === -1 ? value[1] : '';
     const { orgId, planId, schoolId } = ids;
@@ -75,6 +74,7 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
       isSchoolClient: true,
     };
     const { data } = await screeningNoticeResult(params);
+    form.setFieldsValue({ studentIds: [] });
     setStudentList(data);
   };
   // 搜索过滤
@@ -124,7 +124,7 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
       <Form.Item label="导出内容">
         <Space>
           所选择
-          <span className={`${radioValue === 2 ? styles.c_96 : ''}`}>
+          <span className={`${radioValue === 2 ? styles.c_45 : ''}`}>
             {radioValue === 1 ? '整个计划下' : schoolName}
           </span>
           的学生筛查结果通知书

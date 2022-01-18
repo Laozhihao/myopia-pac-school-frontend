@@ -85,14 +85,6 @@ export const PreStep = forwardRef<any, PreStepType>((props, ref) => {
     },
   };
 
-  // useMemo(() => {
-  //   if (orgId) {
-  //     getReportInfo(id as string).then((res) => {
-  //       setResultInfo([res?.data]);
-  //     });
-  //   }
-  //   }
-  // }, []);
   const { TextArea } = Input;
   return (
     <Spin spinning={preLoading} delay={300}>

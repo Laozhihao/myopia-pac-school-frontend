@@ -16,10 +16,10 @@ export const PreStep = forwardRef<any, PreStepType>((props, ref) => {
   const [fileList, setFileList] = useState<any[]>([]);
   const [imgUrl, setImgUrl] = useState<string>();
   const [preLoading, setPreLoading] = useState(false);
-  // const formRef = React.createRef<FormInstance>();
+  const { schoolName } = ids;
   const [initForm] = useState<API.ObjectType>({
     title: '学生视力筛查结果通知书',
-    subTitle: '010学校1',
+    subTitle: schoolName,
     call: '尊敬的家长',
     content: '',
     qrCodeFileId: -1,

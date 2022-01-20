@@ -105,6 +105,7 @@ export const PreStep = forwardRef<any, PreStepType>((props, ref) => {
         initialValues={initForm}
         form={form}
         preserve={false}
+        requiredMark={false}
       >
         <Form.Item
           name="title"

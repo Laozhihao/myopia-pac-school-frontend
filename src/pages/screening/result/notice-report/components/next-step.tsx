@@ -22,6 +22,8 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
   const [studentList, setStudentList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [radioValue, setRadioValue] = useState(1);
+  const [currentGrade, setCurrentGrade] = useState('');
+  const [currentStuNames, setCurrentStuNames] = useState('');
   const [initForm] = useState<API.ObjectType>({
     radioValue: 1,
   });
@@ -60,11 +62,29 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
   const radioChange = (e: any) => {
     setRadioValue(e.target.value);
   };
-
-  const gradeChange = async (value: any[]) => {
+  const rtrim = (str: string) => {
+    // 删除右边的、
+    return str.replace(/(、*$)/g, '');
+  };
+  // 获取名称
+  const getName = (arr: any[], id: string, name = 'name', isName = false) => {
+    if (!arr.length) {
+      return '';
+    }
+    let names = '';
+    arr.forEach((v) => {
+      if (v[id].toString().indexOf('all') === -1) {
+        names += v[name] + (isName ? '、' : '');
+      }
+    });
+    return names;
+  };
+  // 年级班级 变化
+  const gradeChange = async (value: any[], option) => {
     const gradeId = value[0];
     const classId = value[1].toString().indexOf('all') === -1 ? value[1] : '';
     const { orgId, planId, schoolId } = ids;
+    setCurrentGrade(getName(option, 'id'));
     const params = {
       schoolId,
       orgId,
@@ -76,13 +96,26 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
     const { data } = await screeningNoticeResult(params);
     form.setFieldsValue({ studentIds: [] });
     setStudentList(data);
+    setCurrentStuNames('');
+  };
+  // 学生变化
+  const studentChange = async (value: any[], option) => {
+    const str = getName(option, 'key', 'children', true);
+    setCurrentStuNames(rtrim(str));
   };
   // 搜索过滤
   const filterOption = (inputValue: string, option) =>
     option.props.children.indexOf(inputValue) >= 0;
 
   return (
-    <Form {...layout} className={styles.next_step} initialValues={initForm} form={form} ref={ref}>
+    <Form
+      {...layout}
+      className={styles.next_step}
+      initialValues={initForm}
+      form={form}
+      ref={ref}
+      requiredMark={false}
+    >
       <Form.Item label="导出" name="radioValue">
         <Radio.Group defaultValue={radioValue} onChange={radioChange}>
           <Radio value={1}>整个计划下的学生筛查结果通知书</Radio>
@@ -109,9 +142,10 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
               optionFilterProp="name"
               className={styles.stu_option}
               filterOption={filterOption}
+              onChange={studentChange}
             >
               {studentList.map((item: any) => (
-                <Option value={item.id} key={item.id}>
+                <Option value={item.planStudentId} key={item.planStudentId}>
                   {item.name}
                 </Option>
               ))}
@@ -125,7 +159,7 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
         <Space>
           所选择
           <span className={`${radioValue === 2 ? styles.c_45 : ''}`}>
-            {radioValue === 1 ? '整个计划下' : schoolName}
+            {radioValue === 1 ? '整个计划下' : `${schoolName} ${currentGrade} ${currentStuNames}`}
           </span>
           的学生筛查结果通知书
         </Space>

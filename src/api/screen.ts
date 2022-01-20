@@ -115,9 +115,9 @@ export async function getGrades(id: number | string) {
   });
 }
 
-/** 获取学生 GET /school/vision/screening/screeningNoticeResult */
+/** 获取学生 GET /school/vision/screening/screeningNoticeResult/list */
 export async function screeningNoticeResult(params: API.ObjectType) {
-  return request<API.RequestResult>('/school/vision/screening/screeningNoticeResult', {
+  return request<API.RequestResult>('/school/vision/screening/screeningNoticeResult/list', {
     method: 'GET',
     params,
   });

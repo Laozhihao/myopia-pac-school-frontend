@@ -1,4 +1,4 @@
-import { Form, Input, Row, Col, Upload, Spin } from 'antd';
+import { Form, Input, Row, Col, Upload, Spin, message } from 'antd';
 import styles from './pre-step.less';
 import type { IdsType } from '../index';
 import { getReportInfo } from '@/api/screen';
@@ -70,7 +70,17 @@ export const PreStep = forwardRef<any, PreStepType>((props, ref) => {
    * @desc 上传图片的props
    */
   const uploaderProps = {
-    beforeUpload: (file: { type: string; name: any }) => {
+    beforeUpload: (file: { type: string; name: any; size: number }) => {
+      const isImgFormat = ['image/jpeg', 'image/jpg', 'image/png'].includes(file.type);
+      const isLt3M = file.size! / 1024 / 1024 < 5;
+      if (file && !isLt3M) {
+        message.error('上传失败！上传图片文件大小不能超过5M');
+        return true;
+      }
+      if (!isImgFormat) {
+        message.error('上传失败！上传图片只支持png、jpg、jpeg');
+        return true;
+      }
       setFileList([file]);
       return false;
     },

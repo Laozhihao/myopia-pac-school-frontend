@@ -204,7 +204,6 @@ const ScreeningResult: React.FC = () => {
   };
   const showNoticeReport = () => {
     const user = initialState?.currentUser;
-    console.log(user, 'user');
     const { id: planId, screeningOrgId } = schoolDetail;
     setIds({
       schoolName: user?.orgName as string,

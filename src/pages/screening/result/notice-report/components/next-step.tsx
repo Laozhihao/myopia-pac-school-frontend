@@ -3,6 +3,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { screeningNoticeResult, getGrades } from '@/api/screen';
 import styles from './next-step.less';
 import { useState, useMemo, forwardRef } from 'react';
+import { getPopupContainer } from '@/hook/ant-config';
 import type { IdsType } from '../index';
 
 type NextStepType = {
@@ -20,6 +21,7 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
   const { schoolName } = ids;
 
   const [studentList, setStudentList] = useState([]);
+  const [studentIds, setStudentIds] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [radioValue, setRadioValue] = useState(1);
   const [currentGrade, setCurrentGrade] = useState('');
@@ -100,6 +102,7 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
   };
   // 学生变化
   const studentChange = async (value: any[], option) => {
+    setStudentIds(value);
     const str = getName(option, 'key', 'children', true);
     setCurrentStuNames(rtrim(str));
   };
@@ -143,9 +146,14 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
               className={styles.stu_option}
               filterOption={filterOption}
               onChange={studentChange}
+              getPopupContainer={getPopupContainer}
             >
               {studentList.map((item: any) => (
-                <Option value={item.planStudentId} key={item.planStudentId}>
+                <Option
+                  value={item.planStudentId}
+                  key={item.planStudentId}
+                  disabled={!studentIds.includes(item.planStudentId) && studentIds.length > 9}
+                >
                   {item.name}
                 </Option>
               ))}
@@ -175,7 +183,7 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
               1.按计划、按学校、按年级，导出成功后，下载链接将通过站内信推送，请关注站内消息提醒！
             </li>
             <li>
-              2.按班级，按学生（单个或多个），导出成功后，新开界面展示并可手动点击打印，请留意！
+              2.按班级，按学生(单个或至多10个)，导出成功后，新开界面展示并可手动点击打印，请留意！
             </li>
           </ul>
         </div>

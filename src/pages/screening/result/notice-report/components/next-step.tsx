@@ -164,13 +164,15 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
         ''
       )}
       <Form.Item label="导出内容">
-        <Space>
-          所选择
-          <span className={`${radioValue === 2 ? styles.c_45 : ''}`}>
-            {radioValue === 1 ? '整个计划下' : `${schoolName} ${currentGrade} ${currentStuNames}`}
-          </span>
-          的学生筛查结果通知书
-        </Space>
+        <div className="stu-w">
+          <Space>
+            所选择
+            <span className={`${radioValue === 2 ? styles.c_45 : ''}`}>
+              {radioValue === 1 ? '整个计划下' : `${schoolName} ${currentGrade} ${currentStuNames}`}
+            </span>
+            的学生筛查结果通知书
+          </Space>
+        </div>
       </Form.Item>
       <div className="matters">
         <div className="matters_tit">

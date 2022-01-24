@@ -5,7 +5,7 @@ import type { ProFormInstance } from '@ant-design/pro-form';
 import { firstColumns, secondColumns, thirdColumns, fourthColumns, warnColumns } from './columns';
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';
-import { UploadOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { DownloadOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { history } from 'umi';
 import { AddModal } from './add-modal';
 import { NoticeReport } from './notice-report/index';
@@ -318,7 +318,7 @@ const ScreeningResult: React.FC = () => {
                       onExport(2);
                     }}
                   >
-                    <UploadOutlined /> 导出
+                    <DownloadOutlined /> 导出
                   </Button>,
                 ],
               }}

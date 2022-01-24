@@ -76,29 +76,22 @@ export const NoticeReport: React.FC<EleReportType> = (props) => {
     try {
       const { schoolId, planId, orgId } = ids;
       const result = await nextFormRef.current?.validateFields();
-      const { radioValue, studentIds = [], grade = [] } = result;
+      const { studentIds = [], grade = [] } = result;
       const hasClass = hasClasses(grade);
       const planStudentIdStr = studentIds.join(',');
       setExportLoading(true);
-      if (+radioValue === 1) {
-        const params = {
-          planId,
-        };
+      const params = {
+        planId,
+        schoolId,
+        gradeId: grade[0] || null,
+        classId: hasClass ? grade[1] : null,
+        orgId,
+        planStudentIdStr,
+      };
+      if (planStudentIdStr || hasClass) {
+        await syncExport(params);
+      } else {
         await asyncExport(params);
-      } else if (+radioValue === 2) {
-        const params = {
-          planId,
-          schoolId,
-          gradeId: grade[0] || null,
-          classId: hasClass ? grade[1] : null,
-          orgId,
-          planStudentIdStr,
-        };
-        if (planStudentIdStr || hasClass) {
-          await syncExport(params);
-        } else {
-          await asyncExport(params);
-        }
       }
     } finally {
       setExportLoading(false);

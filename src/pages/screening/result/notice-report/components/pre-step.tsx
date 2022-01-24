@@ -210,17 +210,8 @@ export const PreStep = forwardRef<any, PreStepType>((props, ref) => {
               </ul>
             </Form.Item>
           </Col>
-          <Col span={6} className={styles.code}>
-            <Form.Item
-              className={styles.code}
-              name="qrCodeFileId"
-              label={
-                <div className="m_label_code">
-                  <span>二维码</span>
-                  <span className="c_org">上传图片</span>
-                </div>
-              }
-            >
+          <Col span={6}>
+            <Form.Item className={styles.code} name="qrCodeFileId">
               <div className={styles.qrCode}>
                 <Upload
                   name="upload"
@@ -229,6 +220,9 @@ export const PreStep = forwardRef<any, PreStepType>((props, ref) => {
                   showUploadList={false}
                   {...uploaderProps}
                 >
+                  <div className="upload_label">
+                    <span className="title">点击更换二维码</span>
+                  </div>
                   <img src={imgUrl ?? UploadDefaultImg} alt="avatar" className={styles.image} />
                 </Upload>
               </div>

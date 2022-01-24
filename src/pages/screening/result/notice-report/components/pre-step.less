@@ -16,8 +16,10 @@ ul {
       height: 170px;
     }
     .ant-upload {
-      width: 88px;
-      height: 88px;
+      position: relative;
+      width: 104px;
+      height: 104px;
+      border: none;
     }
     .ant-form-item-label label {
       display: flex;
@@ -42,6 +44,15 @@ ul {
           margin-left: 5px;
           color: #d46b08;
         }
+      }
+    }
+    .upload_label {
+      position: absolute;
+      top: -30px;
+
+      .title {
+        color: #096dd9;
+        font-size: 14px;
       }
     }
   }
@@ -97,17 +108,18 @@ ul {
   }
   .code {
     float: right;
+    margin-top: 30px;
     .m_label_code {
       float: right;
     }
     .qrCode {
-      width: 88px;
-      height: 88px;
+      width: 104px;
+      height: 104px;
       border-radius: 12px;
       box-shadow: 0 2px 20px 1px rgba(0, 0, 0, 0.1);
       img {
-        width: 56px;
-        height: 56px;
+        width: 62px;
+        height: 62px;
         object-fit: fill;
       }
     }

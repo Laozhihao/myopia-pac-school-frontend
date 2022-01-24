@@ -1,0 +1,115 @@
+li {
+  list-style-type: none;
+}
+ul {
+  padding: none;
+}
+.pre_step {
+  padding: 42px;
+  padding-bottom: 0;
+  background-color: #fafafa;
+  :global {
+    .ant-form-item-required::before {
+      display: none;
+    }
+    textarea.ant-input {
+      height: 170px;
+    }
+    .ant-upload {
+      width: 88px;
+      height: 88px;
+    }
+    .ant-form-item-label label {
+      display: flex;
+      color: rgba(0, 0, 0, 0.45);
+      .m_label {
+        display: flex;
+        justify-content: space-between;
+        color: rgba(0, 0, 0, 0.45);
+        .c_org {
+          position: absolute;
+          top: 0;
+          right: 0;
+          color: #d46b08;
+        }
+      }
+      .m_label_code {
+        display: flex;
+        justify-content: flex-start;
+        color: rgba(0, 0, 0, 0.45);
+        .c_org {
+          float: right;
+          margin-left: 5px;
+          color: #d46b08;
+        }
+      }
+    }
+  }
+  .title {
+    :global {
+      .ant-input {
+        height: 56px;
+        font-size: 30px;
+      }
+    }
+  }
+  .sub_title {
+    :global {
+      .ant-input {
+        height: 40px;
+        font-weight: bold;
+        font-size: 16px;
+      }
+    }
+  }
+  .stu_info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 5px 10px;
+    font-size: 14px;
+    li {
+      width: 30%;
+      list-style-type: none;
+      span {
+        color: rgba(0, 0, 0, 0.45);
+      }
+    }
+  }
+  .g_border {
+    border: 1px solid #f0f0f0;
+    border-radius: 2px 2px 2px 2px;
+  }
+  .advance {
+    height: 86px;
+    padding: 5px 0 5px 10px;
+  }
+  .tips {
+    .step_words {
+      height: 30px;
+      padding: 0;
+      font-size: 14px;
+      line-height: 30px;
+      li {
+        list-style-type: none;
+      }
+    }
+  }
+  .code {
+    float: right;
+    .m_label_code {
+      float: right;
+    }
+    .qrCode {
+      width: 88px;
+      height: 88px;
+      border-radius: 12px;
+      box-shadow: 0 2px 20px 1px rgba(0, 0, 0, 0.1);
+      img {
+        width: 56px;
+        height: 56px;
+        object-fit: fill;
+      }
+    }
+  }
+}

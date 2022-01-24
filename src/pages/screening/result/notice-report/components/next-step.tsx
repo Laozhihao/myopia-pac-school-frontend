@@ -1,4 +1,4 @@
-import { Form, Radio, Select, Cascader, Space } from 'antd';
+import { Form, Select, Cascader } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { screeningNoticeResult, getGrades } from '@/api/screen';
 import styles from './next-step.less';
@@ -23,12 +23,8 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
   const [studentList, setStudentList] = useState([]);
   const [studentIds, setStudentIds] = useState([]);
   const [gradeList, setGradeList] = useState([]);
-  const [radioValue, setRadioValue] = useState(1);
   const [currentGrade, setCurrentGrade] = useState('');
   const [currentStuNames, setCurrentStuNames] = useState('');
-  const [initForm] = useState<API.ObjectType>({
-    radioValue: 1,
-  });
   useMemo(async () => {
     const { orgId, planId, schoolId } = ids;
     if (schoolId) {
@@ -61,9 +57,6 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
     }
   }, []);
 
-  const radioChange = (e: any) => {
-    setRadioValue(e.target.value);
-  };
   const rtrim = (str: string) => {
     // 删除右边的、
     return str.replace(/(、*$)/g, '');
@@ -111,22 +104,8 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
     option.props.children.indexOf(inputValue) >= 0;
 
   return (
-    <Form
-      {...layout}
-      className={styles.next_step}
-      initialValues={initForm}
-      form={form}
-      ref={ref}
-      requiredMark={false}
-    >
-      <Form.Item label="导出" name="radioValue">
-        <Radio.Group defaultValue={radioValue} onChange={radioChange}>
-          <Radio value={1}>整个计划下的学生筛查结果通知书</Radio>
-          <Radio value={2}>该计划下的学校的学生筛查结果通知书</Radio>
-        </Radio.Group>
-      </Form.Item>
-
-      {radioValue === 2 ? (
+    <Form {...layout} className={styles.next_step} form={form} ref={ref} requiredMark={false}>
+      {
         <div>
           <Form.Item label="筛查学校">
             <Select defaultValue={schoolName} disabled />
@@ -160,19 +139,11 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
             </Select>
           </Form.Item>
         </div>
-      ) : (
-        ''
-      )}
+      }
       <Form.Item label="导出内容">
-        <div className="stu-w">
-          <Space>
-            所选择
-            <span className={`${radioValue === 2 ? styles.c_45 : ''}`}>
-              {radioValue === 1 ? '整个计划下' : `${schoolName} ${currentGrade} ${currentStuNames}`}
-            </span>
-            的学生筛查结果通知书
-          </Space>
-        </div>
+        所选择
+        <span className={styles.s_desc}>{`${schoolName} ${currentGrade} ${currentStuNames}`}</span>
+        的学生筛查结果通知书
       </Form.Item>
       <div className="matters">
         <div className="matters_tit">

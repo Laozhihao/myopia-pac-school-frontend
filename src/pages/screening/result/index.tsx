@@ -5,11 +5,13 @@ import type { ProFormInstance } from '@ant-design/pro-form';
 import { firstColumns, secondColumns, thirdColumns, fourthColumns, warnColumns } from './columns';
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';
-import { UploadOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { DownloadOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { history } from 'umi';
 import { AddModal } from './add-modal';
+import { NoticeReport } from './notice-report/index';
 import { ExportModal } from '@/pages/components/export-modal';
 import { useState } from 'react';
+import { useModel } from 'umi';
 import {
   getScreeningResult,
   exportScreeningStudent,
@@ -21,6 +23,7 @@ import { EMPTY, DATE, SCREENSTATUS, GLASSESSUGGESTTYPE, EMPTY_TEXT } from '@/uti
 import { getScreeningWarn, getScreeningGradeList, getScreeningDetail } from '@/api/screen';
 import moment from 'moment';
 import { modalConfig } from '@/hook/ant-config';
+import type { IdsType } from './notice-report/index';
 
 const { TabPane } = Tabs;
 
@@ -53,10 +56,13 @@ const ScreeningResult: React.FC = () => {
     glassesSuggest: '',
     visitResult: '',
   }); // 医院复查反馈弹窗
+  const [reportVisible, setReportVisible] = useState(false); // 通知书弹窗
+  const [ids, setIds] = useState<IdsType>();
   const [exportType, setExportType] = useState(0); // 导出弹窗类型 0 筛查报告 1 筛查数据 2 学生跟踪数据
   const ref = useRef<ProFormInstance>();
 
   const { query: { id, screeningPlanId } = {} } = history.location;
+  const { initialState } = useModel('@@initialState');
 
   const tableOptions = [
     { title: '视力筛查情况', columns: firstColumns, key: 'screen' },
@@ -196,7 +202,17 @@ const ScreeningResult: React.FC = () => {
     setExportType(val);
     setExportVisible(true);
   };
-
+  const showNoticeReport = () => {
+    const user = initialState?.currentUser;
+    const { id: planId, screeningOrgId } = schoolDetail;
+    setIds({
+      schoolName: user?.orgName as string,
+      schoolId: user?.orgId as number,
+      planId,
+      orgId: screeningOrgId,
+    });
+    setReportVisible(true);
+  };
   return (
     <PageContainer>
       <Card>
@@ -215,8 +231,11 @@ const ScreeningResult: React.FC = () => {
               <Button type="primary" style={{ marginRight: 10 }} onClick={() => onExport(0)}>
                 导出筛查报告
               </Button>
-              <Button type="primary" onClick={() => onExport(1)}>
+              <Button type="primary" style={{ marginRight: 10 }} onClick={() => onExport(1)}>
                 导出筛查数据
+              </Button>
+              <Button type="primary" onClick={() => showNoticeReport()}>
+                导出结果通知书
               </Button>
             </div>
             {tableOptions.map((item) => (
@@ -299,7 +318,7 @@ const ScreeningResult: React.FC = () => {
                       onExport(2);
                     }}
                   >
-                    <UploadOutlined /> 导出
+                    <DownloadOutlined /> 导出
                   </Button>,
                 ],
               }}
@@ -316,6 +335,13 @@ const ScreeningResult: React.FC = () => {
               visible: false,
             };
           });
+        }}
+      />
+      <NoticeReport
+        ids={ids}
+        visible={reportVisible}
+        onCancel={() => {
+          setReportVisible(false);
         }}
       />
       <ExportModal

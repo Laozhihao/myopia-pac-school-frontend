@@ -92,3 +92,55 @@ export async function NoticeRead(data: API.ObjectType) {
     data,
   });
 }
+
+/** 获取通知书配置 GET /school/management/school/{id} */
+export async function getReportInfo(id: number | string) {
+  return request<API.RequestResult>(`/school/management/school/${id}`, {
+    method: 'GET',
+  });
+}
+
+/** 更新通知书配置 GET /school/vision/screening/update/resultNoticeConfig/{id} */
+export async function setReportInfo(data: API.ObjectType, id: number | string) {
+  return request<API.RequestResult>(`/school/vision/screening/update/resultNoticeConfig/${id}`, {
+    method: 'PUT',
+    data,
+  });
+}
+
+/** 获取年级 GET /school/vision/screening/grades/{screeningPlanId}  */
+export async function getGrades(id: number | string) {
+  return request<API.RequestResult>(`/school/vision/screening/grades/${id}`, {
+    method: 'GET',
+  });
+}
+
+/** 获取学生 GET /school/vision/screening/screeningNoticeResult/list */
+export async function screeningNoticeResult(params: API.ObjectType) {
+  return request<API.RequestResult>('/school/vision/screening/screeningNoticeResult/list', {
+    method: 'GET',
+    params,
+  });
+}
+
+/** 异步导出通知书 GET /school/vision/screening/screeningNoticeResult/asyncGeneratorPDF */
+export async function asyncGeneratorPDF(params: API.ObjectType) {
+  return request<API.RequestResult>(
+    '/school/vision/screening/screeningNoticeResult/asyncGeneratorPDF',
+    {
+      method: 'GET',
+      params,
+    },
+  );
+}
+
+/** 同步导出通知书 GET school/vision/screening/screeningNoticeResult/syncGeneratorPDF */
+export async function syncGeneratorPDF(params: API.ObjectType) {
+  return request<API.RequestResult>(
+    '/school/vision/screening/screeningNoticeResult/syncGeneratorPDF',
+    {
+      method: 'GET',
+      params,
+    },
+  );
+}

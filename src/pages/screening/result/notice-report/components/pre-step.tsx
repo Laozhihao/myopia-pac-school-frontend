@@ -31,23 +31,23 @@ export const PreStep = forwardRef<any, PreStepType>((props, ref) => {
   ];
   const info = [
     {
-      key: '姓名 : ',
+      key: '姓名',
       value: '赵xx',
     },
     {
-      key: '年级班级 : ',
+      key: '年级班级',
       value: '三年级一班',
     },
     {
-      key: '出生日期 : ',
+      key: '出生日期',
       value: '2000年1月1日',
     },
     {
-      key: '性别 : ',
+      key: '性别',
       value: '男',
     },
     {
-      key: '筛查编号 : ',
+      key: '筛查编号',
       value: 'xxxxxxxx',
     },
   ];
@@ -144,7 +144,7 @@ export const PreStep = forwardRef<any, PreStepType>((props, ref) => {
             {info.map((v) => (
               <li key={v.key}>
                 <span>{v.key}</span>
-                {v.value}
+                <span className={styles.stu_font}>{v.value}</span>
               </li>
             ))}
           </ul>

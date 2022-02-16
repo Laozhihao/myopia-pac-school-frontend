@@ -4,7 +4,7 @@ import {
   ProFormDatePicker,
   ProFormTextArea,
 } from '@ant-design/pro-form';
-import { Row, Col, Form, Cascader, Select } from 'antd';
+import { Row, Col, Form, Cascader, Select, Input } from 'antd';
 import { useEffect, useState } from 'react';
 import { getPopupContainer } from '@/hook/ant-config';
 
@@ -35,6 +35,41 @@ const PageForm: React.FC<API.PropsType> = (props) => {
         placeholder={`请输入${label}`}
         fieldProps={fieldProps}
       />
+    ),
+
+    // inputGroup
+    inputGroup: ({
+      label,
+      selectName,
+      selectInitial,
+      selectWidth,
+      inputName,
+      rules,
+      required,
+      onChange,
+      selectOption = [],
+    }: API.FilterListType) => (
+      <Form.Item label={label} required={required}>
+        <Input.Group compact style={{ display: 'flex', marginBottom: -24 }}>
+          <Form.Item name={selectName} initialValue={selectInitial}>
+            <Select
+              placeholder="请选择"
+              style={{ width: selectWidth ?? 140 }}
+              onChange={onChange}
+              options={selectOption}
+              getPopupContainer={getPopupContainer}
+            />
+          </Form.Item>
+          <Form.Item
+            name={inputName}
+            style={{ width: 'inherit' }}
+            rules={rules}
+            required={required}
+          >
+            <Input placeholder="请输入" allowClear />
+          </Form.Item>
+        </Input.Group>
+      </Form.Item>
     ),
 
     // 输入文本框

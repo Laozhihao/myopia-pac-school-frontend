@@ -59,6 +59,12 @@ declare namespace API {
     required?: boolean;
     fieldProps?: Record<string, any>; // 透传的属性 pro
     fieldNames?: Record<string, any>;
+    selectWidth?: number;
+    selectName?: string; // inputGroup select
+    selectOption?: any[]; // select option选项
+    selectInitial?: string; // inputGroup select initialValue
+    inputName?: string; // inputGroup input
+    onChange?: () => void; // select change 事件
   };
 
   //  JSON表单的prop类型

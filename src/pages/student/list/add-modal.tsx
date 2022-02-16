@@ -28,7 +28,7 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
     if (props.visible) {
       setStudentForm((value) => {
         return {
-          ...studentFormOptions(validatorCb, props?.currentRow ? 2 : 1),
+          ...studentFormOptions(validatorCb, props?.currentRow ? 2 : 1, modalRef),
           listTypeInfo: {
             ...value.listTypeInfo,
             gradeOptions: props.option,

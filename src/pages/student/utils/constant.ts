@@ -10,7 +10,7 @@ type StudentFormOptionsParmas = (params: any) => void;
  * @param validatorCb 身份证验证回调
  * @param type 1新增 2编辑
  */
-export const studentFormOptions = (validatorCb: StudentFormOptionsParmas, type = 1) => ({
+export const studentFormOptions = (validatorCb: StudentFormOptionsParmas, type = 1, ref?: any) => ({
   filterList: [
     {
       label: '学号',
@@ -70,13 +70,22 @@ export const studentFormOptions = (validatorCb: StudentFormOptionsParmas, type =
       col: 24,
     },
     {
-      label: '身份证',
-      type: 'input',
-      value: 'idCard',
+      label: '证件号',
+      type: 'inputGroup',
+      selectName: 'selectValue',
+      inputName: 'inputValue',
+      selectOption: [
+        { label: '身份证', value: 'idCard' },
+        { label: '护照', value: 'passport' },
+      ],
+      required: true,
       rules: [
         {
           required: true,
-          message: '请输入身份证',
+          message:
+            ref?.current?.getFieldValue('selectValue') === 'idCard'
+              ? '请输入身份证'
+              : '请输入证件号',
         },
         {
           validator(_: any, value: any) {
@@ -86,9 +95,31 @@ export const studentFormOptions = (validatorCb: StudentFormOptionsParmas, type =
           },
         },
       ],
-      fieldProps: type === 2 ? { type: 'password' } : undefined,
+      onChange: () => {
+        console.log(ref?.current?.getFieldValue('selectValue'), 'ref');
+      },
       col: 24,
     },
+    // {
+    //   label: '身份证',
+    //   type: 'input',
+    //   value: 'idCard',
+    //   rules: [
+    //     {
+    //       required: true,
+    //       message: '请输入身份证',
+    //     },
+    //     {
+    //       validator(_: any, value: any) {
+    //         if (value && !isIdCard(value)) return Promise.reject('请输入正确的身份证号');
+    //         if (value && type === 1) validatorCb?.(value); // 获取出生日期
+    //         return Promise.resolve();
+    //       },
+    //     },
+    //   ],
+    //   fieldProps: type === 2 ? { type: 'password' } : undefined,
+    //   col: 24,
+    // },
     {
       label: '出生日期',
       type: 'datePicker',

@@ -44,7 +44,9 @@ const FileList: React.FC = () => {
     resultId: '',
     templateId: '', // 模板id
   });
-  const [studentForm, setStudentForm] = useState<API.PropsType>(studentFormOptions(validatorCb, 2));
+  const [studentForm, setStudentForm] = useState<API.PropsType>(
+    studentFormOptions(validatorCb, 2, formRef),
+  );
   const actionRef = useRef<ActionType>();
   const { query: { id, studentId } = {} } = history.location; // id studentId
 
@@ -82,12 +84,15 @@ const FileList: React.FC = () => {
     onSuccess: (result: any) => {
       const info = {};
       setAddressFlag(!result?.provinceCode); // 编辑地址
-      const { gradeId, classId, provinceCode, cityCode, areaCode, townCode } = result || {};
+      const { gradeId, classId, provinceCode, cityCode, areaCode, townCode, idCard, passport } =
+        result || {};
       const addressArr = [provinceCode, cityCode, areaCode, townCode].filter((item) => item); // 地区
       const gradeArr = [gradeId, classId].filter((item) => item); // 年级
       Object.assign(info, {
         gradeIds: gradeArr, // 回显年级班级
         region: addressArr, // 回显地区
+        selectValue: passport ? 'passport' : 'idCard', // 回填证件号
+        inputValue: idCard ?? passport, // 回填证件号
       });
       formRef?.current?.setFieldsValue({ ...result, ...info });
     },
@@ -117,8 +122,10 @@ const FileList: React.FC = () => {
   const onFinish = async (value: {
     gradeIds?: never[] | undefined;
     region?: never[] | undefined;
+    selectValue: string | number;
+    inputValue?: string | number;
   }) => {
-    const { gradeIds = [], region = [] } = value;
+    const { gradeIds = [], region = [], selectValue, inputValue } = value;
     const [gradeId, classId] = gradeIds;
     const [provinceCode, cityCode, areaCode, townCode] = region;
     const parm = {
@@ -131,6 +138,7 @@ const FileList: React.FC = () => {
       cityCode,
       areaCode,
       townCode,
+      [selectValue]: inputValue,
     };
     await editStudentInfo(parm);
     message.success('更新成功');

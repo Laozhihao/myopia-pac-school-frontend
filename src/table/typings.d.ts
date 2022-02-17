@@ -22,6 +22,8 @@ declare namespace API {
     numOfVisits?: string;
     parentPhone?: string;
     address?: string;
+    idCard?: string; // 身份证
+    passport?: string; // 护照
   } & MyopiaType;
 
   // 档案管理列表

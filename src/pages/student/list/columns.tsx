@@ -7,7 +7,7 @@ import {
   TABLESEXOPTION,
 } from '@/utils/constant';
 import { visionColumn } from '@/utils/columns';
-import { convertData } from '@/utils/common';
+import { convertData, getShowIdCardText, getShowPassportText } from '@/utils/common';
 import { Cascader, Button, Badge } from 'antd';
 import { InputGroup } from '@/pages/components/input-group';
 import { history } from 'umi';
@@ -47,6 +47,13 @@ export const listColumns: (
       );
     },
     renderText: (val: string, record) => `${val}-${record?.className}`,
+  },
+  {
+    title: '身份证号/护照号',
+    dataIndex: 'idCard',
+    search: false,
+    renderText: (val: string, record) =>
+      val ? getShowIdCardText(val) : getShowPassportText(record?.passport),
   },
   {
     hideInTable: true,

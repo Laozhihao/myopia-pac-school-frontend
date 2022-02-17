@@ -100,3 +100,27 @@ export const convertData = (option?: any[], children = 'child') => {
   });
   return option;
 };
+
+/**
+ * @desc 护照校验
+ */
+export function isPassport(passport: string): boolean {
+  const validateRuler = /^((1[45]\d{7})|(G\d{8})|(P\d{7})|(S\d{7,8}))?$/;
+  return validateRuler.test(passport);
+}
+
+/**
+ * @desc 去敏身份证
+ * @param {number} idCard 身份证
+ */
+export function getShowIdCardText(idCard: string | undefined) {
+  return idCard && idCard.replace(/^(.{5})(?:\d+)(.{4})$/, '$1***********$2');
+}
+
+/**
+ * @desc 去敏护照
+ * @param {number} idCard 身份证
+ */
+export function getShowPassportText(passport: string | undefined) {
+  return passport && passport.replace(/^(.{2})(?:\d+)(.{1})$/, '$1***********$2');
+}

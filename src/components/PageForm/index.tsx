@@ -46,7 +46,8 @@ const PageForm: React.FC<API.PropsType> = (props) => {
       inputName,
       rules,
       required,
-      onChange,
+      selectChange,
+      inputChange,
       selectOption = [],
     }: API.FilterListType) => (
       <Form.Item label={label} required={required}>
@@ -55,7 +56,7 @@ const PageForm: React.FC<API.PropsType> = (props) => {
             <Select
               placeholder="请选择"
               style={{ width: selectWidth ?? 140 }}
-              onChange={onChange}
+              onChange={selectChange}
               options={selectOption}
               getPopupContainer={getPopupContainer}
             />
@@ -66,7 +67,7 @@ const PageForm: React.FC<API.PropsType> = (props) => {
             rules={rules}
             required={required}
           >
-            <Input placeholder="请输入" allowClear />
+            <Input placeholder="请输入" allowClear onChange={inputChange} />
           </Form.Item>
         </Input.Group>
       </Form.Item>

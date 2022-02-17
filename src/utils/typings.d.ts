@@ -64,7 +64,8 @@ declare namespace API {
     selectOption?: any[]; // select option选项
     selectInitial?: string; // inputGroup select initialValue
     inputName?: string; // inputGroup input
-    onChange?: () => void; // select change 事件
+    selectChange?: () => void; // select change 事件
+    inputChange?: () => void; // input change 事件
   };
 
   //  JSON表单的prop类型

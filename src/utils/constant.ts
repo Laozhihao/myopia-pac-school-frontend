@@ -105,3 +105,8 @@ export const ASTIGMATISMTYPE = {
   2: '中度散光',
   3: '重度散光',
 };
+
+export const STATE_TEXT = {
+  0: '正常',
+  1: '异常',
+};

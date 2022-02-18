@@ -13,7 +13,11 @@ const cache = {}; // 用来缓存身份证/证件号
  * @param validatorCb 身份证验证回调
  * @param type 1新增 2编辑
  */
-export const studentFormOptions = (validatorCb: StudentFormOptionsParmas, type = 1, ref?: any) => ({
+export const studentFormOptions = (
+  validatorCb?: StudentFormOptionsParmas,
+  type = 1,
+  ref?: any,
+) => ({
   filterList: [
     {
       label: '学号',
@@ -104,11 +108,10 @@ export const studentFormOptions = (validatorCb: StudentFormOptionsParmas, type =
         },
       ],
       selectChange: (val: string | number) => {
-        const values = ref?.current?.getFieldValue();
-        const { inputValue } = values;
+        const { inputValue } = ref?.current?.getFieldValue();
         cache[val === 'idCard' ? 'passport' : 'idCard'] = inputValue;
         ref?.current?.resetFields(['inputValue']); // 重置值和验证状态
-        ref?.current?.setFieldsValue({ ...values, inputValue: cache[val] });
+        ref?.current?.setFieldsValue({ inputValue: cache[val] });
       },
       inputChange: (e: { target: { value: any } }) => {
         const { selectValue } = ref?.current?.getFieldValue();

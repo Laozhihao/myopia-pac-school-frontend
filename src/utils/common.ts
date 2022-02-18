@@ -71,7 +71,7 @@ export const getFixedNum = (num: number | string, digit = 2) => Number(num).toFi
  * @param digit - 保留几位小数
  * @param unit - 单位
  */
-export const typeNumberHandle = (val: any, digit: number, unit?: string) =>
+export const typeNumberHandle = (val: any, digit?: number, unit?: string) =>
   typeof val === 'number' ? `${getFixedNum(val, digit)}${unit ?? ''}` : EMPTY;
 
 /**

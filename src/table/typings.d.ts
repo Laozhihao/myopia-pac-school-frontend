@@ -41,6 +41,19 @@ declare namespace API {
     otherEyeDiseases?: string[]; // 其他眼病
   } & MyopiaType;
 
+  // 档案管理 - 详情
+  type FileDetailItem = {
+    title: string;
+    nakedVision?: string | number; // 裸眼
+    correctedVision?: string | number; // 矫正
+  };
+
+  type FileDetailInspectItem = {
+    title?: string;
+    dataIndex?: string;
+    columns?: any;
+  };
+
   // 视力筛查列表
   type ScreenListItem = {
     notificationConfig?: Record<string, any>;

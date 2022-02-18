@@ -35,16 +35,18 @@ declare namespace API {
     orgName?: string;
   };
 
-  // 弹窗类型
-  type ModalItemType = {
+  type ModalDataType = {
     title?: string;
     visible?: boolean;
     currentRow?: Record<string, any> | undefined;
     width?: number; // 宽度
+  };
+  // 弹窗类型
+  type ModalItemType = {
     onFinish?: () => Promise<void>; // modalForm 的确定回调
     onOk?: () => void; // modal确定回调
     onCancel: (refresh?: boolean) => void; // 取消回调 refresh 取消后是否刷新页面
-  };
+  } & ModalDataType;
 
   //  显示的表单类型
   type FilterListType = {

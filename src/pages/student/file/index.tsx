@@ -16,13 +16,12 @@ import type { ProFormInstance } from '@ant-design/pro-form';
 import { getStudentDetail, getStudentScreen } from '@/api/student';
 import { getCascaderOption } from '@/hook/district';
 import { getschoolGrade } from '@/api/school';
-import { getBirthday } from '@/hook/table';
 import { AddModal } from './add-modal';
+import { DetailModal } from './detail-modal';
 import { EMPTY } from '@/utils/constant';
 
 const { TabPane } = Tabs;
 export type FileCardPropsParams = {
-  visible: boolean;
   resultId: number | string;
   templateId: number | string;
 };
@@ -30,25 +29,33 @@ export type FileCardPropsParams = {
 const FileList: React.FC = () => {
   const formRef = useRef<ProFormInstance>();
 
-  /**
-   * @desc 获取身份证自动回显出生日期
-   */
-  const validatorCb = (value: string) => {
-    formRef?.current?.setFieldsValue({ birthday: getBirthday(value) });
-  };
-
   const [areaOption, setAreaOption] = useState<any[]>();
   const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
-  const [cardInfo, setCardInfo] = useState<FileCardPropsParams>({
+  const [cardInfo, setCardInfo] = useState<FileCardPropsParams & API.ModalDataType>({
     visible: false,
+    title: '档案卡',
     resultId: '',
     templateId: '', // 模板id
   });
+  // 查看详情弹窗
+  const [detail, setDetail] = useState<API.ModalDataType>({
+    visible: false,
+    title: '查看详情',
+    currentRow: {},
+  });
+
   const [studentForm, setStudentForm] = useState<API.PropsType>(
-    studentFormOptions(validatorCb, 2, formRef),
+    studentFormOptions(undefined, 2, formRef),
   );
   const actionRef = useRef<ActionType>();
   const { query: { id, studentId } = {} } = history.location; // id studentId
+
+  /**
+   * @desc 查看详情
+   */
+  const onDetail = () => {
+    setDetail((value) => ({ ...value, visible: true }));
+  };
 
   const columns: ProColumns<API.FileListItem>[] = [
     ...listColumns,
@@ -56,20 +63,24 @@ const FileList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 150,
+      width: 200,
       render: (_, record) => {
         return [
           <a
             key="print"
             onClick={() =>
-              setCardInfo({
+              setCardInfo((value) => ({
+                ...value,
                 resultId: record.resultId,
                 templateId: record.templateId,
                 visible: true,
-              })
+              }))
             }
           >
             打印档案卡
+          </a>,
+          <a onClick={onDetail} key="print">
+            查看详情
           </a>,
         ];
       },
@@ -229,9 +240,14 @@ const FileList: React.FC = () => {
       </Card>
       <AddModal
         {...cardInfo}
-        title="档案卡"
         onCancel={() => {
-          setCardInfo({ ...cardInfo, visible: false });
+          setCardInfo((value) => ({ ...value, visible: false }));
+        }}
+      />
+      <DetailModal
+        {...detail}
+        onCancel={() => {
+          setDetail((value) => ({ ...value, visible: false }));
         }}
       />
     </PageContainer>

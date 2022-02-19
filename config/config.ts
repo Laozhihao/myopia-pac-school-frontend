@@ -3,6 +3,7 @@ import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
+import path from 'path';
 const { REACT_APP_ENV } = process.env;
 export default defineConfig({
   hash: true,
@@ -57,5 +58,16 @@ export default defineConfig({
   },
   history: {
     type: 'hash',
+  },
+  chainWebpack(config) {
+    config.module
+      .rule('less-loader')
+      .test(/\.less$/)
+      .use('less-loader')
+      .loader('style-resources-loader')
+      .options({
+        patterns: path.resolve(__dirname, '../src/styles/common.less'),
+      })
+      .end();
   },
 });

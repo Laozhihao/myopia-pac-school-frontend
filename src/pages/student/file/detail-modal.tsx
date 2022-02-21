@@ -19,7 +19,7 @@ export const DetailModal: React.FC<API.ModalItemType> = (props) => {
     >
       <Spin spinning={loading}>
         {inspectType.map((item) => (
-          <div key={item.dataIndex}>
+          <div key={item.dataIndex} className={styles.content}>
             <p className={styles.title}>{item.title}</p>
             <Table dataSource={tableData} columns={item.columns} scroll={{ x: 'max-content' }} />
           </div>

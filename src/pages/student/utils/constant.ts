@@ -79,9 +79,10 @@ export const studentFormOptions = (
     {
       label: '证件号',
       type: 'inputGroup',
+      value: 'inputValue',
       selectName: 'selectValue',
       inputName: 'inputValue',
-      selectInitial: 'idCard',
+      selectInitial: ref?.current?.getFieldValue('passport') ? 'passport' : 'idCard',
       selectOption: [
         { label: '身份证', value: 'idCard' },
         { label: '护照', value: 'passport' },

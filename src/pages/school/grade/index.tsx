@@ -15,6 +15,7 @@ const GradeManage: React.FC = () => {
   const ref = useRef<ActionType>();
   const [modalVisible, setModalVisible] = useState(false); // 新增/编辑弹窗
   const [currentRow, setCurrentRow] = useState<API.GradeListItem>();
+  const [expandedRow, setExpandedRow] = useState<React.Key[]>([]); // 展开行
 
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState!;
@@ -32,6 +33,16 @@ const GradeManage: React.FC = () => {
     });
   };
 
+  const onAddClass = (record: API.GradeListItem) => {
+    const { id, schoolId } = record;
+    id && setExpandedRow((value) => [...value, id]);
+    record.child.push({
+      gradeId: id,
+      schoolId,
+      id: new Date(),
+    });
+  };
+
   const columns: ProColumns<API.GradeListItem>[] = [
     ...listColumns,
     {
@@ -41,7 +52,7 @@ const GradeManage: React.FC = () => {
       width: 300,
       render: (_, record) => [
         !record?.gradeId ? (
-          <a key="add" onClick={() => onAdd(record)}>
+          <a key="add" onClick={() => onAddClass(record)}>
             新增班级
           </a>
         ) : null,
@@ -69,8 +80,7 @@ const GradeManage: React.FC = () => {
             total: datas.data.total,
           };
         }}
-        // todo rowKey 替换 uniqueId
-        rowKey="name"
+        rowKey="id"
         pagination={{
           pageSize: 10,
         }}
@@ -80,6 +90,8 @@ const GradeManage: React.FC = () => {
           },
         }}
         expandable={{ childrenColumnName: 'child' }}
+        expandedRowKeys={expandedRow}
+        onExpandedRowsChange={(rows) => setExpandedRow(rows)}
         search={false}
         headerTitle="年级表格"
         options={false}
@@ -93,7 +105,7 @@ const GradeManage: React.FC = () => {
       <AddModal
         visible={modalVisible}
         currentRow={currentRow}
-        title={currentRow ? '新增班级' : '新增年级'}
+        title="新增年级班级"
         onCancel={() => {
           setModalVisible(false);
         }}

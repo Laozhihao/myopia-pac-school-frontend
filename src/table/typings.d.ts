@@ -134,5 +134,7 @@ declare namespace API {
     name?: string;
     uniqueId?: number;
     id?: number;
+    schoolId?: number;
+    child?: any[];
   };
 }

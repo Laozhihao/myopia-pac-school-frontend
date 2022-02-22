@@ -1,7 +1,8 @@
-import { ModalForm, ProFormText } from '@ant-design/pro-form';
+import { ModalForm } from '@ant-design/pro-form';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { getGradeCode, addGrade, addClass } from '@/api/school';
 import { useRequest, useModel } from 'umi';
+import styles from './add-modal.less';
 import { useEffect, useRef, useState } from 'react';
 import { Select, Form } from 'antd';
 import { modalConfig } from '@/hook/ant-config';
@@ -49,7 +50,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     <ModalForm
       title={props.title}
       formRef={modalRef}
-      width={600}
+      width={750}
       visible={props.visible}
       onFinish={onComfirm}
       modalProps={{
@@ -58,7 +59,28 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
         onCancel: () => props.onCancel(),
       }}
     >
-      {!props?.currentRow ? (
+      <span className={styles.primary_text}>
+        年级班级管理（批量新增删除年级班级，如需单个新增编辑删除请直接在年级班级管理界面操作）
+      </span>
+      <div className={styles.content}>
+        <span>年级：</span>
+        <div className={styles.content_right}>
+          <div className={styles.content_right_item}>
+            <Form.Item name="gradeCode">
+              <Select placeholder="请选择年级" allowClear style={{ width: 290 }}>
+                {gradeOption.map((item) => (
+                  <Option value={item.code} key={item.value}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <span className={styles.tip}>已有班级：1班</span>
+          </div>
+        </div>
+      </div>
+
+      {/* {!props?.currentRow ? (
         <Form.Item
           name="gradeCode"
           label="年级名称"
@@ -81,15 +103,8 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
             required
             rules={[{ required: true, message: '请输入班级名称' }]}
           />
-          {/* <ProFormText
-            name="seatCount"
-            label="班级座位"
-            placeholder="请输入"
-            required
-            rules={[{ required: true, message: '请输入班级座位' }]}
-          /> */}
         </>
-      )}
+      )} */}
     </ModalForm>
   );
 };

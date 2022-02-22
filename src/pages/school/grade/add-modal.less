@@ -1,0 +1,37 @@
+.content {
+  display: flex;
+  justify-content: space-between;
+
+  &_right {
+    width: 586px;
+
+    &-item {
+      width: 100%;
+      padding: 30px 34px 16px 26px;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.1);
+
+      &:not(:first-child) {
+        margin-top: 20px;
+      }
+
+      .btn-delete {
+        margin-left: 20px;
+      }
+
+      .tip {
+        margin: 3px 0 5px;
+        color: #096dd9;
+        line-height: initial;
+      }
+
+      &-content {
+        width: 526px;
+        padding: 14px 14px 4px;
+        background: rgba(245, 245, 245, 0.5);
+        border-radius: 4px;
+      }
+    }
+  }
+}

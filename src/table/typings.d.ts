@@ -137,4 +137,11 @@ declare namespace API {
     schoolId?: number;
     child?: any[];
   };
+
+  // 年级列表
+  type GradeOptionType = {
+    name: string;
+    code: string;
+    value: string;
+  }
 }

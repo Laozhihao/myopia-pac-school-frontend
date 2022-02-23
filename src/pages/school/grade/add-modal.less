@@ -1,11 +1,19 @@
 .content {
+
+  :global {
+    .ant-form-item {
+      margin-bottom: 5px;
+      width: -webkit-fill-available;
+    }
+  }
   display: flex;
   justify-content: space-between;
+  margin: 35px 0 66px;
 
   &_right {
-    width: 586px;
+    width: 600px;
 
-    &-item {
+    &_item {
       width: 100%;
       padding: 30px 34px 16px 26px;
       background: #fff;
@@ -22,16 +30,20 @@
 
       .tip {
         margin: 3px 0 5px;
-        color: #096dd9;
-        line-height: initial;
+        color: @blue-7;
       }
 
-      &-content {
+      .modular {
         width: 526px;
+        margin-top: 6px;
         padding: 14px 14px 4px;
         background: rgba(245, 245, 245, 0.5);
         border-radius: 4px;
       }
     }
+  }
+
+  .btn {
+    margin: 66px 0 43px;
   }
 }

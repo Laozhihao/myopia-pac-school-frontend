@@ -1,17 +1,18 @@
-import { ModalForm } from '@ant-design/pro-form';
+import { ModalForm, ProFormTextArea } from '@ant-design/pro-form';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { getGradeCode, addGrade, addClass } from '@/api/school';
 import { useRequest, useModel } from 'umi';
 import styles from './add-modal.less';
 import { useEffect, useRef, useState } from 'react';
-import { Select, Form } from 'antd';
+import { Select, Form, Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { modalConfig } from '@/hook/ant-config';
 
 const { Option } = Select;
 
 export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const modalRef = useRef<ProFormInstance>();
-  const [gradeOption, setGradeOption] = useState<any[]>([]);
+  const [gradeOption, setGradeOption] = useState<API.GradeOptionType[]>([]);
 
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState!;
@@ -52,7 +53,9 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       formRef={modalRef}
       width={750}
       visible={props.visible}
+      layout="horizontal"
       onFinish={onComfirm}
+      labelCol={{ style: { width: 90 } }}
       modalProps={{
         ...modalConfig,
         destroyOnClose: true,
@@ -76,7 +79,16 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
               </Select>
             </Form.Item>
             <span className={styles.tip}>已有班级：1班</span>
+            <div className={styles.modular}>
+              <ProFormTextArea
+                name="text"
+                label="新增班级"
+                placeholder="请输入名称"
+                />
+              <span className={styles.tip} style={{marginLeft: 90}}>已有班级：1班</span>
+            </div>
           </div>
+          <Button type="dashed" block icon={<PlusOutlined />} className={styles.btn}>添加年级</Button>
         </div>
       </div>
 

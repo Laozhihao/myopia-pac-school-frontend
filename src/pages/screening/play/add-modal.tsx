@@ -19,7 +19,7 @@ import {
   updateScreeningNoticeConfig,
 } from '@/api/screen';
 import type { SubmitterProps } from '@ant-design/pro-form/lib/components/Submitter';
-import { useRequest } from 'umi';
+import { useRequest, useModel } from 'umi';
 
 // 分布表单类型
 type ElePropsType = {
@@ -31,6 +31,18 @@ type ElePropsType = {
 } & SubmitterProps;
 
 export const AddModal: React.FC<API.ModalItemType> = (props) => {
+  // 获取当前学校名称
+  const { initialState } = useModel('@@initialState');
+  const { currentUser } = initialState!;
+  // 表单Ref
+  const [formRef] = Form.useForm();
+  // 设置默认值
+  formRef.setFieldsValue({
+    printType: 1, // 默认选中筛查二维码
+    schoolName: currentUser?.username,
+  });
+
+  
   const [step, setStep] = useState<number>(0);
   const [studentList, setStudentList] = useState([]);
   const [studentIds, setStudentIds] = useState([]);
@@ -229,8 +241,6 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   { type: 3,
     text: '虚拟二维码' }];
 
-  const schoolName = '学校名称';
-
   const onPrintTypeChange = (e) => {
     setPrintType(e.target.value);
   };
@@ -273,18 +283,22 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
             key="export"
             type="primary"
           >
-            { printType === 0 || current ? '生成' : '下一步' }
+            { printType || current ? '生成' : '下一步' }
           </Button>
         </div>,
       ]}
       {...modalConfig}
     >
       <Step step={step} key="step" />
-      <Form {...layout} requiredMark={false}>
+      <Form {...layout} form={formRef}>
         {step === 0 ? (
           <>
-            <Form.Item label="打印类型">
-              <Radio.Group defaultValue={printType} onChange={onPrintTypeChange} buttonStyle="solid">
+            <Form.Item 
+              label="打印类型"
+              name="printType"
+              required
+            >
+              <Radio.Group buttonStyle="solid">
                 {printTypeArr.map((item: any) => (
                   <Radio.Button
                     value={item.type}
@@ -295,13 +309,15 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                 ))}
               </Radio.Group>
             </Form.Item>
-            <Form.Item label="筛查学校">
-              <Select defaultValue={schoolName} disabled />
+            <Form.Item 
+              label="筛查学校"
+              name="schoolName"
+              required
+            >
+              <Select disabled />
             </Form.Item>
             <Form.Item
               label="选择年级/班级"
-              rules={[{ required: true, message: '请选择年级班级' }]}
-              name="gradeIds"
             >
               <Cascader
                 options={gradeOptions}

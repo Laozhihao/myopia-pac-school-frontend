@@ -95,7 +95,7 @@ const defaultColumns: ProColumns<API.FileDetailItem>[] = [
   {
     title: '',
     width: 150,
-    dataIndex: 'title',
+    dataIndex: 'eyes',
   },
 ];
 
@@ -202,7 +202,20 @@ export const othersColumns: ProColumns<API.FileDetailItem>[] = [
   },
   {
     title: '其他眼病',
+    width: 300,
     dataIndex: 'otherEyeDiseases',
+  },
+];
+
+// 身高体重 columns
+export const heightAndWeightColumns: ProColumns<API.FileDetailItem>[] = [
+  {
+    title: '身高（cm）',
+    dataIndex: 'height',
+  },
+  {
+    title: '体重（KG）',
+    dataIndex: 'weight',
   },
 ];
 
@@ -217,6 +230,11 @@ export const inspectType: API.FileDetailInspectItem[] = [
     title: '电脑验光',
     dataIndex: 'computerOptometry',
     columns: optometryColumns,
+  },
+  {
+    title: '身高体重',
+    dataIndex: 'heightAndWeightData',
+    columns: heightAndWeightColumns,
   },
   {
     title: '生物测量',

@@ -50,7 +50,7 @@ declare namespace API {
 
   type FileDetailInspectItem = {
     title?: string;
-    dataIndex?: string;
+    dataIndex: string;
     columns?: any;
   };
 

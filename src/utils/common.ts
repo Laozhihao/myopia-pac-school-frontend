@@ -105,7 +105,7 @@ export const convertData = (option?: any[], children = 'child') => {
  * @desc 护照校验
  */
 export function isPassport(passport: string): boolean {
-  const validateRuler = /^((1[45]\d{7})|(G\d{8})|(P\d{7})|(S\d{7,8}))?$/;
+  const validateRuler = /^\S{8,12}$/;
   return validateRuler.test(passport);
 }
 

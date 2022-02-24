@@ -68,55 +68,41 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       <div className={styles.content}>
         <span>年级：</span>
         <div className={styles.content_right}>
-          <div className={styles.content_right_item}>
-            <Form.Item name="gradeCode">
-              <Select placeholder="请选择年级" allowClear style={{ width: 290 }}>
-                {gradeOption.map((item) => (
-                  <Option value={item.code} key={item.value}>
-                    {item.name}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <span className={styles.tip}>已有班级：1班</span>
-            <div className={styles.modular}>
-              <ProFormTextArea
-                name="text"
-                label="新增班级"
-                placeholder="请输入名称"
-                />
-              <span className={styles.tip} style={{marginLeft: 90}}>已有班级：1班</span>
+        <Form.List
+        name="users"
+        >
+        {(fields, { add, remove }) => (
+          <>
+            {fields.map((key, name, ...restField) => (
+              <div className={styles.content_right_item} key={key}>
+              <Form.Item {...restField} name={[name, 'first']}>
+                <Select placeholder="请选择年级" allowClear style={{ width: 290 }}>
+                  {gradeOption.map((item) => (
+                    <Option value={item.code} key={item.value}>
+                      {item.name}
+                    </Option>
+                  ))}
+                </Select>
+                <Button type="primary" danger className={styles.btn_delete} onClick={() => remove(name)}>删除</Button>
+              </Form.Item>
+              <span className={styles.tip}>已有班级：1班</span>
+              <div className={styles.modular}>
+                <ProFormTextArea
+                 {...restField}
+                 name={[name, 'last']}
+                  label="新增班级"
+                  placeholder="请输入名称"
+                  />
+                <span className={styles.tip} style={{marginLeft: 90}}>已有班级：1班</span>
+              </div>
             </div>
-          </div>
-          <Button type="dashed" block icon={<PlusOutlined />} className={styles.btn}>添加年级</Button>
+            ))}
+            <Form.Item><Button type="dashed" block icon={<PlusOutlined />} className={styles.btn} onClick={add}>添加年级</Button></Form.Item>
+          </>
+        )}
+      </Form.List>
         </div>
       </div>
-
-      {/* {!props?.currentRow ? (
-        <Form.Item
-          name="gradeCode"
-          label="年级名称"
-          rules={[{ required: true, message: '请选择年级' }]}
-        >
-          <Select placeholder="请选择年级" allowClear>
-            {gradeOption.map((item) => (
-              <Option value={item.code} key={item.value}>
-                {item.name}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-      ) : (
-        <>
-          <ProFormText
-            name="name"
-            label="班级名称"
-            placeholder="请输入"
-            required
-            rules={[{ required: true, message: '请输入班级名称' }]}
-          />
-        </>
-      )} */}
     </ModalForm>
   );
 };

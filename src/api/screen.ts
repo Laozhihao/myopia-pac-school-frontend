@@ -144,3 +144,26 @@ export async function syncGeneratorPDF(params: API.ObjectType) {
     },
   );
 }
+
+/** 获取告知书、筛查二维码学生列表 GET /school/management/student/notice */
+export async function getScreeningPlanstudents(
+  screeningPlanId: number,
+  schoolId: number,
+  gradeId: number,
+  classId: number,
+) {
+  return request<API.RequestResult>(
+    `/school/management/screeningPlan/students/${screeningPlanId}/${schoolId}/${gradeId}/${classId}`,
+    {
+      method: 'GET',
+    },
+  );
+}
+
+/** 获取筛查学生导出报告 GET /school/management/screeningOrg/qrcode */
+export async function getScreeningQrcode(params: API.ObjectType) {
+  return request<API.RequestResult>('/school/management/screeningOrg/qrcode', {
+    method: 'GET',
+    params,
+  });
+}

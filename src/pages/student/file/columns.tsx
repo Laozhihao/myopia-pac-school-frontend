@@ -58,11 +58,13 @@ export const listColumns: ProColumns<API.FileListItem>[] = [
   },
   {
     title: '身高（cm）',
-    dataIndex: 'height',
+    dataIndex: 'heightAndWeightData',
+    renderText: (val: API.ObjectType) => val?.height ?? EMPTY,
   },
   {
     title: '体重（KG）',
-    dataIndex: 'weight',
+    dataIndex: 'heightAndWeightData',
+    renderText: (val: API.ObjectType) => val?.weight ?? EMPTY,
   },
   ...visionResultColumn,
 

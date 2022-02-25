@@ -39,6 +39,7 @@ declare namespace API {
     hyperopiaLevel?: string; // 远视情况
     astigmatismLevel?: string; // 散光情况
     otherEyeDiseases?: string[]; // 其他眼病
+    hasScreening?: boolean; // 是否有详情
   } & MyopiaType;
 
   // 档案管理 - 详情

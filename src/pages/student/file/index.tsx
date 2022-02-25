@@ -5,7 +5,7 @@ import ProTable from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';
 import { listColumns } from './columns';
 import { history, useRequest } from 'umi';
-import { Tabs, Card, message } from 'antd';
+import { Tabs, Card, message, Tooltip, Button } from 'antd';
 import { editStudentInfo } from '@/api/student';
 import PageForm from '@/components/PageForm';
 import LazyCascader from '@/pages/components/lazy-cascader';
@@ -79,9 +79,17 @@ const FileList: React.FC = () => {
           >
             打印档案卡
           </a>,
-          <a onClick={() => onDetail(record)} key="print">
-            查看详情
-          </a>,
+          record?.hasScreening ? (
+            <Button type="link" onClick={() => onDetail(record)} key="detail">
+              查看详情
+            </Button>
+          ) : (
+            <Tooltip title="当前没有筛查数据">
+              <Button type="text" disabled key="unDetail">
+                查看详情
+              </Button>
+            </Tooltip>
+          ),
         ];
       },
     },

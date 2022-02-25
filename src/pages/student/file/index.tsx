@@ -53,8 +53,8 @@ const FileList: React.FC = () => {
   /**
    * @desc 查看详情
    */
-  const onDetail = () => {
-    setDetail((value) => ({ ...value, visible: true }));
+  const onDetail = (record: API.FileListItem) => {
+    setDetail((value) => ({ ...value, visible: true, currentRow: record }));
   };
 
   const columns: ProColumns<API.FileListItem>[] = [
@@ -79,7 +79,7 @@ const FileList: React.FC = () => {
           >
             打印档案卡
           </a>,
-          <a onClick={onDetail} key="print">
+          <a onClick={() => onDetail(record)} key="print">
             查看详情
           </a>,
         ];

@@ -18,23 +18,31 @@ export async function editStudentInfo(data: API.ObjectType) {
 }
 
 /** 删除 /school/student */
-export async function deleteStudentInfo(id: number | string) {
+export async function deleteStudentInfo(id: React.Key) {
   return request<API.RequestResult>(`/school/student/${id}`, {
     method: 'DELETE',
   });
 }
 
 /** 学生详情 /school/student */
-export async function getStudentDetail(id: number | string) {
+export async function getStudentDetail(id: React.Key) {
   return request<API.RequestResult>(`/school/student/${id}`, {
     method: 'GET',
   });
 }
 
 /** 筛查记录 /school/student */
-export async function getStudentScreen(id: number | string) {
+export async function getStudentScreen(id: React.Key) {
   return request<API.RequestResult>(`/school/student/screening/list/${id}`, {
     method: 'GET',
+  });
+}
+
+/** 筛查记录-详情 /school/student */
+export async function getStudentScreenDetail(params?: API.ObjectType) {
+  return request<API.RequestResult>('/school/vision/screening/getStudentEyeByStudentId', {
+    method: 'GET',
+    params,
   });
 }
 

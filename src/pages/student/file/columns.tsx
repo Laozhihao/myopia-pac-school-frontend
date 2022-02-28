@@ -4,6 +4,7 @@ import { MYOPIAWARNOPTION } from '@/utils/constant';
 import { Badge } from 'antd';
 import { visionResultColumn } from '@/utils/columns';
 import { formatLength, typeNumberHandle, symbolHandle } from '@/utils/common';
+import React from 'react';
 
 export const listColumns: ProColumns<API.FileListItem>[] = [
   {
@@ -58,13 +59,15 @@ export const listColumns: ProColumns<API.FileListItem>[] = [
   },
   {
     title: '身高（cm）',
-    dataIndex: 'heightAndWeightData',
-    renderText: (val: API.ObjectType) => val?.height ?? EMPTY,
+    dataIndex: 'details',
+    renderText: (val: Record<string, any>[]) =>
+      (val && val[0]?.heightAndWeightData?.height) ?? EMPTY,
   },
   {
     title: '体重（KG）',
-    dataIndex: 'heightAndWeightData',
-    renderText: (val: API.ObjectType) => val?.weight ?? EMPTY,
+    dataIndex: 'details',
+    renderText: (val: Record<string, any>[]) =>
+      (val && val[0]?.heightAndWeightData?.weight) ?? EMPTY,
   },
   ...visionResultColumn,
 
@@ -128,12 +131,12 @@ export const optometryColumns: ProColumns<API.FileDetailItem>[] = [
   {
     title: '球镜',
     dataIndex: 'sph',
-    renderText: ({ val }) => `${typeNumberHandle(val)}`,
+    render: (text) => <span>{typeNumberHandle(text)}</span>,
   },
   {
     title: '柱镜',
     dataIndex: 'cyl',
-    renderText: ({ val }) => `${typeNumberHandle(val)}`,
+    render: (text) => <span>{typeNumberHandle(text)}</span>,
   },
   {
     title: '轴向',
@@ -188,7 +191,7 @@ export const eyePressureColumns: ProColumns<API.FileDetailItem>[] = [
   {
     title: '眼压',
     dataIndex: 'pressure',
-    renderText: ({ val }) => `${val} mmHg`,
+    render: (text) => <span>{text}mmHg</span>,
   },
 ];
 
@@ -198,17 +201,17 @@ export const othersColumns: ProColumns<API.FileDetailItem>[] = [
   {
     title: '裂隙灯',
     dataIndex: 'slitLampData',
-    renderText: ({ val }) => STATE_TEXT[val],
+    render: (text: any) => <span>{STATE_TEXT[text]}</span>,
   },
   {
     title: '眼位',
     dataIndex: 'ocularInspectionData',
-    renderText: ({ val }) => STATE_TEXT[val],
+    render: (text: any) => <span>{STATE_TEXT[text]}</span>,
   },
   {
     title: '眼底',
     dataIndex: 'fundusData',
-    renderText: ({ val }) => STATE_TEXT[val],
+    render: (text: any) => <span>{STATE_TEXT[text]}</span>,
   },
   {
     title: '其他眼病',

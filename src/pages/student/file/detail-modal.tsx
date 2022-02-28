@@ -3,7 +3,7 @@ import { inspectType } from './columns';
 import styles from './detail-modal.less';
 import React, { useEffect, useState } from 'react';
 import { modalConfig } from '@/hook/ant-config';
-import { useRequest, history } from 'umi';
+import { useRequest } from 'umi';
 import { getStudentScreenDetail } from '@/api/student';
 import { getFixedNum } from '@/utils/common';
 import { GLASSESTYPE } from '@/utils/constant';
@@ -11,8 +11,6 @@ import { GLASSESTYPE } from '@/utils/constant';
 export const DetailModal: React.FC<API.ModalItemType> = (props) => {
   const [loading, setLoading] = useState(false);
   const [studentInspectType, setStudentInspectType] = useState<API.ObjectType>({});
-
-  const { query: { studentId } = {} } = history.location;
 
   /**
    * @desc 处理眼球展示数据
@@ -23,19 +21,19 @@ export const DetailModal: React.FC<API.ModalItemType> = (props) => {
         data[item] = getFixedNum(data[item], Number(item !== 'axial'));
       }
     });
-    // for (const key in data) {
-    //   // 1. 视力检查 裸眼和矫正保留一位小数 2. 电脑验光 轴向取整
-    //   if (['correctedVision', 'nakedVision', 'axial'].includes(key)) {
-    //     data[key] = getFixedNum(data[key], Number(key !== 'axial'));
-    //   }
-    // }
     return data;
   };
 
   const { run } = useRequest(getStudentScreenDetail, {
     manual: true,
     onSuccess: (result: any) => {
-      const { slitLampData, ocularInspectionData, fundusData, otherEyeDiseases } = result; // 其他眼病
+      const {
+        slitLampData,
+        ocularInspectionData,
+        fundusData,
+        otherEyeDiseases,
+        systemicDiseaseSymptom,
+      } = result; // 其他眼病
       /* eslint no-plusplus: ["error", { "allowForLoopAfterthoughts": true }] */
       for (let i = 0; i < inspectType.length; i++) {
         const element = inspectType[i];
@@ -66,7 +64,12 @@ export const DetailModal: React.FC<API.ModalItemType> = (props) => {
               fundusData: result?.fundusData?.rightEyeData?.hasAbnormal, // 右眼底
               otherEyeDiseases:
                 result?.otherEyeDiseases &&
-                result.otherEyeDiseases.rightEyeData.eyeDiseases.join('、'), // 右其他眼病
+                `${result.otherEyeDiseases.rightEyeData.eyeDiseases.join('、')} ${
+                  result?.otherEyeDiseases?.rightEyeData?.eyeDiseases?.length &&
+                  systemicDiseaseSymptom
+                    ? '、'
+                    : ''
+                }${systemicDiseaseSymptom}`, // 右其他眼病
             },
             {
               eyes: 'OS 左眼',
@@ -75,7 +78,12 @@ export const DetailModal: React.FC<API.ModalItemType> = (props) => {
               fundusData: result?.fundusData?.leftEyeData.hasAbnormal, // 左眼底
               otherEyeDiseases:
                 result?.otherEyeDiseases &&
-                result?.otherEyeDiseases?.leftEyeData.eyeDiseases.join('、'), // 左其他眼病
+                `${result.otherEyeDiseases.leftEyeData.eyeDiseases.join('、')}${
+                  result?.otherEyeDiseases?.leftEyeData?.eyeDiseases?.length &&
+                  systemicDiseaseSymptom
+                    ? '、'
+                    : ''
+                } ${systemicDiseaseSymptom}`, // 左其他眼病
             },
           ];
         }
@@ -98,9 +106,8 @@ export const DetailModal: React.FC<API.ModalItemType> = (props) => {
 
   useEffect(() => {
     const { visible, currentRow } = props;
-    if (visible && currentRow?.planId) {
-      setLoading(true);
-      run({ studentId, planId: currentRow.planId });
+    if (visible && currentRow?.resultId) {
+      run({ resultId: currentRow.resultId });
     }
   }, [props.visible]);
 

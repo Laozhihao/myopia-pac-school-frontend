@@ -40,7 +40,7 @@ export async function getStudentScreen(id: React.Key) {
 
 /** 筛查记录-详情 /school/student */
 export async function getStudentScreenDetail(params?: API.ObjectType) {
-  return request<API.RequestResult>('/school/vision/screening/getStudentEyeByStudentId', {
+  return request<API.RequestResult>('/school/vision/screening/studentData', {
     method: 'GET',
     params,
   });

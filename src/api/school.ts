@@ -34,6 +34,14 @@ export async function getsGradeList(params: API.ObjectType, options?: API.Object
   });
 }
 
+/** 年级班级（全部） GET /school/management/grade/all */
+export async function getsGradeAll(options?: API.ObjectType) {
+  return request<API.RequestResult>('/school/management/grade/all', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
 /** 创建年级列表 GET /school/management/grade/getGradeCode */
 export async function getGradeCode(options?: API.ObjectType) {
   return request<API.RequestResult>('/school/management/grade/getGradeCode', {
@@ -63,6 +71,15 @@ export async function deleteGrade(id: number, options?: API.ObjectType) {
 export async function addClass(data: API.ObjectType, options?: API.ObjectType) {
   return request<API.RequestResult>('/school/management', {
     method: 'POST',
+    data,
+    ...(options || {}),
+  });
+}
+
+/** 编辑班级 PUT /school/management */
+export async function editClass(data: API.ObjectType, options?: API.ObjectType) {
+  return request<API.RequestResult>('/school/management', {
+    method: 'PUT',
     data,
     ...(options || {}),
   });

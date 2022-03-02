@@ -14,18 +14,26 @@ import type { ActionType } from '@ant-design/pro-table';
 const GradeManage: React.FC = () => {
   const ref = useRef<ActionType>();
   const [modalVisible, setModalVisible] = useState(false); // 新增/编辑弹窗
-  const [currentRow, setCurrentRow] = useState<API.GradeListItem>();
   const [expandedRow, setExpandedRow] = useState<React.Key[]>([]); // 展开行
+  const [tableData, setTableData] = useState<any[]>([]);    // 表格数据
 
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState!;
 
-  const onAdd = (rows: React.SetStateAction<API.GradeListItem | undefined>) => {
-    setModalVisible(true);
-    setCurrentRow(rows);
-  };
 
-  const onDelete = (rows: API.GradeListItem) => {
+  /**
+   * @desc 删除
+   */
+  const onDelete = (rows: API.GradeListItem & {gradeIndex: number}) => {
+    if (typeof rows?.id !== 'number') {
+      const { child = [] as any[] } = tableData[rows.gradeIndex];
+      const nowClassIndex = child.findIndex((item: { id: any }) => item.id === rows.id);
+      child.splice(nowClassIndex, 1);
+      setTableData(value => [
+        ...value,
+      ])
+      return;
+    }
     deleteTableRow('该所选数据', async () => {
       const apiFn = rows?.gradeId ? deleteClass : deleteGrade;
       await apiFn(rows?.id!);
@@ -33,14 +41,21 @@ const GradeManage: React.FC = () => {
     });
   };
 
-  const onAddClass = (record: API.GradeListItem) => {
+  /**
+   * @desc 新增班级
+   */
+  const onAddClass = (record: API.GradeListItem, index: number) => {
     const { id, schoolId } = record;
     id && setExpandedRow((value) => [...value, id]);
-    record.child.push({
-      gradeId: id,
-      schoolId,
-      id: new Date(),
-    });
+    record.child = [
+      ...(record?.child || []),
+      {
+        gradeIndex: index,
+        gradeId: id,
+        schoolId,
+        id: new Date(),
+      },
+    ];
   };
 
   const columns: ProColumns<API.GradeListItem>[] = [
@@ -50,9 +65,9 @@ const GradeManage: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       width: 300,
-      render: (_, record) => [
+      render: (_, record, index) => [
         !record?.gradeId ? (
-          <a key="add" onClick={() => onAddClass(record)}>
+          <a key="add" onClick={() => onAddClass(record, index)}>
             新增班级
           </a>
         ) : null,
@@ -74,12 +89,13 @@ const GradeManage: React.FC = () => {
             size: params.pageSize,
             schoolId: currentUser?.orgId,
           });
+          setTableData(datas.data.records);
           return {
-            data: datas.data.records,
             success: true,
             total: datas.data.total,
           };
         }}
+        dataSource={tableData}
         rowKey="id"
         pagination={{
           pageSize: 10,
@@ -96,7 +112,7 @@ const GradeManage: React.FC = () => {
         headerTitle="年级表格"
         options={false}
         toolBarRender={() => [
-          <Button key="add" type="primary" onClick={() => onAdd(undefined)}>
+          <Button key="add" type="primary" onClick={() => setModalVisible(true)}>
             <PlusOutlined />
             新增年级
           </Button>,
@@ -104,7 +120,6 @@ const GradeManage: React.FC = () => {
       />
       <AddModal
         visible={modalVisible}
-        currentRow={currentRow}
         title="新增年级班级"
         onCancel={() => {
           setModalVisible(false);

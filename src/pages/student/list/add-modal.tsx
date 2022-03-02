@@ -28,7 +28,7 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
     if (props.visible) {
       setStudentForm((value) => {
         return {
-          ...studentFormOptions(validatorCb, props?.currentRow ? 2 : 1),
+          ...studentFormOptions(validatorCb, props?.currentRow ? 2 : 1, modalRef),
           listTypeInfo: {
             ...value.listTypeInfo,
             gradeOptions: props.option,
@@ -47,12 +47,15 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
       setAddressFlag(!props?.currentRow?.provinceCode); // 编辑地址
       const info = {};
       if (props?.currentRow) {
-        const { gradeId, classId, provinceCode, cityCode, areaCode, townCode } = props?.currentRow;
+        const { gradeId, classId, provinceCode, cityCode, areaCode, townCode, idCard, passport } =
+          props?.currentRow;
         const addressArr = [provinceCode, cityCode, areaCode, townCode].filter((item) => item); // 过滤掉空值
         const gradeArr = [gradeId, classId].filter((item) => item);
         Object.assign(info, {
           gradeIds: gradeArr, // 回显年级班级
           region: addressArr, // 回显地区
+          selectValue: passport ? 'passport' : 'idCard', // 回填证件号
+          inputValue: idCard ?? passport, // 回填证件号
         });
       }
       modalRef?.current?.setFieldsValue({ ...props?.currentRow, ...info });
@@ -63,7 +66,7 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
    * @desc 新增/编辑
    */
   const onConfirm = async (value: any) => {
-    const { gradeIds = [], region = [] } = value;
+    const { gradeIds = [], region = [], selectValue, inputValue } = value;
     const [gradeId, classId] = gradeIds;
     const [provinceCode, cityCode, areaCode, townCode] = region;
     const parm = {
@@ -76,6 +79,7 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
       cityCode,
       areaCode,
       townCode,
+      [selectValue]: inputValue,
     };
     await editStudentInfo(parm);
     message.success(props?.currentRow ? '编辑成功' : '新增成功');

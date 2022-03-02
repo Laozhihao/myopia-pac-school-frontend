@@ -49,6 +49,7 @@ export const SCREENSTATUS = {
 export const STUDENTSELECTOPTIONS = [
   { value: 'sno', label: '学号' },
   { value: 'name', label: '姓名' },
+  { value: 'idCardOrPassportLike', label: '身份证/护照号' },
 ];
 
 // 性别 （pro表格）
@@ -102,4 +103,9 @@ export const ASTIGMATISMTYPE = {
   1: '低度散光',
   2: '中度散光',
   3: '重度散光',
+};
+
+export const STATE_TEXT = {
+  0: '正常',
+  1: '异常',
 };

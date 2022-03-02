@@ -71,7 +71,7 @@ export const getFixedNum = (num: number | string, digit = 2) => Number(num).toFi
  * @param digit - 保留几位小数
  * @param unit - 单位
  */
-export const typeNumberHandle = (val: any, digit: number, unit?: string) =>
+export const typeNumberHandle = (val: any, digit?: number, unit?: string) =>
   typeof val === 'number' ? `${getFixedNum(val, digit)}${unit ?? ''}` : EMPTY;
 
 /**
@@ -100,3 +100,27 @@ export const convertData = (option?: any[], children = 'child') => {
   });
   return option;
 };
+
+/**
+ * @desc 护照校验
+ */
+export function isPassport(passport: string): boolean {
+  const validateRuler = /^\S{8,12}$/;
+  return validateRuler.test(passport);
+}
+
+/**
+ * @desc 去敏身份证
+ * @param {number} idCard 身份证
+ */
+export function getShowIdCardText(idCard: string | undefined) {
+  return idCard && idCard.replace(/^(.{5})(?:\d+)(.{4})$/, '$1***********$2');
+}
+
+/**
+ * @desc 去敏护照
+ * @param {number} passport 护照
+ */
+export function getShowPassportText(passport: string | undefined) {
+  return passport && `${passport.substr(0, 2)}***********${passport.substr(-1)}`;
+}

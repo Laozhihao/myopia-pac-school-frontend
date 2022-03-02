@@ -1,16 +1,23 @@
 import { SEXOPTION } from '@/utils/constant';
 import { isPhoneNum86, isIdCard } from '@vistel/vistel-utils/lib/validator';
 import { getNationOption } from '@/hook/district';
+import { isPassport } from '@/utils/common';
 
 const nationArr = await getNationOption();
 type StudentFormOptionsParmas = (params: any) => void;
+
+const cache = {}; // 用来缓存身份证/证件号
 
 /**
  * @desc 学生列表共同动态表单数据
  * @param validatorCb 身份证验证回调
  * @param type 1新增 2编辑
  */
-export const studentFormOptions = (validatorCb: StudentFormOptionsParmas, type = 1) => ({
+export const studentFormOptions = (
+  validatorCb?: StudentFormOptionsParmas,
+  type = 1,
+  ref?: any,
+) => ({
   filterList: [
     {
       label: '学号',
@@ -70,23 +77,47 @@ export const studentFormOptions = (validatorCb: StudentFormOptionsParmas, type =
       col: 24,
     },
     {
-      label: '身份证',
-      type: 'input',
-      value: 'idCard',
+      label: '证件号',
+      type: 'inputGroup',
+      value: 'inputValue',
+      selectName: 'selectValue',
+      inputName: 'inputValue',
+      selectInitial: ref?.current?.getFieldValue('passport') ? 'passport' : 'idCard',
+      selectOption: [
+        { label: '身份证', value: 'idCard' },
+        { label: '护照', value: 'passport' },
+      ],
+      required: true,
       rules: [
         {
-          required: true,
-          message: '请输入身份证',
-        },
-        {
           validator(_: any, value: any) {
-            if (value && !isIdCard(value)) return Promise.reject('请输入正确的身份证号');
-            if (value && type === 1) validatorCb?.(value); // 获取出生日期
+            const { selectValue } = ref?.current?.getFieldValue();
+            const idCardFlag = selectValue === 'idCard'; // 证件号类型标志位
+            if (!value)
+              return idCardFlag ? Promise.reject('请输入身份证号') : Promise.reject('请输入护照号');
+
+            // 身份证
+            if (idCardFlag) {
+              if (!isIdCard(value)) return Promise.reject('请输入正确的身份证号');
+              type === 1 && validatorCb?.(value); // 获取出生日期
+            }
+
+            // 护照号
+            if (!idCardFlag && !isPassport(value)) return Promise.reject('请输入正确的护照号');
             return Promise.resolve();
           },
         },
       ],
-      fieldProps: type === 2 ? { type: 'password' } : undefined,
+      selectChange: (val: string | number) => {
+        const { inputValue } = ref?.current?.getFieldValue();
+        cache[val === 'idCard' ? 'passport' : 'idCard'] = inputValue;
+        ref?.current?.resetFields(['inputValue']); // 重置值和验证状态
+        ref?.current?.setFieldsValue({ inputValue: cache[val] });
+      },
+      inputChange: (e: { target: { value: any } }) => {
+        const { selectValue } = ref?.current?.getFieldValue();
+        cache[selectValue] = e.target.value;
+      },
       col: 24,
     },
     {

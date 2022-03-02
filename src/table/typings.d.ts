@@ -22,6 +22,8 @@ declare namespace API {
     numOfVisits?: string;
     parentPhone?: string;
     address?: string;
+    idCard?: string; // 身份证
+    passport?: string; // 护照
   } & MyopiaType;
 
   // 档案管理列表
@@ -37,7 +39,21 @@ declare namespace API {
     hyperopiaLevel?: string; // 远视情况
     astigmatismLevel?: string; // 散光情况
     otherEyeDiseases?: string[]; // 其他眼病
+    hasScreening?: boolean; // 是否有详情
   } & MyopiaType;
+
+  // 档案管理 - 详情
+  type FileDetailItem = {
+    title: string;
+    nakedVision?: string | number; // 裸眼
+    correctedVision?: string | number; // 矫正
+  };
+
+  type FileDetailInspectItem = {
+    title?: string;
+    dataIndex: string;
+    columns?: any;
+  };
 
   // 视力筛查列表
   type ScreenListItem = {

@@ -35,16 +35,18 @@ declare namespace API {
     orgName?: string;
   };
 
-  // 弹窗类型
-  type ModalItemType = {
+  type ModalDataType = {
     title?: string;
     visible?: boolean;
     currentRow?: Record<string, any> | undefined;
     width?: number; // 宽度
+  };
+  // 弹窗类型
+  type ModalItemType = {
     onFinish?: () => Promise<void>; // modalForm 的确定回调
     onOk?: () => void; // modal确定回调
     onCancel: (refresh?: boolean) => void; // 取消回调 refresh 取消后是否刷新页面
-  };
+  } & ModalDataType;
 
   //  显示的表单类型
   type FilterListType = {
@@ -59,6 +61,13 @@ declare namespace API {
     required?: boolean;
     fieldProps?: Record<string, any>; // 透传的属性 pro
     fieldNames?: Record<string, any>;
+    selectWidth?: number;
+    selectName?: string; // inputGroup select
+    selectOption?: any[]; // select option选项
+    selectInitial?: string; // inputGroup select initialValue
+    inputName?: string; // inputGroup input
+    selectChange?: () => void; // select change 事件
+    inputChange?: () => void; // input change 事件
   };
 
   //  JSON表单的prop类型

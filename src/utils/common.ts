@@ -105,7 +105,7 @@ export const convertData = (option?: any[], children = 'child') => {
  * @desc 护照校验
  */
 export function isPassport(passport: string): boolean {
-  const validateRuler = /^((1[45]\d{7})|(G\d{8})|(P\d{7})|(S\d{7,8}))?$/;
+  const validateRuler = /^\S{8,12}$/;
   return validateRuler.test(passport);
 }
 
@@ -119,8 +119,8 @@ export function getShowIdCardText(idCard: string | undefined) {
 
 /**
  * @desc 去敏护照
- * @param {number} idCard 身份证
+ * @param {number} passport 护照
  */
 export function getShowPassportText(passport: string | undefined) {
-  return passport && passport.replace(/^(.{2})(?:\d+)(.{1})$/, '$1***********$2');
+  return passport && `${passport.substr(0, 2)}***********${passport.substr(-1)}`;
 }

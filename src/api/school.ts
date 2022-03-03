@@ -42,6 +42,15 @@ export async function getsGradeAll(options?: API.ObjectType) {
   });
 }
 
+/** 批量编辑年级班级 GET /school/management/grades/batchSave */
+export async function editSchoolGradeAndClassAll(data: API.ObjectType, options?: API.ObjectType) {
+  return request<API.RequestResult>('/school/management/grades/batchSave', {
+    method: 'POST',
+    data,
+    ...(options || {}),
+  });
+}
+
 /** 创建年级列表 GET /school/management/grade/getGradeCode */
 export async function getGradeCode(options?: API.ObjectType) {
   return request<API.RequestResult>('/school/management/grade/getGradeCode', {

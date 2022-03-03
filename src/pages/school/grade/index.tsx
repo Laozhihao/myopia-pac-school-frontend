@@ -15,23 +15,20 @@ const GradeManage: React.FC = () => {
   const ref = useRef<ActionType>();
   const [modalVisible, setModalVisible] = useState(false); // 新增/编辑弹窗
   const [expandedRow, setExpandedRow] = useState<React.Key[]>([]); // 展开行
-  const [tableData, setTableData] = useState<any[]>([]);    // 表格数据
+  const [tableData, setTableData] = useState<any[]>([]); // 表格数据
 
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState!;
 
-
   /**
    * @desc 删除
    */
-  const onDelete = (rows: API.GradeListItem & {gradeIndex: number}) => {
+  const onDelete = (rows: API.GradeListItem & { gradeIndex: number }) => {
     if (typeof rows?.id !== 'number') {
       const { child = [] as any[] } = tableData[rows.gradeIndex];
       const nowClassIndex = child.findIndex((item: { id: any }) => item.id === rows.id);
       child.splice(nowClassIndex, 1);
-      setTableData(value => [
-        ...value,
-      ])
+      setTableData((value) => [...value]);
       return;
     }
     deleteTableRow('该所选数据', async () => {
@@ -71,7 +68,11 @@ const GradeManage: React.FC = () => {
             新增班级
           </a>
         ) : null,
-        <a key="delete" style={{ color: '#FF4D4F' }} onClick={() => onDelete(record)}>
+        <a
+          key="delete"
+          style={{ color: '#FF4D4F' }}
+          onClick={() => onDelete(record as API.GradeListItem & { gradeIndex: number })}
+        >
           删除
         </a>,
       ],

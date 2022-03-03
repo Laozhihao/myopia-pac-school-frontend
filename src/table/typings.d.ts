@@ -131,6 +131,7 @@ declare namespace API {
   // 年级班级列表
   type GradeListItem = {
     gradeId?: number;
+    gradeCode?: number | string;
     seatCount?: boolean;
     name?: string;
     uniqueId?: number;

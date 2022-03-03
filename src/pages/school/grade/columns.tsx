@@ -5,13 +5,11 @@ import { addClass, editClass } from '@/api/school';
 const onAddClass = async (e: any, record: any) => {
   const { value } = e.target;
   const isEdit = typeof record.id === 'number'; // 编辑/新增
-  const parm = Object.assign({ ...record,
-    name: value });
+  const parm = { ...record, name: value };
   const apiFn = isEdit ? editClass : addClass;
   !isEdit && delete parm.id;
   const { data } = await apiFn(parm);
-  Object.assign(record, { id: data });
-  // console.log(record, '123');
+  Object.assign(record, { id: isEdit ? record.id : data, name: value });
   message.success(isEdit ? '编辑成功' : '新建成功');
 };
 

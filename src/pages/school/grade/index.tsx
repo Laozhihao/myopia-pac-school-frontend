@@ -125,12 +125,9 @@ const GradeManage: React.FC = () => {
       <AddModal
         visible={modalVisible}
         title="新增年级班级"
-        onCancel={() => {
+        onCancel={(isRefresh) => {
           setModalVisible(false);
-        }}
-        onFinish={async () => {
-          setModalVisible(false);
-          ref?.current?.reload();
+          isRefresh && ref?.current?.reload();
         }}
       />
     </PageContainer>

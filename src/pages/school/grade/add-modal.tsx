@@ -30,7 +30,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const [selectGradeIds, setSelectGradeIds] = useState<SelectValue[]>([]); // 当前选中的年级ids
   const [originList, setOriginList] = useState([]); // 已有的年级班级
   const [loading, setLoading] = useState(true); // 状态加载
-  const [newClassList, setNewClassList] = useState<Record<string, string>>({});
+  const [newClassList, setNewClassList] = useState<API.ObjectType>({});
 
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState!;
@@ -109,7 +109,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
    */
   const classNamesValidator = (rule: any, value: any): Promise<string | boolean> => {
     if (!value) return Promise.resolve(true);
-    const index = rule.field.match(/\d/)[0];
+    const index = rule.field.match(/\d+/)[0];
     const { child = [] as any[] } = originList[index] ?? {};
     const childNames = child.map((eleItem) => eleItem.name);
     const values = value.split('、');
@@ -145,6 +145,14 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   };
 
   /**
+   * @desc 关闭弹窗
+   */
+  const onClose = (isRefresh = false) => {
+    setNewClassList({});
+    props.onCancel(isRefresh);
+  };
+
+  /**
    * @desc 批量添加
    */
   const onComfirm = async (value: Record<string, any>) => {
@@ -170,7 +178,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       }));
       await editSchoolGradeAndClassAll(parm);
       message.success('批量编辑成功');
-      props?.onFinish?.();
+      onClose(true);
     }
   };
 
@@ -186,7 +194,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       modalProps={{
         ...modalConfig,
         destroyOnClose: true,
-        onCancel: () => props.onCancel(),
+        onCancel: () => onClose(),
       }}
     >
       <Spin spinning={loading}>

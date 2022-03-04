@@ -2,6 +2,7 @@ import { Modal, Select, Radio, Button, Cascader, Form, Row, Col, Image, Upload }
 import { useRequest, useModel } from 'umi';
 import { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
+import { isNotEmpty } from '@vistel/vistel-utils/lib/tool';
 import styles from './add-modal.less';
 import qrcodeImg from '@/assets/images/qrcode.jpg';
 import { Step } from '../result/notice-report/components/step';
@@ -28,7 +29,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     schoolName: currentUser?.username,
   });
   // 默认选中筛查二维码
-  const [printType, setPrintType] = useState<number>(1);
+  const [printType, setPrintType] = useState<number>();
   const [studentList, setStudentList] = useState([]);
   const [studentIds, setStudentIds] = useState<number[]>([]);
 
@@ -118,8 +119,24 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     }
   }, [props?.visible, props?.currentRow, current]);
 
+  // 打印类型
+  const defaultPrintTypeArr = [
+    { type: 0, text: '告知书' },
+    { type: 1, text: '筛查二维码' },
+    { type: 2, text: 'vs666专属筛查二维码' },
+    { type: 3, text: '虚拟二维码' },
+  ];
+  const [printTypeArr, setPrintTypeArr] = useState<Object[]>(defaultPrintTypeArr);
+
   useEffect(() => {
     setImgUrl(props?.currentRow?.qrCodeFileUrl);
+    // 处理二维码配置权限，告知书默认显示
+    const confitArr = [
+      0,
+      ...(props?.currentRow?.qrCodeConfig?.split(',')?.map((i: string) => +i) || []),
+    ];
+    const dynamicPrintTypeArr = defaultPrintTypeArr.filter((item) => confitArr.includes(item.type));
+    setPrintTypeArr(dynamicPrintTypeArr);
   }, [props?.visible, props?.currentRow]);
 
   // 监听选择的年级和班级
@@ -207,14 +224,6 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     wrapperCol: { span: 20 },
   };
 
-  // 打印类型
-  const printTypeArr = [
-    { type: 0, text: '告知书' },
-    { type: 1, text: '筛查二维码' },
-    { type: 2, text: 'vs666专属筛查二维码' },
-    { type: 3, text: '虚拟二维码' },
-  ];
-
   const onPrintTypeChange = (e) => {
     setPrintType(e.target.value);
   };
@@ -276,9 +285,13 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
           <Button key="back" className={styles.cancel_btn} onClick={prevClickHandle}>
             {current === 1 ? '上一步' : '取消'}
           </Button>
-          <Button loading={loading} key="export" type="primary" onClick={nextClickHandle}>
-            {printType || current ? '生成' : '下一步'}
-          </Button>
+          {isNotEmpty(printType) ? (
+            <Button loading={loading} key="export" type="primary" onClick={nextClickHandle}>
+              {printType || current ? '生成' : '下一步'}
+            </Button>
+          ) : (
+            ''
+          )}
         </div>,
       ]}
       {...modalConfig}

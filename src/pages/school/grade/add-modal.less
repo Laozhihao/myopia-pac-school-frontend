@@ -1,4 +1,18 @@
+:global {
+  .ant-modal-body {
+    padding: 24px 40px;
+  }
+}
+
 .content {
+  &_title::before {
+    display: inline-block;
+    margin-right: 4px;
+    color: @red-5;
+    font-size: 15px;
+    line-height: 1;
+    content: '*';
+  }
   :global {
     .ant-form-item {
       width: -webkit-fill-available;
@@ -11,7 +25,7 @@
   margin: 35px 0 18px;
 
   &_right {
-    width: 600px;
+    width: 580px;
 
     &_item {
       width: 100%;

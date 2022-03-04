@@ -43,16 +43,17 @@ const GradeManage: React.FC = () => {
    */
   const onAddClass = (record: API.GradeListItem, index: number) => {
     const { id, schoolId } = record;
-    id && setExpandedRow((value) => [...value, id]);
+    !expandedRow.includes(id!) && setExpandedRow((value) => [...value, id!]);
     record.child = [
       ...(record?.child || []),
       {
         gradeIndex: index,
         gradeId: id,
         schoolId,
-        id: new Date(),
+        id: Date.now().toString(),
       },
     ];
+    setTableData((val) => [...val]);
   };
 
   const columns: ProColumns<API.GradeListItem>[] = [
@@ -108,7 +109,9 @@ const GradeManage: React.FC = () => {
         }}
         expandable={{ childrenColumnName: 'child' }}
         expandedRowKeys={expandedRow}
-        onExpandedRowsChange={(rows) => setExpandedRow(rows)}
+        onExpandedRowsChange={(rows) => {
+          setExpandedRow(rows);
+        }}
         search={false}
         headerTitle="年级表格"
         options={false}

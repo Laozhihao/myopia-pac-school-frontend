@@ -6,7 +6,7 @@ import { useModel } from 'umi';
 import styles from './add-modal.less';
 import type { ChangeEvent } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
-import { Select, Form, Button, message } from 'antd';
+import { Select, Form, Button, message, Spin } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { modalConfig } from '@/hook/ant-config';
 import type { SelectValue } from 'antd/lib/select';
@@ -29,6 +29,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const [gradeOption, setGradeOption] = useState<API.GradeOptionType[]>([]);
   const [selectGradeIds, setSelectGradeIds] = useState<SelectValue[]>([]); // 当前选中的年级ids
   const [originList, setOriginList] = useState([]); // 已有的年级班级
+  const [loading, setLoading] = useState(true); // 状态加载
   const [newClassList, setNewClassList] = useState<Record<string, string>>({});
 
   const { initialState } = useModel('@@initialState');
@@ -37,7 +38,10 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
 
   // 获取年级下拉列表
   const init = async () => {
-    const [grade, list] = await Promise.all([getGradeCode(), getsGradeAll()]);
+    setLoading(true);
+    const [grade, list] = await Promise.all([getGradeCode(), getsGradeAll()]).finally(() =>
+      setLoading(false),
+    );
     const { data = [] } = list;
     setGradeOption(grade?.data ?? []);
     setOriginList(data);
@@ -185,91 +189,93 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
         onCancel: () => props.onCancel(),
       }}
     >
-      <span className={styles.primary_text}>
-        年级班级管理（批量新增删除年级班级，如需单个新增编辑删除请直接在年级班级管理界面操作）
-      </span>
-      <div className={styles.content}>
-        <span>年级：</span>
-        <div className={styles.content_right}>
-          <Form.List name="form">
-            {(fields, { add, remove }) => (
-              <>
-                {fields.map((key, index) => (
-                  <div className={styles.content_right_item} key={index}>
-                    <div style={{ display: 'flex' }}>
-                      <Form.Item
-                        name={[index, 'gradeCode']}
-                        rules={[{ required: true, message: '请选择年级' }]}
-                        style={{ width: 'fit-content' }}
-                      >
-                        <Select
-                          placeholder="请选择年级"
-                          style={{ width: 290 }}
-                          onChange={(e) => selectOnChange(e, index)}
-                          getPopupContainer={getPopupContainer}
-                          disabled={index < originList.length}
+      <Spin spinning={loading}>
+        <span className={styles.primary_text}>
+          年级班级管理（批量新增删除年级班级，如需单个新增编辑删除请直接在年级班级管理界面操作）
+        </span>
+        <div className={styles.content}>
+          <span className={styles.content_title}>年级：</span>
+          <div className={styles.content_right}>
+            <Form.List name="form">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map((key, index) => (
+                    <div className={styles.content_right_item} key={index}>
+                      <div style={{ display: 'flex' }}>
+                        <Form.Item
+                          name={[index, 'gradeCode']}
+                          rules={[{ required: true, message: '请选择年级' }]}
+                          style={{ width: 'fit-content' }}
                         >
-                          {gradeOption.map((item) => (
-                            <Option
-                              value={item.code}
-                              key={item.value}
-                              disabled={selectGradeIds.includes(item.code)}
-                            >
-                              {item.name}
-                            </Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
-                      {index && index > originList.length - 1 ? (
-                        <Button
-                          type="primary"
-                          danger
-                          className={styles.btn_delete}
-                          onClick={() => {
-                            remove(index);
-                            onDelete(index);
+                          <Select
+                            placeholder="请选择年级"
+                            style={{ width: 290 }}
+                            onChange={(e) => selectOnChange(e, index)}
+                            getPopupContainer={getPopupContainer}
+                            disabled={index < originList.length}
+                          >
+                            {gradeOption.map((item) => (
+                              <Option
+                                value={item.code}
+                                key={item.value}
+                                disabled={selectGradeIds.includes(item.code)}
+                              >
+                                {item.name}
+                              </Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
+                        {index && index > originList.length - 1 ? (
+                          <Button
+                            type="primary"
+                            danger
+                            className={styles.btn_delete}
+                            onClick={() => {
+                              remove(index);
+                              onDelete(index);
+                            }}
+                          >
+                            删除
+                          </Button>
+                        ) : null}
+                      </div>
+                      <span className={styles.tip}>已有班级：{formatExitedClass(index)}</span>
+                      <div className={styles.modular}>
+                        <ProFormTextArea
+                          name={[index, 'className']}
+                          label="新增班级"
+                          placeholder="请输入名称"
+                          fieldProps={{
+                            onChange: (e) => textareaChange(e, index),
                           }}
-                        >
-                          删除
-                        </Button>
-                      ) : null}
+                          rules={[{ validator: classNamesValidator }]}
+                        />
+                        <span className={styles.tip} style={{ marginLeft: 90 }}>
+                          新增班级：{newClassList[index]}
+                        </span>
+                      </div>
                     </div>
-                    <span className={styles.tip}>已有班级：{formatExitedClass(index)}</span>
-                    <div className={styles.modular}>
-                      <ProFormTextArea
-                        name={[index, 'className']}
-                        label="新增班级"
-                        placeholder="请输入名称"
-                        fieldProps={{
-                          onChange: (e) => textareaChange(e, index),
-                        }}
-                        rules={[{ validator: classNamesValidator }]}
-                      />
-                      <span className={styles.tip} style={{ marginLeft: 90 }}>
-                        新增班级：{newClassList[index]}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-                <Form.Item>
-                  <Button
-                    type="dashed"
-                    block
-                    icon={<PlusOutlined />}
-                    className={styles.btn}
-                    onClick={() => {
-                      add();
-                      onAdd();
-                    }}
-                  >
-                    添加年级
-                  </Button>
-                </Form.Item>
-              </>
-            )}
-          </Form.List>
+                  ))}
+                  <Form.Item>
+                    <Button
+                      type="dashed"
+                      block
+                      icon={<PlusOutlined />}
+                      className={styles.btn}
+                      onClick={() => {
+                        add();
+                        onAdd();
+                      }}
+                    >
+                      添加年级
+                    </Button>
+                  </Form.Item>
+                </>
+              )}
+            </Form.List>
+          </div>
         </div>
-      </div>
+      </Spin>
     </ModalForm>
   );
 };

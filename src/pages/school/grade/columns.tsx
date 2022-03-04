@@ -25,6 +25,7 @@ export const listColumns: ProColumns<API.GradeListItem>[] = [
         <Input
           defaultValue={record.name}
           style={{ width: 200 }}
+          onChange={(e) => Object.assign(record, { name: e.target.value })}
           onPressEnter={(e) => onAddClass(e, record)}
         />
       );

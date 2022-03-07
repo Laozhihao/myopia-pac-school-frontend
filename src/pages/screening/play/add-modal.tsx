@@ -158,6 +158,12 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
         classId,
       );
       setStudentList(data);
+    } else {
+      // 重置值和验证状态
+      setStudentIds([]);
+      // formRef.setFieldsValue({ studentIds: [] });
+      setStudentList([]);
+      // formRef.resetFields(['studentIds']);
     }
   }, [selectArr]);
 

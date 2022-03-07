@@ -2,6 +2,7 @@ import { Modal, Select, Radio, Button, Cascader, Form, Row, Col, Image, Upload }
 import { useRequest, useModel } from 'umi';
 import { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
+import { isNotEmpty } from '@vistel/vistel-utils/lib/tool';
 import styles from './add-modal.less';
 import qrcodeImg from '@/assets/images/qrcode.jpg';
 import { Step } from '../result/notice-report/components/step';
@@ -28,7 +29,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     schoolName: currentUser?.username,
   });
   // 默认选中筛查二维码
-  const [printType, setPrintType] = useState<number>(1);
+  const [printType, setPrintType] = useState<number>();
   const [studentList, setStudentList] = useState([]);
   const [studentIds, setStudentIds] = useState<number[]>([]);
 
@@ -106,6 +107,13 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     if (props?.visible) {
       const { planId: screeningPlanId } = props?.currentRow || {};
       const { data = [] } = await getScreeningGradeList(screeningPlanId);
+      // 级联只选择年级，设置全部
+      data.forEach((item: any) => {
+        item.classes.unshift({
+          id: item.id,
+          name: '全部',
+        });
+      });
       setGradeOptions(data);
     }
   }, [props?.visible, props?.currentRow]);
@@ -118,15 +126,31 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     }
   }, [props?.visible, props?.currentRow, current]);
 
+  // 打印类型
+  const defaultPrintTypeArr = [
+    { type: 0, text: '告知书' },
+    { type: 1, text: '筛查二维码' },
+    { type: 2, text: 'vs666专属筛查二维码' },
+    { type: 3, text: '虚拟二维码' },
+  ];
+  const [printTypeArr, setPrintTypeArr] = useState<Object[]>(defaultPrintTypeArr);
+
   useEffect(() => {
     setImgUrl(props?.currentRow?.qrCodeFileUrl);
+    // 处理二维码配置权限，告知书默认显示
+    const confitArr = [
+      0,
+      ...(props?.currentRow?.qrCodeConfig?.split(',')?.map((i: string) => +i) || []),
+    ];
+    const dynamicPrintTypeArr = defaultPrintTypeArr.filter((item) => confitArr.includes(item.type));
+    setPrintTypeArr(dynamicPrintTypeArr);
   }, [props?.visible, props?.currentRow]);
 
   // 监听选择的年级和班级
   useMemo(async () => {
     const [gradeId, classId] = selectArr;
-    // 班级ID存在的时候才去获取学生，避免学生同名
-    if (classId) {
+    // 班级ID存在的时候才去获取学生，避免学生同名，注意gradeId===classId代表选择了某年级全部
+    if (classId && gradeId !== classId) {
       const { data } = await getScreeningPlanstudents(
         props?.currentRow?.planId,
         props?.currentRow?.schoolId,
@@ -134,6 +158,12 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
         classId,
       );
       setStudentList(data);
+    } else {
+      // 重置值和验证状态
+      setStudentIds([]);
+      // formRef.setFieldsValue({ studentIds: [] });
+      setStudentList([]);
+      // formRef.resetFields(['studentIds']);
     }
   }, [selectArr]);
 
@@ -144,6 +174,13 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     url && window.open(`/pdf/viewer.html?file=${url}`);
   };
 
+  const onCancel = () => {
+    props.onCancel(refresh);
+    setCurrent(0);
+    setRefresh(false);
+    setIsAssignment(false);
+  };
+
   // 用fetches管理并发请求的多个loading 就无须声明多个loading变量 (二维码请求)
   const { run } = useRequest(getScreeningQrcode, {
     manual: true,
@@ -151,6 +188,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     onSuccess: (result) => {
       result && openPdf(result);
       setLoading(false);
+      onCancel();
     },
   });
 
@@ -161,7 +199,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     const [gradeId, classId] = selectArr;
     const parm = {
       gradeId,
-      classId,
+      classId: gradeId === classId ? '' : classId,
       schoolId: props?.currentRow?.schoolId,
       screeningPlanId: props?.currentRow?.planId,
       type,
@@ -195,25 +233,10 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     },
   };
 
-  const onCancel = () => {
-    props.onCancel(refresh);
-    setCurrent(0);
-    setRefresh(false);
-    setIsAssignment(false);
-  };
-
   const layout = {
     labelCol: { span: 4 },
     wrapperCol: { span: 20 },
   };
-
-  // 打印类型
-  const printTypeArr = [
-    { type: 0, text: '告知书' },
-    { type: 1, text: '筛查二维码' },
-    { type: 2, text: 'vs666专属筛查二维码' },
-    { type: 3, text: '虚拟二维码' },
-  ];
 
   const onPrintTypeChange = (e) => {
     setPrintType(e.target.value);
@@ -276,15 +299,19 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
           <Button key="back" className={styles.cancel_btn} onClick={prevClickHandle}>
             {current === 1 ? '上一步' : '取消'}
           </Button>
-          <Button loading={loading} key="export" type="primary" onClick={nextClickHandle}>
-            {printType || current ? '生成' : '下一步'}
-          </Button>
+          {isNotEmpty(printType) ? (
+            <Button loading={loading} key="export" type="primary" onClick={nextClickHandle}>
+              {printType || current ? '生成' : '下一步'}
+            </Button>
+          ) : (
+            ''
+          )}
         </div>,
       ]}
       {...modalConfig}
     >
       <Step step={current} key="current" />
-      <Form {...(current ? {} : layout)} form={formRef}>
+      <Form {...(current ? {} : layout)} form={formRef} preserve={false}>
         {current === 0 ? (
           <>
             <Form.Item label="打印类型" required>
@@ -306,7 +333,6 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
             <Form.Item label="选择年级/班级" name="selectArr">
               <Cascader
                 options={gradeOptions}
-                changeOnSelect
                 placeholder="请选择"
                 fieldNames={{ label: 'name', value: 'id', children: 'classes' }}
                 onChange={setSelectArr}

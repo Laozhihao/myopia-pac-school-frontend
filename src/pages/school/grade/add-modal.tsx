@@ -51,9 +51,11 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
           id: item?.id,
           name: item?.name,
         }))
-      : [{ gradeCode: '', name: '' }];
+      : [{ gradeCode: undefined, name: '' }];
     selectArr = data.map((item: { gradeCode: React.Key }) => item.gradeCode);
-    setSelectGradeIds([...selectArr]);
+    setSelectGradeIds(() => {
+      return selectArr.length ? [...selectArr] : [undefined];
+    });
     ref?.current?.setFieldsValue({ form: defaultFormArr });
   };
 
@@ -82,7 +84,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
    */
   const formatExitedClass = (index: number) => {
     const { child = [] } = originList[index] ?? {};
-    return (Array.isArray(child) && child.length) ? child.map((eleItem: { name: any }) => eleItem.name).join('、') : '';
+    return child ? child.map((eleItem: { name: any }) => eleItem.name).join('、') : '';
   };
 
   /**
@@ -91,7 +93,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const textareaChange = (e: ChangeEvent<HTMLTextAreaElement>, index: number) => {
     const { value } = e.target;
     const { child = [] as any[] } = originList[index] ?? {};
-    const childNames = (Array.isArray(child) && child.length) ? child.map((eleItem) => eleItem.name) : [];
+    const childNames = child ? child.map((eleItem) => eleItem.name) : [];
     const validatorStr = validatorReg.test(value)
       ? value
           .split('、')
@@ -111,7 +113,8 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     if (!value) return Promise.resolve(true);
     const index = rule.field.match(/\d+/)[0];
     const { child = [] as any[] } = originList[index] ?? {};
-    const childNames = (Array.isArray(child) && child.length) ? child.map((eleItem) => eleItem.name) : [];
+    const childNames =
+      Array.isArray(child) && child.length ? child.map((eleItem) => eleItem.name) : [];
     const values = value.split('、');
     const exitedNames = values.filter((item: any) => childNames.includes(item));
 
@@ -158,10 +161,12 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const onComfirm = async (value: Record<string, any>) => {
     const { form = [] } = value;
     if (form.length) {
-      const arr = selectArr.length ? form.filter(
-        (item: { gradeCode: SelectValue; className?: string }) =>
-          !(selectArr.includes(item?.gradeCode) && !item.className),
-      ) : form;
+      const arr = selectArr.length
+        ? form.filter(
+            (item: { gradeCode: SelectValue; className?: string }) =>
+              !(selectArr.includes(item?.gradeCode) && !item.className),
+          )
+        : form;
       const parm = arr.map((item: API.GradeListItem & { className: string }) => ({
         schoolGrade: {
           id: item?.id,
@@ -181,7 +186,6 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       onClose(true);
     }
   };
-
 
   return (
     <ModalForm
@@ -253,10 +257,10 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                         <ProFormTextArea
                           name={[index, 'className']}
                           label="新增班级"
-                          placeholder="请输入名称"
                           fieldProps={{
                             onChange: (e) => textareaChange(e, index),
                           }}
+                          placeholder="请输入班级名称，如多个请用、隔开，如1班、2班、3班"
                           rules={[{ validator: classNamesValidator }]}
                         />
                         <span className={styles.tip} style={{ marginLeft: 90 }}>

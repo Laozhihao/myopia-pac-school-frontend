@@ -24,9 +24,10 @@ export const listColumns: ProColumns<API.GradeListItem>[] = [
       ) : (
         <Input
           defaultValue={record.name}
-          style={{ width: 200 }}
+          style={{ width: 250 }}
           onChange={(e) => Object.assign(record, { name: e.target.value })}
           onPressEnter={(e) => onAddClass(e, record)}
+          placeholder="请输入班级名称，按回车确认"
         />
       );
     },

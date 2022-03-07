@@ -113,8 +113,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     if (!value) return Promise.resolve(true);
     const index = rule.field.match(/\d+/)[0];
     const { child = [] as any[] } = originList[index] ?? {};
-    const childNames =
-      Array.isArray(child) && child.length ? child.map((eleItem) => eleItem.name) : [];
+    const childNames = child ? child.map((eleItem) => eleItem.name) : [];
     const values = value.split('、');
     const exitedNames = values.filter((item: any) => childNames.includes(item));
 
@@ -259,6 +258,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                           label="新增班级"
                           fieldProps={{
                             onChange: (e) => textareaChange(e, index),
+                            maxLength: 100,
                           }}
                           placeholder="请输入班级名称，如多个请用、隔开，如1班、2班、3班"
                           rules={[{ validator: classNamesValidator }]}

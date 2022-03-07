@@ -107,6 +107,13 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     if (props?.visible) {
       const { planId: screeningPlanId } = props?.currentRow || {};
       const { data = [] } = await getScreeningGradeList(screeningPlanId);
+      // 级联只选择年级，设置全部
+      data.forEach((item: any) => {
+        item.classes.unshift({
+          id: item.id,
+          name: '全部',
+        });
+      });
       setGradeOptions(data);
     }
   }, [props?.visible, props?.currentRow]);
@@ -142,8 +149,8 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   // 监听选择的年级和班级
   useMemo(async () => {
     const [gradeId, classId] = selectArr;
-    // 班级ID存在的时候才去获取学生，避免学生同名
-    if (classId) {
+    // 班级ID存在的时候才去获取学生，避免学生同名，注意gradeId===classId代表选择了某年级全部
+    if (classId && gradeId !== classId) {
       const { data } = await getScreeningPlanstudents(
         props?.currentRow?.planId,
         props?.currentRow?.schoolId,
@@ -161,6 +168,13 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     url && window.open(`/pdf/viewer.html?file=${url}`);
   };
 
+  const onCancel = () => {
+    props.onCancel(refresh);
+    setCurrent(0);
+    setRefresh(false);
+    setIsAssignment(false);
+  };
+
   // 用fetches管理并发请求的多个loading 就无须声明多个loading变量 (二维码请求)
   const { run } = useRequest(getScreeningQrcode, {
     manual: true,
@@ -168,6 +182,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     onSuccess: (result) => {
       result && openPdf(result);
       setLoading(false);
+      onCancel();
     },
   });
 
@@ -178,7 +193,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     const [gradeId, classId] = selectArr;
     const parm = {
       gradeId,
-      classId,
+      classId: gradeId === classId ? '' : classId,
       schoolId: props?.currentRow?.schoolId,
       screeningPlanId: props?.currentRow?.planId,
       type,
@@ -210,13 +225,6 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       setInitForm({ ...initForm, qrCodeFileId: data.fileId });
       setImgUrl(data.url);
     },
-  };
-
-  const onCancel = () => {
-    props.onCancel(refresh);
-    setCurrent(0);
-    setRefresh(false);
-    setIsAssignment(false);
   };
 
   const layout = {
@@ -297,7 +305,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       {...modalConfig}
     >
       <Step step={current} key="current" />
-      <Form {...(current ? {} : layout)} form={formRef}>
+      <Form {...(current ? {} : layout)} form={formRef} preserve={false}>
         {current === 0 ? (
           <>
             <Form.Item label="打印类型" required>
@@ -319,7 +327,6 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
             <Form.Item label="选择年级/班级" name="selectArr">
               <Cascader
                 options={gradeOptions}
-                changeOnSelect
                 placeholder="请选择"
                 fieldNames={{ label: 'name', value: 'id', children: 'classes' }}
                 onChange={setSelectArr}

@@ -147,25 +147,30 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   }, [props?.visible, props?.currentRow]);
 
   // 监听选择的年级和班级
-  useMemo(async () => {
-    const [gradeId, classId] = selectArr;
-    // 班级ID存在的时候才去获取学生，避免学生同名，注意gradeId===classId代表选择了某年级全部
-    if (classId && gradeId !== classId) {
-      const { data } = await getScreeningPlanstudents(
-        props?.currentRow?.planId,
-        props?.currentRow?.schoolId,
-        gradeId,
-        classId,
-      );
-      setStudentList(data);
-    } else {
-      // 重置值和验证状态
-      setStudentIds([]);
-      // formRef.setFieldsValue({ studentIds: [] });
-      setStudentList([]);
-      // formRef.resetFields(['studentIds']);
+  const onSelectGradeClass = async (value: any) => {
+    const [gradeId, classId] = value;
+    // 当前操作选中项跟上一次保持一致，直接忽略此次选择
+    if (selectArr[1] === classId) {
+      return;
     }
-  }, [selectArr]);
+    // 记录当前操作项
+    setSelectArr(value);
+    // 重置值
+    formRef.setFieldsValue({ studentIds: [] });
+    setStudentList([]);
+    // 注意gradeId===classId代表选择了某年级全部
+    if (gradeId === classId) {
+      return;
+    }
+    // 班级ID存在的时候才去获取学生，避免学生同名
+    const { data } = await getScreeningPlanstudents(
+      props?.currentRow?.planId,
+      props?.currentRow?.schoolId,
+      gradeId,
+      classId,
+    );
+    setStudentList(data);
+  };
 
   /**
    * @desc 预览pdf
@@ -335,7 +340,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                 options={gradeOptions}
                 placeholder="请选择"
                 fieldNames={{ label: 'name', value: 'id', children: 'classes' }}
-                onChange={setSelectArr}
+                onChange={onSelectGradeClass}
               />
             </Form.Item>
             <Form.Item label="筛查学生" name="studentIds">

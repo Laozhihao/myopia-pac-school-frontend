@@ -173,10 +173,12 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
           name: item?.name,
         },
         schoolClass: item.className
-          ? [...new Set(item.className.split('、'))].map((eleItem) => ({
-              schoolId,
-              name: eleItem,
-            }))
+          ? [...new Set(item.className.split('、').filter((filterItem) => filterItem))].map(
+              (eleItem) => ({
+                schoolId,
+                name: eleItem,
+              }),
+            )
           : [],
       }));
       await editSchoolGradeAndClassAll(parm);

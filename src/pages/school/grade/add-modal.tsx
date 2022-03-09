@@ -95,8 +95,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     const { child = [] as any[] } = originList[index] ?? {};
     const childNames = child ? child.map((eleItem) => eleItem.name) : [];
     const validatorStr = validatorReg.test(value)
-      ? value
-          .split('、')
+      ? [...new Set(value.split('、'))]
           .filter((item: any) => !childNames.includes(item) && item)
           .join('、')
       : '';
@@ -174,7 +173,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
           name: item?.name,
         },
         schoolClass: item.className
-          ? item.className.split('、').map((eleItem) => ({
+          ? [...new Set(item.className.split('、'))].map((eleItem) => ({
               schoolId,
               name: eleItem,
             }))

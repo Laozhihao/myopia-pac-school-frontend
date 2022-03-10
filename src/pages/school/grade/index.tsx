@@ -14,22 +14,46 @@ import type { ActionType } from '@ant-design/pro-table';
 const GradeManage: React.FC = () => {
   const ref = useRef<ActionType>();
   const [modalVisible, setModalVisible] = useState(false); // 新增/编辑弹窗
-  const [currentRow, setCurrentRow] = useState<API.GradeListItem>();
+  const [expandedRow, setExpandedRow] = useState<React.Key[]>([]); // 展开行
+  const [tableData, setTableData] = useState<any[]>([]); // 表格数据
 
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState!;
 
-  const onAdd = (rows: React.SetStateAction<API.GradeListItem | undefined>) => {
-    setModalVisible(true);
-    setCurrentRow(rows);
-  };
-
-  const onDelete = (rows: API.GradeListItem) => {
+  /**
+   * @desc 删除
+   */
+  const onDelete = (rows: API.GradeListItem & { gradeIndex: number }) => {
+    if (typeof rows?.id !== 'number') {
+      const { child = [] as any[] } = tableData[rows.gradeIndex];
+      const nowClassIndex = child.findIndex((item: { id: any }) => item.id === rows.id);
+      child.splice(nowClassIndex, 1);
+      setTableData((value) => [...value]);
+      return;
+    }
     deleteTableRow('该所选数据', async () => {
       const apiFn = rows?.gradeId ? deleteClass : deleteGrade;
       await apiFn(rows?.id!);
       ref?.current?.reload();
     });
+  };
+
+  /**
+   * @desc 新增班级
+   */
+  const onAddClass = (record: API.GradeListItem, index: number) => {
+    const { id, schoolId } = record;
+    !expandedRow.includes(id!) && setExpandedRow((value) => [...value, id!]);
+    record.child = [
+      ...(record?.child || []),
+      {
+        gradeIndex: index,
+        gradeId: id,
+        schoolId,
+        id: Date.now().toString(),
+      },
+    ];
+    setTableData((val) => [...val]);
   };
 
   const columns: ProColumns<API.GradeListItem>[] = [
@@ -39,13 +63,17 @@ const GradeManage: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       width: 300,
-      render: (_, record) => [
+      render: (_, record, index) => [
         !record?.gradeId ? (
-          <a key="add" onClick={() => onAdd(record)}>
+          <a key="add" onClick={() => onAddClass(record, index)}>
             新增班级
           </a>
         ) : null,
-        <a key="delete" style={{ color: '#FF4D4F' }} onClick={() => onDelete(record)}>
+        <a
+          key="delete"
+          style={{ color: '#FF4D4F' }}
+          onClick={() => onDelete(record as API.GradeListItem & { gradeIndex: number })}
+        >
           删除
         </a>,
       ],
@@ -63,14 +91,14 @@ const GradeManage: React.FC = () => {
             size: params.pageSize,
             schoolId: currentUser?.orgId,
           });
+          setTableData(datas.data.records);
           return {
-            data: datas.data.records,
             success: true,
             total: datas.data.total,
           };
         }}
-        // todo rowKey 替换 uniqueId
-        rowKey="name"
+        dataSource={tableData}
+        rowKey="id"
         pagination={{
           pageSize: 10,
         }}
@@ -80,11 +108,15 @@ const GradeManage: React.FC = () => {
           },
         }}
         expandable={{ childrenColumnName: 'child' }}
+        expandedRowKeys={expandedRow}
+        onExpandedRowsChange={(rows) => {
+          setExpandedRow(rows);
+        }}
         search={false}
         headerTitle="年级表格"
         options={false}
         toolBarRender={() => [
-          <Button key="add" type="primary" onClick={() => onAdd(undefined)}>
+          <Button key="add" type="primary" onClick={() => setModalVisible(true)}>
             <PlusOutlined />
             新增年级
           </Button>,
@@ -92,14 +124,10 @@ const GradeManage: React.FC = () => {
       />
       <AddModal
         visible={modalVisible}
-        currentRow={currentRow}
-        title={currentRow ? '新增班级' : '新增年级'}
-        onCancel={() => {
+        title="新增年级班级"
+        onCancel={(isRefresh) => {
           setModalVisible(false);
-        }}
-        onFinish={async () => {
-          setModalVisible(false);
-          ref?.current?.reload();
+          isRefresh && ref?.current?.reload();
         }}
       />
     </PageContainer>

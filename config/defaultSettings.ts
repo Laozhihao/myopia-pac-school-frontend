@@ -14,7 +14,7 @@ const Settings: LayoutSettings & {
   navTheme: 'dark',
   fixedHeader: true,
   fixSiderbar: true,
-  primaryColor: '#096dd9',
+  primaryColor: '@blue-7',
   footerRender: false,
 };
 

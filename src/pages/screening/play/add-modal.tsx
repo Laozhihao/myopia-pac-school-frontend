@@ -1,33 +1,38 @@
-import type { FormInstance } from 'antd';
-import { Modal, Button, Cascader, Form, Row, Col, Image, Upload } from 'antd';
+import { Modal, Select, Radio, Button, Cascader, Form, Row, Col, Image, Upload } from 'antd';
+import { useRequest, useModel } from 'umi';
+import { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
+import { isNotEmpty } from '@vistel/vistel-utils/lib/tool';
 import styles from './add-modal.less';
 import qrcodeImg from '@/assets/images/qrcode.jpg';
-import type { ProFormInstance } from '@ant-design/pro-form';
-import React, { Fragment, useEffect, useMemo, useState, useRef } from 'react';
-import { StepsForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import { Step } from '../result/notice-report/components/step';
+import { FooterTips } from '../result/notice-report/components/footer-tips';
 import RightTips from './right-tips';
-import { getScreeningGradeList } from '@/api/screen';
-import { uploadFile } from '@/api/common';
 import UploadDefaultImg from '@/assets/images/code.png';
-import { modalConfig } from '@/hook/ant-config';
+import { modalConfig, getPopupContainer } from '@/hook/ant-config';
+import { uploadFile } from '@/api/common';
 import {
-  getScreeningNoticeUrl,
-  getScreeningQrcodeUrl,
+  getScreeningGradeList,
+  getScreeningQrcode,
   updateScreeningNoticeConfig,
+  getScreeningPlanstudents,
 } from '@/api/screen';
-import type { SubmitterProps } from '@ant-design/pro-form/lib/components/Submitter';
-import { useRequest } from 'umi';
-
-// 分布表单类型
-type ElePropsType = {
-  step: number;
-  onPre: () => void; // 返回上一级
-  form?: FormInstance<any> | undefined;
-  submit: () => void;
-  reset: () => void;
-} & SubmitterProps;
 
 export const AddModal: React.FC<API.ModalItemType> = (props) => {
+  // 获取当前学校名称
+  const { initialState } = useModel('@@initialState');
+  const { currentUser } = initialState!;
+  // 表单Ref
+  const [formRef] = Form.useForm();
+  // 设置默认值
+  formRef.setFieldsValue({
+    schoolName: currentUser?.username,
+  });
+  // 默认选中筛查二维码
+  const [printType, setPrintType] = useState<number>();
+  const [studentList, setStudentList] = useState([]);
+  const [studentIds, setStudentIds] = useState<number[]>([]);
+
   const [gradeOptions, setGradeOptions] = useState([]); // 年级级联
   const [current, setCurrent] = useState(0);
   const [fileList, setFileList] = useState<any[]>([]);
@@ -36,8 +41,6 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const [refresh, setRefresh] = useState(false); // 刷新列表
   const [isAssignment, setIsAssignment] = useState(false); // 赋值标志位
   const [imgUrl, setImgUrl] = useState<string>();
-
-  const ref = useRef<ProFormInstance>();
 
   const [initForm, setInitForm] = useState<API.ObjectType>({
     title: '学生视力筛查告家长书',
@@ -100,30 +103,74 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     '有问题可在线咨询医生进行解答',
   ];
 
-  const bottonList = [
-    { label: '打印告知书', key: 'notice', isStep: true },
-    { label: '打印筛查二维码', key: 'qrCode', isStep: false, type: 1 },
-  ];
-
   useMemo(async () => {
     if (props?.visible) {
       const { planId: screeningPlanId } = props?.currentRow || {};
       const { data = [] } = await getScreeningGradeList(screeningPlanId);
+      // 级联只选择年级，设置全部
+      data.forEach((item: any) => {
+        item.classes.unshift({
+          id: item.id,
+          name: '全部',
+        });
+      });
       setGradeOptions(data);
     }
   }, [props?.visible, props?.currentRow]);
 
   useEffect(() => {
-    if (props?.currentRow && ref?.current && !isAssignment && props?.visible) {
-      ref?.current?.setFieldsValue({ ...initForm, ...props?.currentRow?.notificationConfig });
+    if (props?.currentRow && current && !isAssignment && props?.visible) {
+      formRef?.setFieldsValue({ ...initForm, ...props?.currentRow?.notificationConfig });
       setInitForm({ ...initForm, ...props?.currentRow?.notificationConfig });
       setIsAssignment(true); // 已赋值
     }
   }, [props?.visible, props?.currentRow, current]);
 
+  // 打印类型
+  const defaultPrintTypeArr = [
+    { type: 0, text: '告知书' },
+    { type: 1, text: '筛查二维码' },
+    { type: 2, text: 'vs666专属筛查二维码' },
+    { type: 3, text: '虚拟二维码' },
+  ];
+  const [printTypeArr, setPrintTypeArr] = useState<Object[]>(defaultPrintTypeArr);
+
   useEffect(() => {
     setImgUrl(props?.currentRow?.qrCodeFileUrl);
+    // 处理二维码配置权限，告知书默认显示
+    const confitArr = [
+      0,
+      ...(props?.currentRow?.qrCodeConfig?.split(',')?.map((i: string) => +i) || []),
+    ];
+    const dynamicPrintTypeArr = defaultPrintTypeArr.filter((item) => confitArr.includes(item.type));
+    setPrintTypeArr(dynamicPrintTypeArr);
   }, [props?.visible, props?.currentRow]);
+
+  // 监听选择的年级和班级
+  const onSelectGradeClass = async (value: any) => {
+    const [gradeId, classId] = value;
+    // 当前操作选中项跟上一次保持一致，直接忽略此次选择
+    if (selectArr[1] === classId) {
+      return;
+    }
+    // 记录当前操作项
+    setSelectArr(value);
+    // 重置值
+    formRef.setFieldsValue({ studentIds: [] });
+    setStudentList([]);
+    // 注意gradeId===classId代表选择了某年级全部
+    if (gradeId === classId) {
+      return;
+    }
+    // 班级ID存在的时候才去获取学生，避免学生同名
+    const { data } = await getScreeningPlanstudents(
+      props?.currentRow?.planId,
+      props?.currentRow?.schoolId,
+      gradeId,
+      classId,
+    );
+    setStudentList(data);
+  };
 
   /**
    * @desc 预览pdf
@@ -132,12 +179,21 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     url && window.open(`/pdf/viewer.html?file=${url}`);
   };
 
+  const onCancel = () => {
+    props.onCancel(refresh);
+    setCurrent(0);
+    setRefresh(false);
+    setIsAssignment(false);
+  };
+
   // 用fetches管理并发请求的多个loading 就无须声明多个loading变量 (二维码请求)
-  const { run, fetches } = useRequest(getScreeningQrcodeUrl, {
+  const { run } = useRequest(getScreeningQrcode, {
     manual: true,
     fetchKey: (params) => params.type,
     onSuccess: (result) => {
-      openPdf(result.url);
+      result && openPdf(result);
+      setLoading(false);
+      onCancel();
     },
   });
 
@@ -148,36 +204,19 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     const [gradeId, classId] = selectArr;
     const parm = {
       gradeId,
-      classId,
+      classId: gradeId === classId ? '' : classId,
       schoolId: props?.currentRow?.schoolId,
       screeningPlanId: props?.currentRow?.planId,
       type,
+      planStudentIds: studentIds.join(','),
     };
+    setLoading(true);
     // 告知书
     if (!type) {
-      setLoading(true);
       await updateScreeningNoticeConfig({ ...obj, qrCodeFileId: initForm.qrCodeFileId });
       setRefresh(true); // 编辑过 返回列表需要刷新
-      const res = await getScreeningNoticeUrl(parm);
-      setLoading(false);
-      openPdf(res?.data?.url);
-    } else run(parm);
-  };
-
-  /**
-   * @desc 打印告知书/二维码
-   */
-  const onPrint = (eleProps: ElePropsType, next?: boolean, type?: number) => {
-    eleProps?.form
-      ?.validateFields()
-      .then((value) => {
-        if (value) {
-          // 下一步
-          if (next) setCurrent(1);
-          else onHandle(type, current ? { ...eleProps?.form?.getFieldsValue() } : undefined); // 打印
-        }
-      })
-      .catch(() => {});
+    }
+    run(parm);
   };
 
   /**
@@ -199,87 +238,134 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     },
   };
 
-  const onCancel = () => {
-    props.onCancel(refresh);
-    setCurrent(0);
-    setRefresh(false);
-    setIsAssignment(false);
+  const layout = {
+    labelCol: { span: 4 },
+    wrapperCol: { span: 20 },
+  };
+
+  const onPrintTypeChange = (e) => {
+    setPrintType(e.target.value);
+  };
+
+  // 搜索过滤
+  const filterOption = (inputValue: string, option) =>
+    option.props.children.indexOf(inputValue) >= 0;
+
+  // 学生变化
+  const studentChange = async (value: any[]) => {
+    setStudentIds(value);
+  };
+
+  /**
+   *@desc 上一步操作逻辑
+   */
+  const prevClickHandle = () => {
+    // 是否处于告知书第二步
+    if (current) {
+      setCurrent(0);
+    } else {
+      onCancel();
+    }
+  };
+
+  /**
+   *@desc 下一步操作逻辑
+   */
+  const nextClickHandle = () => {
+    // 非告知书
+    if (printType) {
+      onHandle(printType, undefined); // 打印
+    } else {
+      // 告知书处于第二步检验通过可以直接生成
+      if (current) {
+        formRef?.validateFields().then((value) => {
+          if (value) {
+            onHandle(printType, value); // 打印
+          }
+        });
+        return;
+      }
+
+      // 告知书下一步
+      setCurrent(1);
+    }
   };
 
   return (
     <Modal
       title={props.title}
-      width={800}
+      width={750}
       visible={props.visible}
-      footer={null}
       destroyOnClose
       onCancel={onCancel}
       className={styles.modal}
+      footer={[
+        <div className={styles.footer} key="footer-btn">
+          <Button key="back" className={styles.cancel_btn} onClick={prevClickHandle}>
+            {current === 1 ? '上一步' : '取消'}
+          </Button>
+          {isNotEmpty(printType) ? (
+            <Button loading={loading} key="export" type="primary" onClick={nextClickHandle}>
+              {printType || current ? '生成' : '下一步'}
+            </Button>
+          ) : (
+            ''
+          )}
+        </div>,
+      ]}
       {...modalConfig}
     >
-      <StepsForm
-        current={current}
-        stepsProps={{
-          type: 'navigation',
-        }}
-        submitter={{
-          render: (eleProps) => {
-            if (!eleProps.step) {
-              return bottonList.map((item) => (
-                <Button
-                  loading={item.type ? fetches[item.type!]?.loading : undefined}
-                  type="primary"
-                  key={item.key}
-                  onClick={() => onPrint(eleProps, item.isStep, item?.type)}
-                >
-                  {item.label}
-                </Button>
-              ));
-            }
-            return [
-              <Button key="pre" onClick={() => setCurrent(0)}>
-                上一步
-              </Button>,
-              <Button
-                loading={loading}
-                type="primary"
-                key="print"
-                onClick={() => onPrint(eleProps)}
+      <Step step={current} key="current" />
+      <Form {...(current ? {} : layout)} form={formRef} preserve={false}>
+        {current === 0 ? (
+          <>
+            <Form.Item label="打印类型" required>
+              <Radio.Group
+                defaultValue={printType}
+                buttonStyle="solid"
+                onChange={onPrintTypeChange}
               >
-                预览下载
-              </Button>,
-            ];
-          },
-        }}
-      >
-        <StepsForm.StepForm
-          name="firstForm"
-          title="选择"
-          stepProps={{
-            description: '按学校-年级进行打印，选择告知书或二维码打印',
-          }}
-        >
-          <Form.Item
-            label="选择年级/班级"
-            rules={[{ required: true, message: '请选择年级班级' }]}
-            name="gradeIds"
-          >
-            <Cascader
-              options={gradeOptions}
-              placeholder="请选择"
-              fieldNames={{ label: 'name', value: 'id', children: 'classes' }}
-              onChange={setSelectArr}
-            />
-          </Form.Item>
-        </StepsForm.StepForm>
-        <StepsForm.StepForm
-          formRef={ref}
-          name="secordForm"
-          title="预览-保存"
-          stepProps={{
-            description: '预览打印样板，点击保存打印',
-          }}
-        >
+                {printTypeArr.map((item: any) => (
+                  <Radio.Button value={item.type} key={item.type}>
+                    {item.text}
+                  </Radio.Button>
+                ))}
+              </Radio.Group>
+            </Form.Item>
+            <Form.Item label="筛查学校" name="schoolName" required>
+              <Select disabled />
+            </Form.Item>
+            <Form.Item label="选择年级/班级" name="selectArr">
+              <Cascader
+                options={gradeOptions}
+                placeholder="请选择"
+                fieldNames={{ label: 'name', value: 'id', children: 'classes' }}
+                onChange={onSelectGradeClass}
+              />
+            </Form.Item>
+            <Form.Item label="筛查学生" name="studentIds">
+              <Select
+                mode="multiple"
+                allowClear
+                optionFilterProp="name"
+                className={styles.stu_option}
+                filterOption={filterOption}
+                getPopupContainer={getPopupContainer}
+                onChange={studentChange}
+              >
+                {studentList.map((item: any) => (
+                  <Select.Option
+                    value={item.studentId}
+                    key={item.studentId}
+                    disabled={!studentIds.includes(item.studentId) && studentIds.length > 9}
+                  >
+                    {item.studentName}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </>
+        ) : (
           <>
             {FormPreTemp.map((item) => (
               <Fragment key={item.value}>
@@ -346,7 +432,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
               </Col>
             </Row>
             <Row className={styles.foot} align={'middle'}>
-              <Col span={10}>
+              <Col span={11}>
                 <p>关注公众号，及时查看孩子视力筛查结果报告！</p>
                 <ul className={styles.ul}>
                   {prompt.map((item) => (
@@ -354,7 +440,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                   ))}
                 </ul>
               </Col>
-              <Col className={styles.upload_col} span={6}>
+              <Col className={styles.upload_col} span={5}>
                 <Upload
                   name="upload"
                   listType="picture-card"
@@ -362,7 +448,13 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                   showUploadList={false}
                   {...uploaderProps}
                 >
-                  <img src={imgUrl ?? UploadDefaultImg} alt="avatar" className={styles.image} />
+                  <Image
+                    width={128}
+                    height={128}
+                    src={imgUrl ?? UploadDefaultImg}
+                    alt="avatar"
+                    className={styles.image}
+                  />
                 </Upload>
               </Col>
               <Col span={8}>
@@ -370,8 +462,9 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
               </Col>
             </Row>
           </>
-        </StepsForm.StepForm>
-      </StepsForm>
+        )}
+      </Form>
+      {current === 0 ? <FooterTips /> : <></>}
     </Modal>
   );
 };

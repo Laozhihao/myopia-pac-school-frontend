@@ -1,16 +1,16 @@
 import React, { useState, useRef } from 'react';
+import { history } from 'umi';
+import { Modal, Button, Tooltip } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import styles from './index.less';
 import { listColumns } from './columns';
 import { AddModal } from './add-modal';
-import { history } from 'umi';
-import { Modal, Button, Tooltip } from 'antd';
 import { escape2Html } from '@/utils/common';
-import { getScreeningList } from '@/api/screen';
-import styles from './index.less';
 import { EMPTY } from '@/utils/constant';
 import { modalConfig } from '@/hook/ant-config';
+import { getScreeningList } from '@/api/screen';
 
 const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ScreenListItem>();

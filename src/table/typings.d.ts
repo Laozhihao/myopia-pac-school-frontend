@@ -131,9 +131,19 @@ declare namespace API {
   // 年级班级列表
   type GradeListItem = {
     gradeId?: number;
+    gradeCode?: number | string;
     seatCount?: boolean;
     name?: string;
     uniqueId?: number;
     id?: number;
+    schoolId?: number;
+    child?: any[];
+  };
+
+  // 年级列表
+  type GradeOptionType = {
+    name: string;
+    code: string;
+    value: string;
   };
 }

@@ -1,0 +1,68 @@
+:global {
+  .ant-modal-body {
+    padding: 24px 40px;
+  }
+}
+
+.content {
+  &_title::before {
+    display: inline-block;
+    margin-right: 4px;
+    color: @red-5;
+    font-size: 15px;
+    line-height: 1;
+    content: '*';
+  }
+  :global {
+    .ant-form-item {
+      width: -webkit-fill-available;
+      margin-bottom: 5px;
+    }
+  }
+
+  display: flex;
+  justify-content: space-between;
+  margin: 35px 0 18px;
+
+  &_right {
+    width: 580px;
+
+    &_item {
+      width: 100%;
+      padding: 30px 34px 16px 26px;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.1);
+
+      &:not(:first-child) {
+        margin-top: 20px;
+      }
+
+      .btn-delete {
+        margin-left: 20px;
+      }
+
+      .tip {
+        display: block;
+        margin: 3px 0 5px;
+        color: @blue-7;
+      }
+
+      .modular {
+        width: 526px;
+        margin-top: 6px;
+        padding: 14px 14px 4px;
+        background: rgba(245, 245, 245, 0.5);
+        border-radius: 4px;
+      }
+
+      .btn_delete {
+        margin-left: 14px;
+      }
+    }
+  }
+
+  .btn {
+    margin-top: 66px;
+  }
+}

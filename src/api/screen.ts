@@ -9,7 +9,7 @@ export async function getScreeningList(params: API.ObjectType) {
 }
 
 /** 筛查结果统计分析 GET /school/vision/screening */
-export async function getScreeningResult(schoolStatisticId: number | string) {
+export async function getScreeningResult(schoolStatisticId: React.Key) {
   return request<API.RequestResult>(`/school/vision/screening/${schoolStatisticId}`, {
     method: 'GET',
   });
@@ -24,7 +24,7 @@ export async function getScreeningWarn(params: API.ObjectType) {
 }
 
 /** 学生年级 GET /school/vision/screening/grades/{screeningPlanId} */
-export async function getScreeningGradeList(planId: number | string) {
+export async function getScreeningGradeList(planId: React.Key) {
   return request<API.RequestResult>(`/school/vision/screening/grades/${planId}`, {
     method: 'GET',
   });
@@ -55,7 +55,7 @@ export async function getScreeningQrcodeUrl(params: API.ObjectType) {
 }
 
 /** 获取筛查详情 GET /school/vision/screening/plan/{screeningPlanId} */
-export async function getScreeningDetail(screeningPlanId: number | string) {
+export async function getScreeningDetail(screeningPlanId: React.Key) {
   return request<API.RequestResult>(`/school/vision/screening/plan/${screeningPlanId}`, {
     method: 'GET',
   });
@@ -94,14 +94,14 @@ export async function NoticeRead(data: API.ObjectType) {
 }
 
 /** 获取通知书配置 GET /school/management/school/{id} */
-export async function getReportInfo(id: number | string) {
+export async function getReportInfo(id: React.Key) {
   return request<API.RequestResult>(`/school/management/school/${id}`, {
     method: 'GET',
   });
 }
 
 /** 更新通知书配置 GET /school/vision/screening/update/resultNoticeConfig/{id} */
-export async function setReportInfo(data: API.ObjectType, id: number | string) {
+export async function setReportInfo(data: API.ObjectType, id: React.Key) {
   return request<API.RequestResult>(`/school/vision/screening/update/resultNoticeConfig/${id}`, {
     method: 'PUT',
     data,
@@ -109,7 +109,7 @@ export async function setReportInfo(data: API.ObjectType, id: number | string) {
 }
 
 /** 获取年级 GET /school/vision/screening/grades/{screeningPlanId}  */
-export async function getGrades(id: number | string) {
+export async function getGrades(id: React.Key) {
   return request<API.RequestResult>(`/school/vision/screening/grades/${id}`, {
     method: 'GET',
   });
@@ -143,4 +143,27 @@ export async function syncGeneratorPDF(params: API.ObjectType) {
       params,
     },
   );
+}
+
+/** 获取告知书、筛查二维码学生列表 GET /school/management/student/notice */
+export async function getScreeningPlanstudents(
+  screeningPlanId: number,
+  schoolId: number,
+  gradeId: number,
+  classId: number,
+) {
+  return request<API.RequestResult>(
+    `/school/management/screeningPlan/students/${screeningPlanId}/${schoolId}/${gradeId}/${classId}`,
+    {
+      method: 'GET',
+    },
+  );
+}
+
+/** 获取筛查学生导出报告 GET /school/management/screeningOrg/qrcode */
+export async function getScreeningQrcode(params: API.ObjectType) {
+  return request<API.RequestResult>('/school/management/screeningOrg/qrcode', {
+    method: 'GET',
+    params,
+  });
 }

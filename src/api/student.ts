@@ -61,3 +61,11 @@ export async function importStudent(data?: any) {
     data,
   });
 }
+
+/** 导出学生档案卡路径 */
+export async function getArchivesUrl(params?: API.ObjectType) {
+  return request<API.RequestResult>('/school/report/student/archivesUrl', {
+    method: 'GET',
+    params,
+  });
+}

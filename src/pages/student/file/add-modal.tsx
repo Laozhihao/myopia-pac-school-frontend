@@ -2,6 +2,7 @@ import { Modal, Spin, Button } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import type { FileCardPropsParams } from './index';
 import { modalConfig } from '@/hook/ant-config';
+import { getArchivesUrl } from '@/api/student';
 
 export const AddModal: React.FC<API.ModalItemType & FileCardPropsParams> = (props) => {
   const [loading, setLoading] = useState(false);
@@ -18,33 +19,31 @@ export const AddModal: React.FC<API.ModalItemType & FileCardPropsParams> = (prop
   useEffect(() => {
     if (props.visible) {
       setLoading(true);
-      setIframeSrc(
-        `${currentHostPath}?resultId=${props.resultId}&templateId=${props.templateId}&crossStatus=true`,
-      );
+      setIframeSrc(`${currentHostPath}?resultId=${props.resultId}&templateId=${props.templateId}`);
     }
   }, [props.visible]);
 
   // Iframe加载完成
   const loadHandler = () => {
     setTimeout(() => {
+      const oIframe: any = document.getElementById('cardIframe');
+      if (!oIframe || !oIframe.contentWindow) {
+        return;
+      }
+      // iframe-宽高自适应显示
+      const oIframeHeight = oIframe.contentWindow.document.documentElement.offsetHeight;
+      oIframe.style.height = `${oIframeHeight}px`;
       setLoading(false);
     }, 500);
   };
 
   // 生成PDF
   const onPdf = () => {
-    const a = document.getElementById('cardIframe');
-    if (!a) {
-      return;
-    }
     setLoading(true);
-    // 跨域通知PDF项目生成PDF文件，再window.open打开
-    a.contentWindow.postMessage('打印', currentHostPath);
-    // 接收到生成PDF回调，loading消失
-    function receiveMessage() {
+    getArchivesUrl({ resultId: props.resultId, templateId: props.templateId }).then((data) => {
+      data && window.open(`/pdf/viewer.html?file=${data}`);
       setLoading(false);
-    }
-    window.addEventListener('message', receiveMessage, false);
+    });
   };
 
   return (
@@ -52,7 +51,7 @@ export const AddModal: React.FC<API.ModalItemType & FileCardPropsParams> = (prop
       title={props.title}
       visible={props.visible}
       onCancel={() => props.onCancel()}
-      width={810}
+      width={950}
       footer={null}
       {...modalConfig}
     >
@@ -65,8 +64,8 @@ export const AddModal: React.FC<API.ModalItemType & FileCardPropsParams> = (prop
             style={{ border: 0 }}
             id="cardIframe"
             title="cardIframe"
-            width="760"
-            height="1073"
+            width="900"
+            height="1100"
             scrolling="no"
             src={iframeSrc}
             onLoad={loadHandler}

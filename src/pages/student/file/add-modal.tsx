@@ -26,13 +26,6 @@ export const AddModal: React.FC<API.ModalItemType & FileCardPropsParams> = (prop
   // Iframe加载完成
   const loadHandler = () => {
     setTimeout(() => {
-      const oIframe: any = document.getElementById('cardIframe');
-      if (!oIframe || !oIframe.contentWindow) {
-        return;
-      }
-      // iframe-宽高自适应显示
-      const oIframeHeight = oIframe.contentWindow.document.documentElement.offsetHeight;
-      oIframe.style.height = `${oIframeHeight}px`;
       setLoading(false);
     }, 500);
   };
@@ -62,7 +55,6 @@ export const AddModal: React.FC<API.ModalItemType & FileCardPropsParams> = (prop
         <div id="fileCardPrintElement">
           <iframe
             style={{ border: 0 }}
-            id="cardIframe"
             title="cardIframe"
             width="900"
             height="1100"

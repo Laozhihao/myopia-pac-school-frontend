@@ -34,7 +34,7 @@ export const AddModal: React.FC<API.ModalItemType & FileCardPropsParams> = (prop
   const onPdf = () => {
     setLoading(true);
     getArchivesUrl({ resultId: props.resultId, templateId: props.templateId }).then((data) => {
-      data && window.open(`/pdf/viewer.html?file=${data}`);
+      data.data && window.open(`/pdf/viewer.html?file=${data.data}`);
       setLoading(false);
     });
   };

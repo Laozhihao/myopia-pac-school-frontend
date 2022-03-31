@@ -31,6 +31,7 @@ declare namespace API {
   // 用户信息
   type CurrentUser = {
     username?: string;
+    realName?: string;
     orgId?: number; // 学校id
     orgName?: string;
   };

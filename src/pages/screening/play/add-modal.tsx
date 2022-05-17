@@ -26,7 +26,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const [formRef] = Form.useForm();
   // 设置默认值
   formRef.setFieldsValue({
-    schoolName: currentUser?.username,
+    schoolName: currentUser?.realName,
   });
   // 默认选中筛查二维码
   const [printType, setPrintType] = useState<number>();

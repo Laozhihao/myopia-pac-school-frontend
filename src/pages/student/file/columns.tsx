@@ -15,59 +15,64 @@ export const listColumns: ProColumns<API.FileListItem>[] = [
   },
   {
     title: '配镜情况',
-    dataIndex: 'glassesType',
+    dataIndex: 'glassesTypeDes',
   },
   {
     title: '裸眼视力（左/右）',
     dataIndex: 'details',
-    renderText: (val: any[]) =>
-      `${typeNumberHandle(val[1]?.nakedVision, 1)} / ${typeNumberHandle(val[0]?.nakedVision, 1)}`,
+    renderText: (val) =>
+      `${typeNumberHandle(val.vision[1]?.nakedVision, 1)} / ${typeNumberHandle(
+        val.vision[0]?.nakedVision,
+        1,
+      )}`,
   },
   {
     title: '矫正视力（左/右）',
     dataIndex: 'details',
-    renderText: (val: any[]) =>
-      `${typeNumberHandle(val[1]?.correctedVision, 1)} / ${typeNumberHandle(
-        val[0]?.correctedVision,
+    renderText: (val) =>
+      `${typeNumberHandle(val.vision[1]?.correctedVision, 1)} / ${typeNumberHandle(
+        val.vision[0]?.correctedVision,
         1,
       )}`,
   },
   {
     title: '球镜（左/右）',
     dataIndex: 'details',
-    renderText: (val: any[]) =>
-      `${symbolHandle(val[1]?.sph, 2, 'D')} / ${symbolHandle(val[0]?.sph, 2, 'D')}`,
+    renderText: (val) =>
+      `${symbolHandle(val.vision[1]?.sph, 2, 'D')} / ${symbolHandle(val.vision[0]?.sph, 2, 'D')}`,
   },
 
   {
     title: '柱镜（左/右）',
     dataIndex: 'details',
-    renderText: (val: any[]) =>
-      `${symbolHandle(val[1]?.cyl, 2, 'D')} / ${symbolHandle(val[0]?.cyl, 2, 'D')}`,
+    renderText: (val) =>
+      `${symbolHandle(val.vision[1]?.cyl, 2, 'D')} / ${symbolHandle(val.vision[0]?.cyl, 2, 'D')}`,
   },
   {
     title: '等效球镜（左/右）',
     dataIndex: 'details',
-    renderText: (val: any[]) =>
-      `${symbolHandle(val[1]?.se, 2, 'D')} / ${symbolHandle(val[0]?.se, 2, 'D')}`,
+    renderText: (val) =>
+      `${symbolHandle(val.vision[1]?.se, 2, 'D')} / ${symbolHandle(val.vision[0]?.se, 2, 'D')}`,
   },
   {
     title: '轴位（左/右）',
     dataIndex: 'details',
-    renderText: (val: any[]) =>
-      `${typeNumberHandle(val[1]?.axial, 0, '°')} / ${typeNumberHandle(val[0]?.axial, 0, '°')}`,
+    renderText: (val) =>
+      `${typeNumberHandle(val.vision[1]?.axial, 0, '°')} / ${typeNumberHandle(
+        val.vision[0]?.axial,
+        0,
+        '°',
+      )}`,
   },
   {
     title: '身高（cm）',
     dataIndex: 'details',
-    renderText: (val: Record<string, any>[]) =>
-      (val && val[0]?.heightAndWeightData?.height) ?? EMPTY,
+    renderText: (val) => (val && val.vision[0]?.heightAndWeightData?.height) ?? EMPTY,
   },
   {
     title: '体重（KG）',
     dataIndex: 'details',
-    renderText: (val: Record<string, any>[]) =>
-      (val && val[0]?.heightAndWeightData?.weight) ?? EMPTY,
+    renderText: (val) => (val && val.vision[0]?.heightAndWeightData?.weight) ?? EMPTY,
   },
   ...visionResultColumn,
 

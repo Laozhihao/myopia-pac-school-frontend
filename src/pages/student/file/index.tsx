@@ -236,7 +236,7 @@ const FileList: React.FC = () => {
               request={async () => {
                 const datas = studentId ? await getStudentScreen(studentId as string) : undefined;
                 return {
-                  data: datas?.data.items || [],
+                  data: datas?.data.records || [],
                   success: true,
                   total: datas?.data.total || 0,
                 };

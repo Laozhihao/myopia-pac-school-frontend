@@ -15,9 +15,9 @@ import { getStudentList, deleteStudentInfo } from '@/api/student';
 import { EMPTY } from '@/utils/constant';
 
 export const TableListCtx = createContext<{ ref?: any }>({});
-let searchForm = {}; // 搜索表单项
 
 const TableList: React.FC = () => {
+  const [searchForm, setSearchForm] = useState({}); // 搜索表单项
   const [modalVisible, setModalVisible] = useState(false); // 新增/编辑弹窗
   const [operationVisible, setOperationVisible] = useState(false); // 导入/导出
   const [typeKey, setTypeKey] = useState(''); // 导入/导出标志位
@@ -45,7 +45,7 @@ const TableList: React.FC = () => {
    * @desc 重置
    */
   const onReset = () => {
-    searchForm = {};
+    setSearchForm({});
     ref?.current?.resetFields();
     ref?.current?.submit();
   };
@@ -56,12 +56,12 @@ const TableList: React.FC = () => {
   const onSearch = () => {
     const formVal = ref?.current?.getFieldsFormatValue?.();
     const [gradeId, classId] = formVal?.gradeName || [];
-    searchForm = {
+    setSearchForm({
       gradeId,
       classId,
       [formVal?.select]: formVal?.input,
       visionLabel: formVal?.visionLabel,
-    };
+    });
     ref?.current?.submit();
   };
 

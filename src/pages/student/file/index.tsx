@@ -16,7 +16,6 @@ import type { ProFormInstance } from '@ant-design/pro-form';
 import { getStudentDetail, getStudentScreen } from '@/api/student';
 import { getCascaderOption } from '@/hook/district';
 import { getschoolGrade } from '@/api/school';
-import { AddModal } from './add-modal';
 import { DetailModal } from './detail-modal';
 import { EMPTY } from '@/utils/constant';
 
@@ -31,12 +30,6 @@ const FileList: React.FC = () => {
 
   const [areaOption, setAreaOption] = useState<any[]>();
   const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
-  const [cardInfo, setCardInfo] = useState<FileCardPropsParams & API.ModalDataType>({
-    visible: false,
-    title: '档案卡',
-    resultId: '',
-    templateId: '', // 模板id
-  });
   // 查看详情弹窗
   const [detail, setDetail] = useState<API.ModalDataType>({
     visible: false,
@@ -57,6 +50,55 @@ const FileList: React.FC = () => {
     setDetail((value) => ({ ...value, visible: true, currentRow: record }));
   };
 
+  /**
+   * @desc 新开报告
+   * @param
+   */
+  const openReport = (cb: Function) => {
+    // 获取当前域名
+    const { protocol, host } = location;
+    const hostPath = `${protocol}//${host.replace(/school/, 'report')}`;
+    const href = cb(hostPath);
+    window.open(decodeURIComponent(href), '_blank');
+  };
+
+  // 报告端
+  const showReport = (parm: string) => {
+    return openReport((path: string) => `${path}?${parm}`);
+  };
+
+  /**
+   * @desc 档案卡/监测表
+   */
+  const onMonitor = (record: any) => {
+    const {
+      resultId,
+      templateId,
+      planId,
+      classId,
+      planStudentId: planStudentIds,
+      screeningType,
+    } = record;
+    let parmUrl = '';
+    const parmsObj = {
+      templateId,
+      planId,
+      classId,
+      planStudentIds,
+      type: 5,
+      reportType: 'monitor',
+    };
+    // 区别档案卡还是监测表
+    if (screeningType) {
+      Object.keys(parmsObj).forEach((ele) => {
+        parmUrl += parmsObj[ele] ? `${ele}=${parmsObj[ele]}&` : '';
+      });
+    } else {
+      parmUrl = `resultId=${resultId}&templateId=${templateId}`;
+    }
+    showReport(parmUrl);
+  };
+
   const columns: ProColumns<API.FileListItem>[] = [
     ...listColumns,
     {
@@ -66,17 +108,7 @@ const FileList: React.FC = () => {
       width: 200,
       render: (_, record) => {
         return [
-          <a
-            key="print"
-            onClick={() =>
-              setCardInfo((value) => ({
-                ...value,
-                resultId: record.resultId,
-                templateId: record.templateId,
-                visible: true,
-              }))
-            }
-          >
+          <a key="print" onClick={() => onMonitor(record)}>
             打印档案卡
           </a>,
           record?.hasScreening ? (
@@ -236,7 +268,8 @@ const FileList: React.FC = () => {
               request={async () => {
                 const datas = studentId ? await getStudentScreen(studentId as string) : undefined;
                 return {
-                  data: datas?.data.items || [],
+                  data:
+                    datas?.data.records.filter((item: object) => !item.screeningType && item) || [],
                   success: true,
                   total: datas?.data.total || 0,
                 };
@@ -246,12 +279,6 @@ const FileList: React.FC = () => {
           </TabPane>
         </Tabs>
       </Card>
-      <AddModal
-        {...cardInfo}
-        onCancel={() => {
-          setCardInfo((value) => ({ ...value, visible: false }));
-        }}
-      />
       <DetailModal
         {...detail}
         onCancel={() => {

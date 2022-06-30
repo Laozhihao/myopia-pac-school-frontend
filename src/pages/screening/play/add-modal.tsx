@@ -144,6 +144,8 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     ];
     const dynamicPrintTypeArr = defaultPrintTypeArr.filter((item) => confitArr.includes(item.type));
     setPrintTypeArr(dynamicPrintTypeArr);
+    // 根据权限显示默认匹配第一个二维码类型，没有则默认显示告知书
+    setPrintType(confitArr[1] ?? 0);
   }, [props?.visible, props?.currentRow]);
 
   // 监听选择的年级和班级

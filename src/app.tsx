@@ -81,7 +81,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
 // request运行时配置
 export const request: RequestConfig = {
   timeout: 30000,
-  prefix: process.env.REACT_APP_RUNTIME === 'production' ? '' : '/api',
+  prefix: process.env.REACT_APP_RUNTIME === 'production' ? '/school/api' : '/api',
   errorConfig: {},
   middlewares: [],
   requestInterceptors: [

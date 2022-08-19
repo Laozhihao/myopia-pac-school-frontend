@@ -6,6 +6,7 @@ import routes from './routes';
 import path from 'path';
 const { REACT_APP_ENV } = process.env;
 export default defineConfig({
+  publicPath: '/school/',
   hash: true,
   antd: {},
   dva: {

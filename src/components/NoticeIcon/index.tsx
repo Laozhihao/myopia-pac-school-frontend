@@ -4,6 +4,7 @@ import { unreadCount } from '@/api/common';
 import NoticeIcon from './NoticeIcon';
 import styles from './index.less';
 import { NoticeRead } from '@/api/screen';
+import { getToken } from '@/hook/storage';
 
 const Info = '/info-center';
 const Notice = '/screening';
@@ -19,7 +20,8 @@ const NoticeIconView = () => {
   });
 
   useEffect(() => {
-    run();
+    // 在登录状态中才定时请求
+    getToken() && run();
   }, []);
 
   const onRouter = (item: any, props: any) => {

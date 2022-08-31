@@ -52,7 +52,7 @@ export const NoticeReport: React.FC<EleReportType> = (props) => {
   };
   // 预览pdf
   const openPdf = (url: string) => {
-    url && window.open(`/pdf/viewer.html?file=${url}`);
+    url && window.open(`/school/pdf/viewer.html?file=${url}`);
   };
   // 同步导出
   const syncExport = async (params: any) => {

@@ -178,7 +178,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
    * @desc 预览pdf
    */
   const openPdf = (url: any) => {
-    url && window.open(`/pdf/viewer.html?file=${url}`);
+    url && window.open(`/school/pdf/viewer.html?file=${url}`);
   };
 
   const onCancel = () => {

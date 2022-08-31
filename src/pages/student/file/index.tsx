@@ -57,7 +57,7 @@ const FileList: React.FC = () => {
   const openReport = (cb: Function) => {
     // 获取当前域名
     const { protocol, host } = location;
-    const hostPath = `${protocol}//${host.replace(/school/, 'report')}`;
+    const hostPath = `${protocol}//${host}/report`;
     const href = cb(hostPath);
     window.open(decodeURIComponent(href), '_blank');
   };

@@ -12,7 +12,7 @@ import logoImg from '@/assets/images/login-logo.png';
 import Slider from '@/components/VerifySlider/index.js';
 import '@/components/VerifySlider/index.less';
 import type { LoginParams } from '@/api/typings';
-import { setStorageInfo, setToken } from '@/hook/storage';
+import { setStorageInfo, setToken, USER } from '@/hook/storage';
 import { modalConfig } from '@/hook/ant-config';
 
 // token前缀 Bearer
@@ -32,7 +32,7 @@ const Login: React.FC = () => {
       const payload = jwt.decode(token);
       const { userInfo } = payload;
       const res = await getUserInfo(userInfo?.id);
-      setStorageInfo('User', res.data, null);
+      setStorageInfo(USER, res.data, null);
       await setInitialState((s) => ({ ...s, currentUser: res.data }));
     }
   };

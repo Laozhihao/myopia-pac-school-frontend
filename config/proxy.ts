@@ -9,9 +9,8 @@
 export default {
   dev: {
     '/api': {
-      target: 'https://s-myopia-pac-school.tulab.cn',
+      target: 'https://s-myopia-pac.tulab.cn/school',
       changeOrigin: true,
-      pathRewrite: { '^/api': '' },
     },
   },
 };

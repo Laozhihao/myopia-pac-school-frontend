@@ -173,7 +173,7 @@ const Login: React.FC = () => {
               />
               <p className={styles.tip}>如忘记密码，请联系管理员</p>
             </ProForm>
-            <p className={styles.version}>版本号：G2.0.0</p>
+            <p className={styles.version}>版本号：G2.0.1</p>
           </div>
         </div>
       </div>

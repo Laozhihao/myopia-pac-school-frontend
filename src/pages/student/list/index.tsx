@@ -1,6 +1,6 @@
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, message } from 'antd';
-import { Link } from 'umi';
+// import { Link } from 'umi';
 import React, { useState, useRef, useMemo, createContext } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProFormInstance } from '@ant-design/pro-form';
@@ -13,6 +13,8 @@ import { deleteTableRow } from '@/hook/table';
 import { getschoolGrade } from '@/api/school';
 import { getStudentList, deleteStudentInfo } from '@/api/student';
 import { EMPTY } from '@/utils/constant';
+import SwitchableButton from '@/components/SwitchableButton';
+import DynamicButtonGroup from '@/components/DynamicButtonGroup';
 
 export const TableListCtx = createContext<{ ref?: any }>({});
 
@@ -91,20 +93,40 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <a
-          key="edit"
-          onClick={() => {
-            onAdd(record);
-          }}
-        >
-          编辑
-        </a>,
-        <a key="delete" onClick={() => onDelete(record)}>
-          删除
-        </a>,
-        <Link key="manage" to={`/student/file?id=${record.id}&studentId=${record?.studentId}`}>
-          档案管理
-        </Link>,
+        // <a
+        //   key="edit"
+        //   onClick={() => {
+        //     onAdd(record);
+        //   }}
+        // >
+        //   编辑
+        // </a>,
+        // <a key="delete" onClick={() => onDelete(record)}>
+        //   删除
+        // </a>,
+        // // <Link key="manage" to={`/student/file?id=${record.id}&studentId=${record?.studentId}`}>
+        // //   档案管理
+        // // </Link>,
+        <DynamicButtonGroup key="operator">
+          <SwitchableButton
+            onClick={() => {
+              onAdd(record);
+            }}
+            icon="iconScreeningRecord"
+          >
+            编辑
+          </SwitchableButton>
+          <SwitchableButton onClick={() => onDelete(record)} icon="icondelete">
+            删除
+          </SwitchableButton>
+          <SwitchableButton
+            key="manage"
+            href={`/student/file?id=${record.id}&studentId=${record?.studentId}`}
+            icon="icona-Group1000006856"
+          >
+            档案管理
+          </SwitchableButton>
+        </DynamicButtonGroup>,
       ],
     },
   ];

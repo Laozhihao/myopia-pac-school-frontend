@@ -1,10 +1,11 @@
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, message } from 'antd';
-// import { Link } from 'umi';
+import { Button, message, Card } from 'antd';
 import React, { useState, useRef, useMemo, createContext } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProFormInstance } from '@ant-design/pro-form';
-import ProTable from '@ant-design/pro-table';
+import ProForm from '@ant-design/pro-form';
+import DynamicForm from '@/components/DynamicForm';
+import ProTable, { ActionType } from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';
 import { AddModal } from './add-modal';
 import { OperationModal } from './operation-modal';
@@ -14,6 +15,7 @@ import { getschoolGrade } from '@/api/school';
 import { getStudentList, deleteStudentInfo } from '@/api/student';
 import { EMPTY } from '@/utils/constant';
 import SwitchableButton from '@/components/SwitchableButton';
+import { FormItemOptions } from './form-item';
 import DynamicButtonGroup from '@/components/DynamicButtonGroup';
 
 export const TableListCtx = createContext<{ ref?: any }>({});
@@ -26,6 +28,11 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.StudentListItem>(); // 当前行数据
   const [gradeOption, setGradeOption] = useState<API.ObjectType[]>([]);
   const ref = useRef<ProFormInstance>();
+  const tableRef = useRef<ActionType>();
+
+  const [ItemOptions, setItemOptions] = useState<
+    Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
+  >({ ...FormItemOptions });
 
   /**
    * @desc 获取年级班级
@@ -33,6 +40,7 @@ const TableList: React.FC = () => {
   useMemo(async () => {
     const { data = [] } = await getschoolGrade();
     setGradeOption(data);
+    setItemOptions((s) => ({ ...s, listTypeInfo: { ...s.listTypeInfo, gradeOptions: data } }));
   }, []);
 
   /**
@@ -49,7 +57,7 @@ const TableList: React.FC = () => {
   const onReset = () => {
     setSearchForm({});
     ref?.current?.resetFields();
-    ref?.current?.submit();
+    tableRef?.current?.reloadAndRest?.();
   };
 
   /**
@@ -64,7 +72,7 @@ const TableList: React.FC = () => {
       [formVal?.select]: formVal?.input,
       visionLabel: formVal?.visionLabel,
     });
-    ref?.current?.submit();
+    tableRef?.current?.reloadAndRest?.();
   };
 
   /**
@@ -93,32 +101,18 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        // <a
-        //   key="edit"
-        //   onClick={() => {
-        //     onAdd(record);
-        //   }}
-        // >
-        //   编辑
-        // </a>,
-        // <a key="delete" onClick={() => onDelete(record)}>
-        //   删除
-        // </a>,
-        // // <Link key="manage" to={`/student/file?id=${record.id}&studentId=${record?.studentId}`}>
-        // //   档案管理
-        // // </Link>,
         <DynamicButtonGroup key="operator">
-          <SwitchableButton
+          <Button
+            type="link"
             onClick={() => {
               onAdd(record);
             }}
-            icon="iconScreeningRecord"
           >
             编辑
-          </SwitchableButton>
-          <SwitchableButton onClick={() => onDelete(record)} icon="icondelete">
+          </Button>
+          <Button type="link" onClick={() => onDelete(record)}>
             删除
-          </SwitchableButton>
+          </Button>
           <SwitchableButton
             key="manage"
             href={`/student/file?id=${record.id}&studentId=${record?.studentId}`}
@@ -138,25 +132,19 @@ const TableList: React.FC = () => {
           ref,
         }}
       >
+        <Card className="pro-form-card">
+          <ProForm layout="horizontal" formRef={ref} submitter={false}>
+            <DynamicForm {...ItemOptions} onSearch={onSearch} onReset={onReset} />
+          </ProForm>
+        </Card>
         <ProTable<API.StudentListItem, API.PageParams>
           rowKey="id"
           pagination={{ pageSize: 10 }}
           options={false}
-          formRef={ref}
+          actionRef={tableRef}
           form={{ span: 8, labelWidth: 120 }}
           columnEmptyText={EMPTY}
-          search={{
-            collapseRender: false,
-            collapsed: false,
-            optionRender: () => [
-              <Button key="reset" onClick={onReset}>
-                重 置
-              </Button>,
-              <Button key="search" type="primary" onClick={onSearch}>
-                搜 索
-              </Button>,
-            ],
-          }}
+          search={false}
           scroll={{
             x: '100vw',
           }}

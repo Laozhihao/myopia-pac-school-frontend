@@ -32,13 +32,17 @@ export const studentFormOptions = (
       fieldProps: {
         maxLength: 20,
       },
-      col: 24,
+      col: {
+        span: 24,
+      },
     },
     {
       label: '姓名',
       type: 'input',
       value: 'name',
-      col: 24,
+      col: {
+        span: 24,
+      },
       rules: [
         {
           required: true,
@@ -60,7 +64,9 @@ export const studentFormOptions = (
           message: '请选择性别',
         },
       ],
-      col: 24,
+      col: {
+        span: 24,
+      },
     },
     {
       label: '年级班级',
@@ -74,7 +80,9 @@ export const studentFormOptions = (
           message: '请选择年级班级',
         },
       ],
-      col: 24,
+      col: {
+        span: 24,
+      },
     },
     {
       label: '证件号',
@@ -118,13 +126,17 @@ export const studentFormOptions = (
         const { selectValue } = ref?.current?.getFieldValue();
         cache[selectValue] = e.target.value;
       },
-      col: 24,
+      col: {
+        span: 24,
+      },
     },
     {
       label: '出生日期',
       type: 'datePicker',
       value: 'birthday',
-      col: 24,
+      col: {
+        span: 24,
+      },
       rules: [
         {
           required: true,
@@ -138,7 +150,9 @@ export const studentFormOptions = (
       value: 'nation',
       list: 'nationList',
       fieldNames: { label: 'cnName', value: 'code' },
-      col: 24,
+      col: {
+        span: 24,
+      },
     },
     {
       label: '手机号码',
@@ -152,7 +166,9 @@ export const studentFormOptions = (
           },
         },
       ],
-      col: 24,
+      col: {
+        span: 24,
+      },
     },
   ],
   listTypeInfo: {

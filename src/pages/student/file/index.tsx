@@ -7,7 +7,7 @@ import { listColumns } from './columns';
 import { history, useRequest } from 'umi';
 import { Tabs, Card, message, Tooltip, Button } from 'antd';
 import { editStudentInfo } from '@/api/student';
-import PageForm from '@/components/PageForm';
+import DynamicForm from '@/components/DynamicForm';
 import LazyCascader from '@/pages/components/lazy-cascader';
 import { studentFormOptions } from '../utils/constant';
 import ProForm from '@ant-design/pro-form';
@@ -228,7 +228,7 @@ const FileList: React.FC = () => {
               }}
               onFinish={onFinish}
             >
-              <PageForm {...studentForm} />
+              <DynamicForm {...studentForm} />
               <LazyCascader
                 label="居住地址"
                 name="region"

@@ -4,15 +4,48 @@ import {
   ProFormDatePicker,
   ProFormTextArea,
 } from '@ant-design/pro-form';
-import { Row, Col, Form, Cascader, Select, Input } from 'antd';
-import { useEffect, useState } from 'react';
+import { Row, Col, Form, Cascader, Select, Input, Button } from 'antd';
+import { ReactNode, useEffect, useState } from 'react';
 import { getPopupContainer } from '@/hook/ant-config';
+import { defaultColConfig } from '@/utils/config-constant';
+import { SearchOutlined } from '@ant-design/icons';
+import styles from './index.less';
 
 const { Option } = Select;
 
+const defaultFieldNames = {
+  label: 'label',
+  value: 'value',
+  children: 'child',
+};
+
+// 默认按钮配置类型
+type FormButtonType = {
+  type?: 'link' | 'text' | 'primary' | 'default' | 'ghost' | 'dashed';
+  icon?: ReactNode;
+  label?: string;
+  event?: string;
+  className?: string;
+};
+const buttonList: FormButtonType[] = [
+  {
+    type: 'primary',
+    label: '搜索',
+    event: 'onSearch',
+    icon: <SearchOutlined />,
+  },
+  {
+    type: 'default',
+    label: '重置',
+    event: 'onReset',
+    className: 'reset-btn',
+  },
+];
+
 // JSON数据生成表单
 
-const PageForm: React.FC<API.PropsType> = (props) => {
+const DynamicForm: React.FC<API.PropsType> = (props) => {
+  const { isNeedBtn = true } = props;
   const [formlist, setFormList] = useState([] as API.FilterListType[]);
 
   // 过滤表单显示 增加show 字段防止后续可能需要权限显示
@@ -40,10 +73,10 @@ const PageForm: React.FC<API.PropsType> = (props) => {
     // inputGroup
     inputGroup: ({
       label,
-      selectName,
+      selectName = 'select',
       selectInitial,
       selectWidth,
-      inputName,
+      inputName = 'input',
       rules,
       required,
       selectChange,
@@ -74,14 +107,27 @@ const PageForm: React.FC<API.PropsType> = (props) => {
     ),
 
     // 输入文本框
-    textArea: ({ label, value, fieldProps, required }: API.FilterListType) => (
-      <ProFormTextArea label={label} name={value} fieldProps={fieldProps} required={required} />
+    textArea: ({ label, value, fieldProps, required, showLabel }: API.FilterListType) => (
+      <ProFormTextArea
+        label={showLabel ? label : ''}
+        name={value}
+        fieldProps={fieldProps}
+        required={required}
+      />
     ),
 
     // 下拉选择
-    select: ({ label, value, list, rules, required, fieldNames }: API.FilterListType) => (
-      <Form.Item label={label} rules={rules} name={value} required={required}>
-        <Select placeholder="请选择" getPopupContainer={getPopupContainer}>
+    select: ({
+      label,
+      value,
+      list,
+      rules,
+      required,
+      showLabel,
+      fieldNames = defaultFieldNames,
+    }: API.FilterListType) => (
+      <Form.Item label={showLabel ? label : ''} rules={rules} name={value} required={required}>
+        <Select placeholder={`请选择${label}`} getPopupContainer={getPopupContainer}>
           {props.listTypeInfo[list].map((item) => (
             <Option value={item[fieldNames?.value]} key={item[fieldNames?.value]}>
               {item[fieldNames?.label]}
@@ -92,11 +138,11 @@ const PageForm: React.FC<API.PropsType> = (props) => {
     ),
 
     // 级联
-    cascader: ({ label, value, list, rules, fieldNames }: API.FilterListType) => (
-      <Form.Item label={label} rules={rules} name={value}>
+    cascader: ({ label, value, list, rules, fieldNames, showLabel }: API.FilterListType) => (
+      <Form.Item label={showLabel ? label : ''} rules={rules} name={value}>
         <Cascader
           options={props.listTypeInfo[list]}
-          placeholder="请选择"
+          placeholder={`请选择${label}`}
           fieldNames={fieldNames}
           getPopupContainer={getPopupContainer}
         />
@@ -115,21 +161,44 @@ const PageForm: React.FC<API.PropsType> = (props) => {
     ),
 
     // 时间选择器
-    datePicker: ({ label, rules, value, required }: API.FilterListType) => (
-      <ProFormDatePicker width="md" name={value} label={label} rules={rules} required={required} />
+    datePicker: ({ label, rules, value, required, showLabel }: API.FilterListType) => (
+      <ProFormDatePicker
+        width="md"
+        name={value}
+        label={showLabel ? label : ''}
+        rules={rules}
+        required={required}
+      />
     ),
   };
 
   return (
     <Row gutter={props.gutter ?? 40}>
-      {formlist.map((item) => (
-        <Col key={item.value} span={item.col ?? 8}>
-          {FormTemp[item.type](item)}
-        </Col>
-      ))}
-      {props?.children}
+      <div className={styles.item}>
+        {formlist.map((item) => (
+          <Col key={item.value} {...(item.col ?? defaultColConfig)}>
+            {FormTemp[item.type](item)}
+          </Col>
+        ))}
+        {props?.children}
+      </div>
+      {isNeedBtn ? (
+        <div className={styles.btn}>
+          {buttonList.map((eleItem, eleIndex) => (
+            <Button
+              key={eleIndex}
+              type={eleItem?.type}
+              icon={eleItem?.icon}
+              className={eleItem?.className && styles[eleItem?.className]}
+              onClick={eleItem?.event && props[eleItem?.event]}
+            >
+              {eleItem.label}
+            </Button>
+          ))}
+        </div>
+      ) : null}
     </Row>
   );
 };
 
-export default PageForm;
+export default DynamicForm;

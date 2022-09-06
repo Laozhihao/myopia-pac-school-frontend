@@ -55,7 +55,7 @@ export async function unreadCount() {
   });
 }
 
-/** 上传图片 GET /management/notice/unreadCount */
+/** 上传图片 GET /management/common/fileUpload */
 export async function uploadFile(data: FormData) {
   return request<API.RequestResult>('/management/common/fileUpload', {
     method: 'POST',

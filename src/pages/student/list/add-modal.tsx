@@ -1,5 +1,5 @@
 import { ModalForm, ProFormTextArea } from '@ant-design/pro-form';
-import PageForm from '@/components/PageForm';
+import DynamicForm from '@/components/DynamicForm';
 import LazyCascader from '@/pages/components/lazy-cascader';
 import { message } from 'antd';
 import type { ProFormInstance } from '@ant-design/pro-form';
@@ -101,13 +101,14 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
       width={800}
       visible={props.visible}
       onFinish={onConfirm}
+      layout="vertical"
       modalProps={{
         ...modalConfig,
         destroyOnClose: true,
         onCancel: () => props.onCancel(false),
       }}
     >
-      <PageForm {...studentForm} />
+      <DynamicForm {...studentForm} isNeedBtn={false} />
       <LazyCascader
         label="居住地址"
         name="region"

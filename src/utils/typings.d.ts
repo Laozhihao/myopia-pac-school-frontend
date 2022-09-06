@@ -60,6 +60,7 @@ declare namespace API {
     show?: boolean;
     rules?: Rule[];
     required?: boolean;
+    showLabel?: boolean; // 是否显示label
     fieldProps?: Record<string, any>; // 透传的属性 pro
     fieldNames?: Record<string, any>;
     selectWidth?: number;
@@ -76,10 +77,12 @@ declare namespace API {
     filterList: any[];
     listTypeInfo: Record<string, any[]>; // Record<key, value>
     gutter?: number;
+    isNeedBtn?: boolean; // 是否需要Btn
     labelWidth?: number;
     layout?: FormLayout;
     type?: string;
-    onSearch?: (values: any) => Promise<void>;
+    col?: Record<string, any>;
+    onSearch?: () => void;
     onReset?: () => void;
   };
 

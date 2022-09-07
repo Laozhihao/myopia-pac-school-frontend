@@ -9,8 +9,11 @@
 export default {
   dev: {
     '/api': {
-      target: 'https://s-myopia-pac.tulab.cn/school',
+      target: 'https://s-myopia-pac.tulab.cn/school/api',
       changeOrigin: true,
+      pathRewrite: {
+        '^/api': '',
+      },
     },
   },
 };

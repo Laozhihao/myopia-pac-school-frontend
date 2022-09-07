@@ -99,7 +99,7 @@ const TableList: React.FC = () => {
   };
 
   const columns: ProColumns<API.StudentListItem>[] = [
-    ...listColumns(gradeOption, onSearch),
+    ...listColumns,
     {
       title: '操作',
       dataIndex: 'option',

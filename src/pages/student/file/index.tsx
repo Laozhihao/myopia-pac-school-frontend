@@ -26,7 +26,15 @@ export type FileCardPropsParams = {
 };
 
 const FileList: React.FC = () => {
-  const formRef = useRef<ProFormInstance>();
+  const formRef = useRef<
+    ProFormInstance<{
+      gradeIds?: never[];
+      region?: never[];
+      selectValue: string | number;
+      inputValue?: string | number;
+      address?: string;
+    }>
+  >();
 
   const [areaOption, setAreaOption] = useState<any[]>();
   const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位

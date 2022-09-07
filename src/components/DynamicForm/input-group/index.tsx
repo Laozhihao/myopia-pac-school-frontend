@@ -1,6 +1,6 @@
 import { TableListCtx } from '@/pages/student/list';
 import { Input, Select, Form } from 'antd';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -12,8 +12,8 @@ type InputGroupType = {
 export const InputGroup: React.FC<InputGroupType> = (props) => {
   const { selectName = 'select', inputName = 'input', selectOption = [] } = props;
   const { ref } = useContext(TableListCtx);
-  // const [isFocus, setIsFocus] = useState(false);
-  // const [isHover, setIsHover] = useState(false);
+  const [isFocus, setIsFocus] = useState(false);
+  const [isHover, setIsHover] = useState(false);
   const onChange = () => {
     ref?.current.resetFields([inputName]);
   };
@@ -22,7 +22,7 @@ export const InputGroup: React.FC<InputGroupType> = (props) => {
     <Input.Group
       compact
       style={{ display: 'flex', marginBottom: props?.bottom }}
-      className={styles.group}
+      className={[styles.group, isHover && styles.hover, isFocus && styles.focus].join(' ')}
     >
       <Form.Item name={selectName} initialValue={props.selectInitial}>
         <Select
@@ -44,6 +44,10 @@ export const InputGroup: React.FC<InputGroupType> = (props) => {
           onPressEnter={props?.onPressEnter}
           allowClear
           className={styles.input}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
+          onMouseOver={() => setIsHover(true)}
+          onMouseOut={() => setIsHover(false)}
         />
       </Form.Item>
     </Input.Group>

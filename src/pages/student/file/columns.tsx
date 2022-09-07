@@ -4,7 +4,6 @@ import { MYOPIAWARNOPTION } from '@/utils/constant';
 import { Badge } from 'antd';
 import { visionResultColumn } from '@/utils/columns';
 import { formatLength, typeNumberHandle, symbolHandle } from '@/utils/common';
-import React from 'react';
 
 export const listColumns: ProColumns<API.FileListItem>[] = [
   {

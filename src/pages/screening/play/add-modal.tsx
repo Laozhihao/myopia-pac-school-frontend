@@ -17,6 +17,8 @@ import {
   updateScreeningNoticeConfig,
   getScreeningPlanstudents,
 } from '@/api/screen';
+import type { OptionType } from 'antd/lib/select';
+import type { RadioChangeEvent } from 'antd';
 
 export const AddModal: React.FC<API.ModalItemType> = (props) => {
   // 获取当前学校名称
@@ -245,12 +247,12 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     wrapperCol: { span: 20 },
   };
 
-  const onPrintTypeChange = (e) => {
+  const onPrintTypeChange = (e: RadioChangeEvent) => {
     setPrintType(e.target.value);
   };
 
   // 搜索过滤
-  const filterOption = (inputValue: string, option) =>
+  const filterOption = (inputValue: string, option: OptionType) =>
     option.props.children.indexOf(inputValue) >= 0;
 
   // 学生变化

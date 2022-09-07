@@ -20,6 +20,7 @@ declare namespace API {
     accessToken: string;
     refreshToken: string;
     expiresIn: number;
+    tokenInfo: unknown;
   };
 
   // 分页
@@ -56,7 +57,7 @@ declare namespace API {
     label?: string;
     tooltip?: string;
     list: string;
-    col?: number;
+    col?: Record<string, any>;
     show?: boolean;
     rules?: Rule[];
     required?: boolean;
@@ -80,8 +81,6 @@ declare namespace API {
     isNeedBtn?: boolean; // 是否需要Btn
     labelWidth?: number;
     layout?: FormLayout;
-    type?: string;
-    col?: Record<string, any>;
     onSearch?: () => void;
     onReset?: () => void;
   };

@@ -147,7 +147,7 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
         label={showLabel ? label : ''}
         rules={rules}
         required={required}
-        fieldProps={{ ...fieldProps }}
+        fieldProps={{ ...fieldProps, getPopupContainer }}
       />
     ),
   };
@@ -156,7 +156,7 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
     <Row gutter={props.gutter ?? 40}>
       <div className={styles.item}>
         {formlist.map((item) => (
-          <Col key={item.value} {...(item.col ?? defaultColConfig)}>
+          <Col key={item.value} {...(item?.col ?? defaultColConfig)}>
             {FormTemp[item.type](item)}
           </Col>
         ))}

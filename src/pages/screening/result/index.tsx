@@ -338,7 +338,7 @@ const ScreeningResult: React.FC = () => {
         }}
       />
       <NoticeReport
-        ids={ids}
+        ids={ids!}
         visible={reportVisible}
         onCancel={() => {
           setReportVisible(false);

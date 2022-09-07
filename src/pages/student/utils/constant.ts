@@ -23,6 +23,7 @@ export const studentFormOptions = (
       label: '学号',
       type: 'input',
       value: 'sno',
+      showLabel: true,
       rules: [
         {
           required: true,
@@ -40,6 +41,7 @@ export const studentFormOptions = (
       label: '姓名',
       type: 'input',
       value: 'name',
+      showLabel: true,
       col: {
         span: 24,
       },
@@ -58,6 +60,7 @@ export const studentFormOptions = (
       type: 'radio',
       value: 'gender',
       list: 'sexList',
+      showLabel: true,
       rules: [
         {
           required: true,
@@ -73,6 +76,7 @@ export const studentFormOptions = (
       type: 'cascader',
       value: 'gradeIds',
       list: 'gradeOptions',
+      showLabel: true,
       fieldNames: { label: 'name', value: 'id', children: 'child' },
       rules: [
         {
@@ -90,6 +94,7 @@ export const studentFormOptions = (
       value: 'inputValue',
       selectName: 'selectValue',
       inputName: 'inputValue',
+      showLabel: true,
       selectInitial: ref?.current?.getFieldValue('passport') ? 'passport' : 'idCard',
       selectOption: [
         { label: '身份证', value: 'idCard' },
@@ -134,6 +139,7 @@ export const studentFormOptions = (
       label: '出生日期',
       type: 'datePicker',
       value: 'birthday',
+      showLabel: true,
       col: {
         span: 24,
       },
@@ -149,6 +155,7 @@ export const studentFormOptions = (
       type: 'select',
       value: 'nation',
       list: 'nationList',
+      showLabel: true,
       fieldNames: { label: 'cnName', value: 'code' },
       col: {
         span: 24,
@@ -158,6 +165,7 @@ export const studentFormOptions = (
       label: '手机号码',
       type: 'input',
       value: 'parentPhone',
+      showLabel: true,
       rules: [
         {
           validator(_: any, value: any) {

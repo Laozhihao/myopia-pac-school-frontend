@@ -133,7 +133,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     { type: 2, text: 'vs666专属筛查二维码' },
     { type: 3, text: '虚拟二维码' },
   ];
-  const [printTypeArr, setPrintTypeArr] = useState<Object[]>(defaultPrintTypeArr);
+  const [printTypeArr, setPrintTypeArr] = useState<API.ObjectType[]>(defaultPrintTypeArr);
 
   useEffect(() => {
     setImgUrl(props?.currentRow?.qrCodeFileUrl);

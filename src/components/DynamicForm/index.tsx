@@ -4,12 +4,14 @@ import {
   ProFormDatePicker,
   ProFormTextArea,
 } from '@ant-design/pro-form';
-import { Row, Col, Form, Cascader, Select, Input, Button } from 'antd';
-import { ReactNode, useEffect, useState } from 'react';
+import { Row, Col, Form, Cascader, Select, Button } from 'antd';
+import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import { getPopupContainer } from '@/hook/ant-config';
 import { defaultColConfig } from '@/utils/config-constant';
 import { SearchOutlined } from '@ant-design/icons';
 import styles from './index.less';
+import { InputGroup } from './input-group';
 
 const { Option } = Select;
 
@@ -58,10 +60,18 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
 
   // 表单种类
   const FormTemp = {
-    input: ({ label, value, rules, tooltip, required, fieldProps }: API.FilterListType) => (
+    input: ({
+      label,
+      value,
+      rules,
+      tooltip,
+      required,
+      fieldProps,
+      showLabel,
+    }: API.FilterListType) => (
       <ProFormText
         name={value}
-        label={label}
+        label={showLabel ? label : ''}
         tooltip={tooltip}
         rules={rules}
         required={required}
@@ -71,39 +81,8 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
     ),
 
     // inputGroup
-    inputGroup: ({
-      label,
-      selectName = 'select',
-      selectInitial,
-      selectWidth,
-      inputName = 'input',
-      rules,
-      required,
-      selectChange,
-      inputChange,
-      selectOption = [],
-    }: API.FilterListType) => (
-      <Form.Item label={label} required={required}>
-        <Input.Group compact style={{ display: 'flex', marginBottom: -24 }}>
-          <Form.Item name={selectName} initialValue={selectInitial}>
-            <Select
-              placeholder="请选择"
-              style={{ width: selectWidth ?? 140 }}
-              onChange={selectChange}
-              options={selectOption}
-              getPopupContainer={getPopupContainer}
-            />
-          </Form.Item>
-          <Form.Item
-            name={inputName}
-            style={{ width: 'inherit' }}
-            rules={rules}
-            required={required}
-          >
-            <Input placeholder="请输入" allowClear onChange={inputChange} />
-          </Form.Item>
-        </Input.Group>
-      </Form.Item>
+    inputGroup: (item: API.FilterListType & { bottom?: number; onPressEnter?: () => void }) => (
+      <InputGroup {...item} />
     ),
 
     // 输入文本框
@@ -150,9 +129,9 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
     ),
 
     // 单选框
-    radio: ({ label, rules, list, value, required }: API.FilterListType) => (
+    radio: ({ label, rules, list, value, required, showLabel }: API.FilterListType) => (
       <ProFormRadio.Group
-        label={label}
+        label={showLabel ? label : ''}
         name={value}
         rules={rules}
         required={required}
@@ -161,13 +140,14 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
     ),
 
     // 时间选择器
-    datePicker: ({ label, rules, value, required, showLabel }: API.FilterListType) => (
+    datePicker: ({ label, rules, value, required, showLabel, fieldProps }: API.FilterListType) => (
       <ProFormDatePicker
         width="md"
         name={value}
         label={showLabel ? label : ''}
         rules={rules}
         required={required}
+        fieldProps={{ ...fieldProps }}
       />
     ),
   };

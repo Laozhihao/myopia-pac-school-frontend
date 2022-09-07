@@ -1,21 +1,11 @@
 import type { ProColumns } from '@ant-design/pro-table';
-import {
-  EMPTY,
-  MYOPIAWARNOPTION,
-  MYOPIAWARNSELECTOPTION,
-  STUDENTSELECTOPTIONS,
-  TABLESEXOPTION,
-} from '@/utils/constant';
+import { EMPTY, MYOPIAWARNOPTION, TABLESEXOPTION } from '@/utils/constant';
 import { visionColumn } from '@/utils/columns';
-import { convertData, getShowIdCardText, getShowPassportText } from '@/utils/common';
-import { Cascader, Button, Badge } from 'antd';
-import { InputGroup } from '@/pages/components/input-group';
+import { getShowIdCardText, getShowPassportText } from '@/utils/common';
+import { Button, Badge } from 'antd';
 import { history } from 'umi';
 
-export const listColumns: (
-  gradeOption: any[],
-  onSearch?: () => void,
-) => ProColumns<API.StudentListItem>[] = (gradeOption: any[], onSearch) => [
+export const listColumns: ProColumns<API.StudentListItem>[] = [
   {
     title: '学号',
     dataIndex: 'sno',
@@ -35,17 +25,6 @@ export const listColumns: (
   {
     title: '年级-班级',
     dataIndex: 'gradeName',
-    order: 2,
-    renderFormItem: () => {
-      return (
-        <Cascader
-          options={convertData(gradeOption)}
-          placeholder="请选择"
-          fieldNames={{ label: 'name', value: 'id', children: 'child' }}
-          changeOnSelect={true}
-        />
-      );
-    },
     renderText: (val: string, record) => `${val}-${record?.className}`,
   },
   {
@@ -54,22 +33,6 @@ export const listColumns: (
     search: false,
     renderText: (val: string, record) =>
       val ? getShowIdCardText(val) : getShowPassportText(record?.passport),
-  },
-  {
-    hideInTable: true,
-    order: 3,
-    renderFormItem: () => {
-      return (
-        <InputGroup
-          option={STUDENTSELECTOPTIONS}
-          bottom={-24}
-          selectName={'select'}
-          selectInitial={'name'}
-          inputName={'input'}
-          onPressEnter={onSearch}
-        />
-      );
-    },
   },
   ...visionColumn,
   {
@@ -82,11 +45,11 @@ export const listColumns: (
       ) : (
         EMPTY
       ),
-    valueType: 'select',
-    fieldProps: {
-      options: MYOPIAWARNSELECTOPTION,
-    },
-    order: 1,
+    // valueType: 'select',
+    // fieldProps: {
+    //   options: MYOPIAWARNSELECTOPTION,
+    // },
+    // order: 1,
   },
   {
     title: '筛查次数',

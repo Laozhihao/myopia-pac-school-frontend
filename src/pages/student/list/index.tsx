@@ -5,8 +5,8 @@ import { PageContainer } from '@ant-design/pro-layout';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import ProForm from '@ant-design/pro-form';
 import DynamicForm from '@/components/DynamicForm';
-import ProTable, { ActionType } from '@ant-design/pro-table';
-import type { ProColumns } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
+import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { AddModal } from './add-modal';
 import { OperationModal } from './operation-modal';
 import { listColumns } from './columns';
@@ -17,6 +17,7 @@ import { EMPTY } from '@/utils/constant';
 import SwitchableButton from '@/components/SwitchableButton';
 import { FormItemOptions } from './form-item';
 import DynamicButtonGroup from '@/components/DynamicButtonGroup';
+import { convertData } from '@/utils/common';
 
 export const TableListCtx = createContext<{ ref?: any }>({});
 
@@ -40,7 +41,10 @@ const TableList: React.FC = () => {
   useMemo(async () => {
     const { data = [] } = await getschoolGrade();
     setGradeOption(data);
-    setItemOptions((s) => ({ ...s, listTypeInfo: { ...s.listTypeInfo, gradeOptions: data } }));
+    setItemOptions((s) => ({
+      ...s,
+      listTypeInfo: { ...s.listTypeInfo, gradeOptions: convertData(data) },
+    }));
   }, []);
 
   /**

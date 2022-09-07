@@ -134,19 +134,6 @@ const Slider = {
     });
   },
 
-  // initImg() {
-  //   const img = createImg(() => {
-  //     this.draw();
-  //     this.canvasCtx.drawImage(img, 0, 0, w, h);
-  //     this.blockCtx.drawImage(img, 0, 0, w, h);
-  //     const y = this.y - r * 2 - 1;
-  //     const ImageData = this.blockCtx.getImageData(this.x - 3, y, L, L);
-  //     this.block.width = L;
-  //     this.blockCtx.putImageData(ImageData, 0, y);
-  //   });
-  //   this.img = img;
-  // },
-
   async initImg() {
     const img = await createImg(() => {
       this.draw();
@@ -261,14 +248,6 @@ const Slider = {
     };
   },
 
-  // reset() {
-  //   this.sliderContainer.className = 'sliderContainer';
-  //   this.slider.style.left = 0;
-  //   this.block.style.left = 0;
-  //   this.sliderMask.style.width = 0;
-  //   this.clean();
-  //   this.img.src = getRandomImg();
-  // },
   async reset() {
     this.sliderContainer.className = 'sliderContainer';
     this.slider.style.left = 0;

@@ -82,7 +82,7 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
 
     // inputGroup
     inputGroup: (item: API.FilterListType & { bottom?: number; onPressEnter?: () => void }) => (
-      <InputGroup {...item} />
+      <InputGroup {...item} onPressEnter={props[item?.event || 'onSearch']} />
     ),
 
     // 输入文本框

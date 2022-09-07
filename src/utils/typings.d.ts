@@ -65,6 +65,7 @@ declare namespace API {
     fieldProps?: Record<string, any>; // 透传的属性 pro
     fieldNames?: Record<string, any>;
     selectWidth?: number;
+    event?: string; // 执行事件
     selectName?: string; // inputGroup select
     selectOption?: any[]; // select option选项
     selectInitial?: string; // inputGroup select initialValue

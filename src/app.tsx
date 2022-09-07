@@ -98,7 +98,8 @@ export const request: RequestConfig = {
         Authorization: getToken(),
         ...options.headers,
       };
-      url.endsWith('/auth/refresh/token') && delete headers.Authorization;
+      (!headers.Authorization || url.endsWith('/auth/refresh/token')) &&
+        delete headers.Authorization;
       return {
         url,
         options: {

@@ -63,3 +63,10 @@ export async function uploadFile(data: FormData) {
     requestType: 'form',
   });
 }
+
+/** 未读通知 GET auth/verify/image */
+export async function getVerifyImage() {
+  return request<API.RequestResult>('/auth/verify/image', {
+    method: 'GET',
+  });
+}

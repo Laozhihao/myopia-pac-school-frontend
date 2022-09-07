@@ -1,3 +1,5 @@
+import { getVerifyImage } from '@/api/common';
+
 /* eslint-disable */
 // 第三方库代码，这里的数字量大，而且不好定义变量，故忽略魔法数规则
 const l = 42; // 滑块边长
@@ -5,6 +7,7 @@ const r = 9; // 滑块半径
 const w = 310; // canvas宽度
 const h = 155; // canvas高度
 const { PI } = Math;
+let verifyCode = ''; // 图片验证通过校验码
 
 const L = l + r * 2 + 3; // 滑块实际边长
 
@@ -33,18 +36,21 @@ function removeClass(tag, className) {
   tag.classList.remove(className);
 }
 
-function getRandomImg() {
-  return `https://picsum.photos/300/150/?image=${getRandomNumberByRange(0, 1084)}`;
-}
+const getRandomImg = async () => {
+  const { data } = await getVerifyImage();
+  const { img, verify } = data || {};
+  verifyCode = verify;
+  return `data:image/jpg;base64,${img.slice(0, -7)}`;
+};
 
-function createImg(onload) {
+async function createImg(onload) {
   const img = createElement('img');
   img.crossOrigin = 'Anonymous';
   img.onload = onload;
-  img.onerror = () => {
-    img.src = getRandomImg();
+  img.onerror = async () => {
+    img.src = await getRandomImg();
   };
-  img.src = getRandomImg();
+  img.src = await getRandomImg();
   return img;
 }
 
@@ -128,8 +134,21 @@ const Slider = {
     });
   },
 
-  initImg() {
-    const img = createImg(() => {
+  // initImg() {
+  //   const img = createImg(() => {
+  //     this.draw();
+  //     this.canvasCtx.drawImage(img, 0, 0, w, h);
+  //     this.blockCtx.drawImage(img, 0, 0, w, h);
+  //     const y = this.y - r * 2 - 1;
+  //     const ImageData = this.blockCtx.getImageData(this.x - 3, y, L, L);
+  //     this.block.width = L;
+  //     this.blockCtx.putImageData(ImageData, 0, y);
+  //   });
+  //   this.img = img;
+  // },
+
+  async initImg() {
+    const img = await createImg(() => {
       this.draw();
       this.canvasCtx.drawImage(img, 0, 0, w, h);
       this.blockCtx.drawImage(img, 0, 0, w, h);
@@ -208,7 +227,7 @@ const Slider = {
       if (spliced) {
         if (verified) {
           addClass(this.sliderContainer, 'sliderContainer_success');
-          typeof this.onSuccess === 'function' && this.onSuccess();
+          typeof this.onSuccess === 'function' && this.onSuccess(verifyCode);
         } else {
           addClass(this.sliderContainer, 'sliderContainer_fail');
           this.text.innerHTML = '再试一次';
@@ -242,13 +261,21 @@ const Slider = {
     };
   },
 
-  reset() {
+  // reset() {
+  //   this.sliderContainer.className = 'sliderContainer';
+  //   this.slider.style.left = 0;
+  //   this.block.style.left = 0;
+  //   this.sliderMask.style.width = 0;
+  //   this.clean();
+  //   this.img.src = getRandomImg();
+  // },
+  async reset() {
     this.sliderContainer.className = 'sliderContainer';
     this.slider.style.left = 0;
     this.block.style.left = 0;
     this.sliderMask.style.width = 0;
     this.clean();
-    this.img.src = getRandomImg();
+    this.img.src = await getRandomImg();
   },
 };
 

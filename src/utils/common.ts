@@ -1,5 +1,5 @@
 import { EMPTY } from '@/utils/constant';
-
+import type { Rule } from 'antd/lib/form';
 /**
  * @desc 数据转成form data格式
  * @param params 需要转的对象
@@ -124,3 +124,37 @@ export function getShowIdCardText(idCard: string | undefined) {
 export function getShowPassportText(passport: string | undefined) {
   return passport && `${passport.substr(0, 2)}***********${passport.substr(-1)}`;
 }
+
+/**
+ * @desc 删除多余字段
+ * @param data 源数据
+ * @param arr 需要删除的字段组合 默认删除select input 值
+ */
+export const deleteRedundantData = (data: API.ObjectType, arr: string[] = ['select', 'input']) => {
+  arr?.forEach((item) => {
+    delete data[item];
+  });
+  return data;
+};
+
+/**
+ * @desc select option 处理成数组格式（可传数组或者对象）
+ * @param list  源数组
+ * @param fieldNames  组件库 select 不支持fieldNames 所以传一个对象自行处理
+ */
+
+export const getOptions = (list?: any[], fieldNames?: API.FieldNamesType) =>
+  Array.isArray(list) && list.length
+    ? fieldNames
+      ? list.map((item) => ({ label: item?.[fieldNames.label], value: item?.[fieldNames.value] }))
+      : list
+    : [];
+
+export const defaultRulesConfig = (label: string): Rule[] => {
+  return [
+    {
+      required: true,
+      message: `请${label}`,
+    },
+  ];
+};

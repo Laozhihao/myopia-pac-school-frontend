@@ -1,27 +1,75 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, createContext } from 'react';
 import { history } from 'umi';
-import { Modal, Button, Tooltip } from 'antd';
+import { Modal, Button, Tooltip, Card } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
+import ProForm from '@ant-design/pro-form';
+import type { ProFormInstance } from '@ant-design/pro-form';
+import DynamicForm from '@/components/DynamicForm';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import styles from './index.less';
 import { listColumns } from './columns';
 import { AddModal } from './add-modal';
-import { escape2Html } from '@/utils/common';
+import { PlanModal } from './modal/plan';
+import { escape2Html, deleteRedundantData } from '@/utils/common';
 import { EMPTY } from '@/utils/constant';
 import { modalConfig } from '@/hook/ant-config';
 import { getScreeningList } from '@/api/screen';
+import { FormItemOptions } from './form-item';
 
+export const TableListCtx = createContext<{ ref?: any }>({});
 const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ScreenListItem>();
   const [createModalVisible, handleModalVisible] = useState(false);
   const [textModalVisible, setTextModalVisible] = useState(false); // 筛查内容visible
+  const [planModalData, setPlanModalData] = useState<API.ModalDataType>({
+    title: '',
+    visible: false,
+    currentRow: {},
+  }); // 创建筛查计划信息
+
+  const [searchForm, setSearchForm] = useState({}); // 搜索表单项
   const [textHtml, setTextHtml] = useState('');
-  const ref = useRef<ActionType>();
+  const tableRef = useRef<ActionType>();
+  const ref = useRef<ProFormInstance>();
 
   const onShow = (dom: any) => {
     setTextHtml(escape2Html(dom));
     setTextModalVisible(true);
+  };
+
+  /**
+   * @desc 搜索
+   */
+  const onSearch = () => {
+    const formVal = ref?.current?.getFieldsFormatValue?.();
+    setSearchForm(deleteRedundantData({ ...formVal, [formVal?.select]: formVal?.input }));
+    tableRef?.current?.reloadAndRest?.();
+  };
+
+  /**
+   * @desc 重置
+   */
+  const onReset = () => {
+    setSearchForm({});
+    ref?.current?.resetFields();
+    tableRef?.current?.reloadAndRest?.();
+  };
+
+  /**
+   * @desc 创建/编辑筛查计划
+   */
+  const onCreate = (title: string = '创建筛查计划', row: API.ScreenListItem = {}) => {
+    setPlanModalData({ visible: true, currentRow: row, title });
+  };
+
+  /**
+   * @desc 关闭筛查计划弹窗
+   */
+  const onPlanCancel = (refresh?: boolean) => {
+    setPlanModalData((s: API.ModalDataType) => ({ ...s, visible: false }));
+    console.log('refresh', refresh);
   };
 
   const columns: ProColumns<API.ScreenListItem>[] = [
@@ -69,45 +117,61 @@ const TableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<API.ScreenListItem, API.PageParams>
-        rowKey="planId"
-        search={false}
-        pagination={{ pageSize: 10 }}
-        options={false}
-        actionRef={ref}
-        columnEmptyText={EMPTY}
-        toolBarRender={() => [<p className={styles.tips}>数据统计时间：当天的凌晨00：00</p>]}
-        request={async (params) => {
-          const datas = await getScreeningList({
-            current: params.current,
-            size: params.pageSize,
-          });
-          return {
-            data: datas.data.records,
-            success: true,
-            total: datas.data.total,
-          };
+      <TableListCtx.Provider
+        value={{
+          ref,
         }}
-        columns={columns}
-        scroll={{
-          x: '100vw',
-        }}
-        columnsStateMap={{
-          name: {
-            fixed: 'left',
-          },
-          option: {
-            fixed: 'right',
-          },
-        }}
-      />
+      >
+        <Card className="pro-form-card">
+          <ProForm layout="horizontal" formRef={ref} submitter={false}>
+            <DynamicForm {...FormItemOptions} onSearch={onSearch} onReset={onReset} />
+          </ProForm>
+        </Card>
+        <ProTable<API.ScreenListItem, API.PageParams>
+          rowKey="planId"
+          search={false}
+          pagination={{ pageSize: 10 }}
+          options={false}
+          actionRef={tableRef}
+          columnEmptyText={EMPTY}
+          toolBarRender={() => [
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => onCreate()}>
+              创建
+            </Button>,
+          ]}
+          request={async (params) => {
+            const datas = await getScreeningList({
+              ...searchForm,
+              current: params.current,
+              size: params.pageSize,
+            });
+            return {
+              data: datas.data.records,
+              success: true,
+              total: datas.data.total,
+            };
+          }}
+          columns={columns}
+          scroll={{
+            x: '100vw',
+          }}
+          columnsStateMap={{
+            name: {
+              fixed: 'left',
+            },
+            option: {
+              fixed: 'right',
+            },
+          }}
+        />
+      </TableListCtx.Provider>
       <AddModal
         title="打印告知书/二维码"
         visible={createModalVisible}
         currentRow={currentRow}
-        onCancel={(flag) => {
+        onCancel={(flag?: boolean) => {
           handleModalVisible(false);
-          flag && ref?.current?.reload();
+          flag && tableRef?.current?.reload();
         }}
       />
       <Modal
@@ -120,6 +184,7 @@ const TableList: React.FC = () => {
       >
         <div dangerouslySetInnerHTML={{ __html: textHtml }} className={styles.content} />
       </Modal>
+      <PlanModal {...planModalData} onCancel={onPlanCancel} />
     </PageContainer>
   );
 };

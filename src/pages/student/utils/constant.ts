@@ -2,6 +2,7 @@ import { SEXOPTION } from '@/utils/constant';
 import { isPhoneNum86, isIdCard } from '@vistel/vistel-utils/lib/validator';
 import { getNationOption } from '@/hook/district';
 import { isPassport } from '@/utils/common';
+import { IDENTITYINFORMATIONOPTIONS } from '@/utils/form-constant';
 
 const nationArr = await getNationOption();
 type StudentFormOptionsParmas = (params: any) => void;
@@ -96,10 +97,7 @@ export const studentFormOptions = (
       inputName: 'inputValue',
       showLabel: true,
       selectInitial: ref?.current?.getFieldValue('passport') ? 'passport' : 'idCard',
-      selectOption: [
-        { label: '身份证', value: 'idCard' },
-        { label: '护照', value: 'passport' },
-      ],
+      valueEnum: IDENTITYINFORMATIONOPTIONS,
       required: true,
       rules: [
         {

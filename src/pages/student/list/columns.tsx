@@ -45,11 +45,6 @@ export const listColumns: ProColumns<API.StudentListItem>[] = [
       ) : (
         EMPTY
       ),
-    // valueType: 'select',
-    // fieldProps: {
-    //   options: MYOPIAWARNSELECTOPTION,
-    // },
-    // order: 1,
   },
   {
     title: '筛查次数',

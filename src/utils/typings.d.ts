@@ -1,4 +1,5 @@
 declare namespace API {
+  import type { ReactNode } from 'react';
   import type { Rule } from 'antd/lib/form';
   import type { FormLayout } from 'antd/lib/form/Form';
 
@@ -20,7 +21,7 @@ declare namespace API {
     accessToken: string;
     refreshToken: string;
     expiresIn: number;
-    tokenInfo: unknown;
+    tokenInfo: TokenInfo;
   };
 
   // 分页
@@ -59,15 +60,16 @@ declare namespace API {
     list: string;
     col?: Record<string, any>;
     show?: boolean;
+    slot?: ReactNode; // 插槽
     rules?: Rule[];
+    valueEnum?: Record<string, any>;
     required?: boolean;
     showLabel?: boolean; // 是否显示label
     fieldProps?: Record<string, any>; // 透传的属性 pro
-    fieldNames?: Record<string, any>;
+    fieldNames?: FieldNamesType;
     selectWidth?: number;
     event?: string; // 执行事件
     selectName?: string; // inputGroup select
-    selectOption?: any[]; // select option选项
     selectInitial?: string; // inputGroup select initialValue
     inputName?: string; // inputGroup input
     selectChange?: () => void; // select change 事件
@@ -77,7 +79,7 @@ declare namespace API {
   //  JSON表单的prop类型
   type PropsType = {
     filterList: any[];
-    listTypeInfo: Record<string, any[]>; // Record<key, value>
+    listTypeInfo?: Record<string, any[]>; // Record<key, value>
     gutter?: number;
     isNeedBtn?: boolean; // 是否需要Btn
     labelWidth?: number;
@@ -90,4 +92,10 @@ declare namespace API {
 
   // 通知栏
   type NoticeIconItemType = 'info' | 'notice';
+
+  type FieldNamesType = {
+    label: string;
+    value: string;
+    children?: string;
+  };
 }

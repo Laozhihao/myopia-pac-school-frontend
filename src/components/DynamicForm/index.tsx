@@ -3,23 +3,17 @@ import {
   ProFormRadio,
   ProFormDatePicker,
   ProFormTextArea,
+  ProFormSelect,
 } from '@ant-design/pro-form';
-import { Row, Col, Form, Cascader, Select, Button } from 'antd';
-import { useEffect, useState } from 'react';
+import { Row, Col, Form, Cascader, Button } from 'antd';
+import React, { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { getPopupContainer } from '@/hook/ant-config';
 import { defaultColConfig } from '@/utils/config-constant';
 import { SearchOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import { InputGroup } from './input-group';
-
-const { Option } = Select;
-
-const defaultFieldNames = {
-  label: 'label',
-  value: 'value',
-  children: 'child',
-};
+import { getOptions } from '@/utils/common';
 
 // 默认按钮配置类型
 type FormButtonType = {
@@ -53,28 +47,20 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
   // 过滤表单显示 增加show 字段防止后续可能需要权限显示
   useEffect(() => {
     const arr = props.filterList.filter(
-      (item) => !item.hasOwnProperty('show') || (item.hasOwnProperty('show') && item.show),
+      (item: API.FilterListType) =>
+        !item.hasOwnProperty('show') || (item.hasOwnProperty('show') && item.show),
     );
     setFormList(arr);
   }, []);
 
   // 表单种类
   const FormTemp = {
-    input: ({
-      label,
-      value,
-      rules,
-      tooltip,
-      required,
-      fieldProps,
-      showLabel,
-    }: API.FilterListType) => (
+    input: ({ label, value, rules, tooltip, fieldProps, showLabel }: API.FilterListType) => (
       <ProFormText
         name={value}
         label={showLabel ? label : ''}
         tooltip={tooltip}
         rules={rules}
-        required={required}
         placeholder={`请输入${label}`}
         fieldProps={fieldProps}
       />
@@ -82,16 +68,25 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
 
     // inputGroup
     inputGroup: (item: API.FilterListType & { bottom?: number; onPressEnter?: () => void }) => (
-      <InputGroup {...item} onPressEnter={props[item?.event || 'onSearch']} />
+      <InputGroup
+        {...item}
+        valueEnum={item?.valueEnum}
+        selectOption={
+          item?.valueEnum
+            ? undefined
+            : getOptions(props?.listTypeInfo?.[item?.list], item?.fieldNames)
+        }
+        onPressEnter={props[item?.event || 'onSearch']}
+      />
     ),
 
     // 输入文本框
-    textArea: ({ label, value, fieldProps, required, showLabel }: API.FilterListType) => (
+    textArea: ({ label, value, fieldProps, rules, showLabel }: API.FilterListType) => (
       <ProFormTextArea
         label={showLabel ? label : ''}
         name={value}
         fieldProps={fieldProps}
-        required={required}
+        rules={rules}
       />
     ),
 
@@ -101,26 +96,28 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
       value,
       list,
       rules,
-      required,
+      fieldProps,
       showLabel,
-      fieldNames = defaultFieldNames,
+      valueEnum,
+      fieldNames,
     }: API.FilterListType) => (
-      <Form.Item label={showLabel ? label : ''} rules={rules} name={value} required={required}>
-        <Select placeholder={`请选择${label}`} getPopupContainer={getPopupContainer}>
-          {props.listTypeInfo[list].map((item) => (
-            <Option value={item[fieldNames?.value]} key={item[fieldNames?.value]}>
-              {item[fieldNames?.label]}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item>
+      <ProFormSelect
+        label={showLabel ? label : ''}
+        placeholder={`请选择${label}`}
+        name={value}
+        fieldProps={fieldProps}
+        rules={rules}
+        valueEnum={valueEnum}
+        options={valueEnum ? undefined : getOptions(props?.listTypeInfo?.[list] ?? [], fieldNames)}
+      />
     ),
 
     // 级联
     cascader: ({ label, value, list, rules, fieldNames, showLabel }: API.FilterListType) => (
       <Form.Item label={showLabel ? label : ''} rules={rules} name={value}>
         <Cascader
-          options={props.listTypeInfo[list]}
+          options={props?.listTypeInfo?.[list] ?? []}
+          changeOnSelect
           placeholder={`请选择${label}`}
           fieldNames={fieldNames}
           getPopupContainer={getPopupContainer}
@@ -129,24 +126,31 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
     ),
 
     // 单选框
-    radio: ({ label, rules, list, value, required, showLabel }: API.FilterListType) => (
+    radio: ({
+      label,
+      rules,
+      list,
+      value,
+      showLabel,
+      fieldProps,
+      fieldNames,
+    }: API.FilterListType) => (
       <ProFormRadio.Group
         label={showLabel ? label : ''}
         name={value}
         rules={rules}
-        required={required}
-        options={props.listTypeInfo[list]}
+        fieldProps={fieldProps}
+        options={getOptions(props?.listTypeInfo?.[list] ?? [], fieldNames)}
       />
     ),
 
     // 时间选择器
-    datePicker: ({ label, rules, value, required, showLabel, fieldProps }: API.FilterListType) => (
+    datePicker: ({ label, rules, value, showLabel, fieldProps }: API.FilterListType) => (
       <ProFormDatePicker
         width="md"
         name={value}
         label={showLabel ? label : ''}
         rules={rules}
-        required={required}
         fieldProps={{ ...fieldProps, getPopupContainer }}
       />
     ),
@@ -157,7 +161,7 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
       <div className={styles.item}>
         {formlist.map((item) => (
           <Col key={item.value} {...(item?.col ?? defaultColConfig)}>
-            {FormTemp[item.type](item)}
+            {item.slot ?? FormTemp[item.type](item)}
           </Col>
         ))}
         {props?.children}

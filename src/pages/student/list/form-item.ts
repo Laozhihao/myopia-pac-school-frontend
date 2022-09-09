@@ -1,4 +1,5 @@
-import { STUDENTSELECTOPTIONS, MYOPIAWARNSELECTOPTION } from '@/utils/constant';
+import { MYOPIAWARNSELECTOPTION } from '@/utils/constant';
+import { STUDENTSELECTOPTIONS } from '@/utils/form-constant';
 
 export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'> = {
   filterList: [
@@ -6,7 +7,7 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
       type: 'inputGroup',
       selectInitial: 'name',
       value: 'inputKey',
-      selectOption: STUDENTSELECTOPTIONS,
+      valueEnum: STUDENTSELECTOPTIONS,
     },
     {
       label: '年级班级',

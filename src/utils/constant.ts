@@ -46,12 +46,6 @@ export const SCREENSTATUS = {
   2: '已结束',
 };
 
-export const STUDENTSELECTOPTIONS = [
-  { value: 'sno', label: '学号' },
-  { value: 'name', label: '姓名' },
-  { value: 'idCardOrPassportLike', label: '身份证/护照号' },
-];
-
 // 性别 （pro表格）
 export const TABLESEXOPTION = {
   0: '男',

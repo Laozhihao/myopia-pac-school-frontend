@@ -21,9 +21,8 @@ export default [
     name: '视力筛查',
     icon: 'eye',
     path: '/screening',
-    hideChildrenInMenu: true,
     routes: [
-      { path: '/screening', component: './screening/play' },
+      { path: '/screening/play', component: './screening/play', name: '筛查计划' },
       { path: '/screening/result', component: './screening/result', name: '筛查结果' },
     ],
   },

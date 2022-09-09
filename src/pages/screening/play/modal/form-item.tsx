@@ -1,6 +1,7 @@
 import type { CheckboxOptionType } from 'antd';
 import { Checkbox, Form } from 'antd';
 import { defaultRulesConfig } from '@/utils/common';
+import styles from './plan.less';
 
 export const FormItemOptions = (studentOption: (string | CheckboxOptionType)[]) => ({
   filterList: [
@@ -38,10 +39,12 @@ export const FormItemOptions = (studentOption: (string | CheckboxOptionType)[]) 
           {Array.isArray(studentOption) && studentOption?.length ? (
             <Checkbox.Group options={studentOption} />
           ) : (
-            <div>
-              <p>
-                暂无年级数据，请前去学校管理中进行年级班级的设置 <span>年级班级设置</span>
+            <div className={styles.tip}>
+              <p className="secondary_text">
+                暂无年级数据，请前去学校管理中进行年级班级的设置{' '}
+                <span className={styles.grade_text}>年级班级设置</span>
               </p>
+              <p className={styles.total_part}>合计： XXXXXXXXX人</p>
             </div>
           )}
         </Form.Item>

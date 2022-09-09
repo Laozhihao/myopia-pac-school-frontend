@@ -22,7 +22,19 @@ export default [
     icon: 'eye',
     path: '/screening',
     routes: [
-      { path: '/screening/play', component: './screening/play', name: '筛查计划' },
+      {
+        path: '/screening/play',
+        component: './screening/play',
+        name: '筛查计划',
+        hideChildrenInMenu: true,
+        routes: [
+          {
+            name: '筛查学生列表',
+            path: '/screening/play/student',
+            component: './screening/play/student',
+          },
+        ],
+      },
       { path: '/screening/result', component: './screening/result', name: '筛查结果' },
     ],
   },

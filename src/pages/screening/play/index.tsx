@@ -1,6 +1,7 @@
 import React, { useState, useRef, createContext } from 'react';
-import { history } from 'umi';
-import { Modal, Button, Tooltip, Card } from 'antd';
+import { Modal, Button, Card } from 'antd';
+import DynamicButtonGroup from '@/components/DynamicButtonGroup';
+import SwitchableButton from '@/components/SwitchableButton';
 import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -80,36 +81,41 @@ const TableList: React.FC = () => {
       valueType: 'option',
       render: (_, record) => {
         return [
-          <a
-            key="print"
-            onClick={() => {
-              handleModalVisible(true);
-              setCurrentRow(record);
-            }}
-          >
-            打印二维码/告知书
-          </a>,
-
-          record?.schoolStatisticId ? (
-            <Button
-              type="link"
-              size="small"
-              key="result"
-              onClick={() =>
-                history.push(
-                  `/screening/result/?id=${record?.schoolStatisticId}&screeningPlanId=${record?.planId}`,
-                )
-              }
+          <DynamicButtonGroup key="operator">
+            <SwitchableButton
+              key="student"
+              icon="icon-a-Group120"
+              href={'/#/screening/play/student'}
+            >
+              筛查学生列表
+            </SwitchableButton>
+            <SwitchableButton
+              key="print"
+              onClick={() => {
+                handleModalVisible(true);
+                setCurrentRow(record);
+              }}
+              icon="icon-PrinterCode"
+            >
+              打印二维码/告知书
+            </SwitchableButton>
+            <SwitchableButton
+              key="manage"
+              href={`/screening/result/?id=${record?.schoolStatisticId}&screeningPlanId=${record?.planId}`}
+              icon="icon-a-Group120"
+              disabled={!record?.schoolStatisticId}
+              tooltip={!record?.schoolStatisticId ? '当前没有筛查结果' : ''}
             >
               筛查结果
-            </Button>
-          ) : (
-            <Tooltip title="当前没有筛查结果" key="tooltip">
-              <Button disabled type="link" size="small">
-                筛查结果
-              </Button>
-            </Tooltip>
-          ),
+            </SwitchableButton>
+            {/* icon 替换 */}
+            <SwitchableButton key="student" icon="icon-a-Group120">
+              数据上交
+            </SwitchableButton>
+            <SwitchableButton key="student" icon="icon-a-Group120">
+              学校问卷
+            </SwitchableButton>
+          </DynamicButtonGroup>,
         ];
       },
     },

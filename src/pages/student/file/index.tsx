@@ -277,7 +277,8 @@ const FileList: React.FC = () => {
                 const datas = studentId ? await getStudentScreen(studentId as string) : undefined;
                 return {
                   data:
-                    datas?.data.records.filter((item: object) => !item.screeningType && item) || [],
+                    datas?.data.records.filter((item: object) => !item['screeningType'] && item) ||
+                    [],
                   success: true,
                   total: datas?.data.total || 0,
                 };

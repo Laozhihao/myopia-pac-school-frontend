@@ -252,8 +252,10 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   };
 
   // 搜索过滤
-  const filterOption = (inputValue: string, option: OptionType) =>
-    option.props.children.indexOf(inputValue) >= 0;
+  const filterOption = (
+    inputValue: string,
+    option: OptionType & { props: { children: string[] } },
+  ) => option.props.children.indexOf(inputValue) >= 0;
 
   // 学生变化
   const studentChange = async (value: any[]) => {

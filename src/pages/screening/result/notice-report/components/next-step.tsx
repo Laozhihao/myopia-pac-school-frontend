@@ -21,7 +21,7 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
   const { schoolName } = ids;
 
   const [studentList, setStudentList] = useState([]);
-  const [studentIds, setStudentIds] = useState([]);
+  const [studentIds, setStudentIds] = useState<number[]>([]);
   const [gradeList, setGradeList] = useState([]);
   const [currentGrade, setCurrentGrade] = useState('');
   const [currentStuNames, setCurrentStuNames] = useState('');

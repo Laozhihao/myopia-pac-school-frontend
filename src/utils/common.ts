@@ -158,3 +158,11 @@ export const defaultRulesConfig = (label: string): Rule[] => {
     },
   ];
 };
+
+/** @desc 获取真实的域名地址
+ * @param {string} path 路径
+ */
+export function getCorrectPath(path: string) {
+  // 本地是一个 / ，线上包含二级域名 /school/
+  return `${location.pathname}${path}`;
+}

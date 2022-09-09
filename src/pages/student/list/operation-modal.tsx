@@ -5,6 +5,7 @@ import { CloudUploadOutlined } from '@ant-design/icons';
 import { ExportModal } from '@/pages/components/export-modal';
 import React, { useState } from 'react';
 import type { FormInstance } from 'antd/es/form';
+import { getCorrectPath } from '@/utils/common';
 import { exportStudent, importStudent } from '@/api/student';
 import { useModel } from 'umi';
 import { getPopupContainer, modalConfig } from '@/hook/ant-config';
@@ -97,7 +98,10 @@ export const OperationModal: React.FC<
       <p className={styles.explain}>说明：请先下载筛查学生数据模板表，按照模板填写后，再上传</p>
       <p className={styles.modular}>
         模板：
-        <span className={styles.load_font} onClick={() => window.open('/excel/导入学生表.xlsx')}>
+        <span
+          className={styles.load_font}
+          onClick={() => window.open(getCorrectPath('excel/导入学生表.xlsx'))}
+        >
           学生数据表模板.xls，点击下载
         </span>
       </p>

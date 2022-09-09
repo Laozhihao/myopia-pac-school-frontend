@@ -86,15 +86,6 @@ export const request: RequestConfig = {
   middlewares: [],
   requestInterceptors: [
     (url, options) => {
-      // 请求区域文件特殊处理去掉/api
-      if (url.endsWith('/data/district.json')) {
-        return {
-          url: `${
-            process.env.REACT_APP_RUNTIME === 'production' ? '/school' : ''
-          }/data/district.json`,
-          options,
-        };
-      }
       const ignorePages = ['login'];
       if (ignorePages.find((item) => url.indexOf(item) > -1)) {
         return { url, options };

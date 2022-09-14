@@ -1,4 +1,4 @@
-import React, { useState, useRef, createContext } from 'react';
+import React, { useState, useRef } from 'react';
 import { Modal, Button, Card } from 'antd';
 import DynamicButtonGroup from '@/components/DynamicButtonGroup';
 import SwitchableButton from '@/components/SwitchableButton';
@@ -18,8 +18,8 @@ import { EMPTY } from '@/utils/constant';
 import { modalConfig } from '@/hook/ant-config';
 import { getScreeningList } from '@/api/screen';
 import { FormItemOptions } from './form-item';
+import { TableListCtx } from '@/hook/ant-config';
 
-export const TableListCtx = createContext<{ ref?: any }>({});
 const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ScreenListItem>();
   const [createModalVisible, handleModalVisible] = useState(false);
@@ -190,7 +190,7 @@ const TableList: React.FC = () => {
       >
         <div dangerouslySetInnerHTML={{ __html: textHtml }} className={styles.content} />
       </Modal>
-      <PlanModal {...planModalData} onCancel={onPlanCancel} />
+      <PlanModal {...planModalData} onCancel={onPlanCancel} option={[]} />
     </PageContainer>
   );
 };

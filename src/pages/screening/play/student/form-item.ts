@@ -1,5 +1,4 @@
-import { MYOPIAWARNSELECTOPTION } from '@/utils/constant';
-import { STUDENTSELECTOPTIONS } from '@/utils/form-constant';
+import { SCREENINGSTUDENTOPTIONS } from '@/utils/form-constant';
 
 export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'> = {
   filterList: [
@@ -7,7 +6,7 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
       type: 'inputGroup',
       selectInitial: 'name',
       value: 'inputKey',
-      valueEnum: STUDENTSELECTOPTIONS,
+      valueEnum: SCREENINGSTUDENTOPTIONS,
     },
     {
       label: '年级班级',
@@ -16,15 +15,8 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
       list: 'gradeOptions',
       fieldNames: { label: 'name', value: 'id', children: 'child' },
     },
-    {
-      label: '视力预警',
-      type: 'select',
-      value: 'visionLabel',
-      list: 'visionLabelOptions',
-    },
   ],
   listTypeInfo: {
     gradeOptions: [], // 年级班级
-    visionLabelOptions: MYOPIAWARNSELECTOPTION, // 视力预警
   },
 };

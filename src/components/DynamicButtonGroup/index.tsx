@@ -3,7 +3,7 @@ import { Dropdown, Menu, Space } from 'antd';
 import SwitchableButton from '../SwitchableButton';
 
 interface DynamicButtonGroupProps {
-  children: React.ReactNode[];
+  children: React.ReactNode;
 }
 interface MoreTypeProps {
   isMoreType: boolean;

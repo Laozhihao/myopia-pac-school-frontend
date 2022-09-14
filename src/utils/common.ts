@@ -143,12 +143,15 @@ export const deleteRedundantData = (data: API.ObjectType, arr: string[] = ['sele
  * @param fieldNames  组件库 select 不支持fieldNames 所以传一个对象自行处理
  */
 
-export const getOptions = (list?: any[], fieldNames?: API.FieldNamesType) =>
-  Array.isArray(list) && list.length
+export const getOptions = (
+  list: API.ObjectType | any[],
+  fieldNames?: API.FieldNamesType | undefined,
+) =>
+  Array.isArray(list)
     ? fieldNames
       ? list.map((item) => ({ label: item?.[fieldNames.label], value: item?.[fieldNames.value] }))
       : list
-    : [];
+    : Object.keys(list).map((ele) => ({ label: list[ele], value: ele }));
 
 export const defaultRulesConfig = (label: string): Rule[] => {
   return [
@@ -165,4 +168,19 @@ export const defaultRulesConfig = (label: string): Rule[] => {
 export function getCorrectPath(path: string) {
   // 本地是一个 / ，线上包含二级域名 /school/
   return `${location.pathname}${path}`;
+}
+
+/**
+ * @desc 判断是否非空
+ * @param data 数据
+ */
+export function isNotEmpty(data: any): boolean {
+  const typeObj = {
+    array: () => !!data.length,
+    object: () => !!Object.keys(data).length,
+    string: () => !!data.length,
+    boolean: () => data,
+    number: () => true,
+  };
+  return typeObj[typeof data] ? typeObj[typeof data]() : false;
 }

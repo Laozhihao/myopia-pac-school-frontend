@@ -1,3 +1,5 @@
+import { createContext } from 'react';
+
 export const getPopupContainer = (triggerNode: any) => {
   return triggerNode.parentNode || document.body;
 };
@@ -9,3 +11,6 @@ export const modalConfig = {
     overflow: 'auto',
   },
 };
+
+// input group 声明
+export const TableListCtx = createContext<{ ref?: any }>({});

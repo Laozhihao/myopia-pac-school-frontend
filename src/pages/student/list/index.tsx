@@ -1,6 +1,6 @@
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, message, Card } from 'antd';
-import React, { useState, useRef, useMemo, createContext } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import ProForm from '@ant-design/pro-form';
@@ -18,8 +18,7 @@ import SwitchableButton from '@/components/SwitchableButton';
 import { FormItemOptions } from './form-item';
 import DynamicButtonGroup from '@/components/DynamicButtonGroup';
 import { convertData } from '@/utils/common';
-
-export const TableListCtx = createContext<{ ref?: any }>({});
+import { TableListCtx } from '@/hook/ant-config';
 
 const TableList: React.FC = () => {
   const [searchForm, setSearchForm] = useState({}); // 搜索表单项

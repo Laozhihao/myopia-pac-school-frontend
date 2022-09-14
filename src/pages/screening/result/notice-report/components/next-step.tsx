@@ -100,7 +100,7 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
     setCurrentStuNames(rtrim(str));
   };
   // 搜索过滤
-  const filterOption = (inputValue: string, option) =>
+  const filterOption = (inputValue: string, option: { props: { children: string | string[] } }) =>
     option.props.children.indexOf(inputValue) >= 0;
 
   return (

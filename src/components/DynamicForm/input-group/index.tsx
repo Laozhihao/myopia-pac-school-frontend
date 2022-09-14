@@ -1,8 +1,8 @@
-import { TableListCtx } from '@/pages/student/list';
 import { Input, Form } from 'antd';
 import { ProFormSelect } from '@ant-design/pro-form';
 import { useContext, useState } from 'react';
 import styles from './index.less';
+import { TableListCtx } from '@/hook/ant-config';
 
 type InputGroupType = {
   bottom?: number;

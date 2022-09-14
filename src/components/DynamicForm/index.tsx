@@ -74,7 +74,7 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
         selectOption={
           item?.valueEnum
             ? undefined
-            : getOptions(props?.listTypeInfo?.[item?.list], item?.fieldNames)
+            : getOptions(props?.listTypeInfo?.[item?.list] ?? [], item?.fieldNames)
         }
         onPressEnter={props[item?.event || 'onSearch']}
       />
@@ -147,11 +147,14 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
     // 时间选择器
     datePicker: ({ label, rules, value, showLabel, fieldProps }: API.FilterListType) => (
       <ProFormDatePicker
-        width="md"
         name={value}
         label={showLabel ? label : ''}
         rules={rules}
-        fieldProps={{ ...fieldProps, getPopupContainer }}
+        fieldProps={{
+          style: { width: '100%' },
+          getPopupContainer,
+          ...fieldProps,
+        }}
       />
     ),
   };

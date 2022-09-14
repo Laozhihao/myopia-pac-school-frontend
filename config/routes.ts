@@ -26,14 +26,18 @@ export default [
         path: '/screening/play',
         component: './screening/play',
         name: '筛查计划',
-        hideChildrenInMenu: true,
-        routes: [
-          {
-            name: '筛查学生列表',
-            path: '/screening/play/student',
-            component: './screening/play/student',
-          },
-        ],
+      },
+      {
+        name: '筛查学生列表',
+        path: '/screening/play/student',
+        component: './screening/play/student',
+        hideInMenu: true,
+      },
+      {
+        name: '学生档案',
+        path: '/screening/play/archives',
+        component: './screening/play/archives',
+        hideInMenu: true,
       },
       { path: '/screening/result', component: './screening/result', name: '筛查结果' },
     ],

@@ -75,7 +75,7 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
     return names;
   };
   // 年级班级 变化
-  const gradeChange = async (value: any[], option) => {
+  const gradeChange = async (value: any[], option: any[]) => {
     const gradeId = value[0];
     const classId = value[1].toString().indexOf('all') === -1 ? value[1] : '';
     const { orgId, planId, schoolId } = ids;
@@ -94,7 +94,7 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
     setCurrentStuNames('');
   };
   // 学生变化
-  const studentChange = async (value: any[], option) => {
+  const studentChange = async (value: any[], option: any[]) => {
     setStudentIds(value);
     const str = getName(option, 'key', 'children', true);
     setCurrentStuNames(rtrim(str));

@@ -62,7 +62,7 @@ const FileList: React.FC = () => {
    * @desc 新开报告
    * @param
    */
-  const openReport = (cb: Function) => {
+  const openReport = (cb: (path: string) => string) => {
     // 获取当前域名
     const { protocol, host } = location;
     const hostPath = `${protocol}//${host}/report`;
@@ -278,7 +278,7 @@ const FileList: React.FC = () => {
                 return {
                   data:
                     datas?.data.records.filter(
-                      (item: API.ObjectType) => !item['screeningType'] && item,
+                      (item: API.ObjectType) => !item.screenType && item,
                     ) || [],
                   success: true,
                   total: datas?.data.total || 0,

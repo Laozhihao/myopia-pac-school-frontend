@@ -21,7 +21,6 @@ export const TreatmentFile: React.FC = () => {
     {
       title: '操作',
       dataIndex: 'option',
-      valueType: 'option',
       render: () => {
         return [
           <DynamicButtonGroup key="operator">

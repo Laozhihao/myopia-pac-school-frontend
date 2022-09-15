@@ -3,7 +3,7 @@ import { useRequest, history } from 'umi';
 import { unreadCount } from '@/api/common';
 import NoticeIcon from './NoticeIcon';
 import styles from './index.less';
-import { NoticeRead } from '@/api/screen';
+import { NoticeRead } from '@/api/screen/plan';
 import { getToken } from '@/hook/storage';
 
 const Info = '/info-center';

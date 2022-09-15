@@ -1,6 +1,6 @@
 import { Form, Select, Cascader } from 'antd';
 import { FooterTips } from '../components/footer-tips';
-import { screeningNoticeResult, getGrades } from '@/api/screen';
+import { screeningNoticeResult, getGrades } from '@/api/screen/plan';
 import styles from './next-step.less';
 import { useState, useMemo, forwardRef } from 'react';
 import { getPopupContainer } from '@/hook/ant-config';

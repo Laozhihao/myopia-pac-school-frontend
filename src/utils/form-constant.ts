@@ -21,7 +21,6 @@ export const STUDENTSELECTOPTIONS = {
 export const SCREENINGSTUDENTOPTIONS = {
   sno: '学号',
   name: '姓名',
-  headmaster: '班主任',
 };
 
 // 筛查类型
@@ -45,3 +44,15 @@ export const SITUATIONOPTION = [
   { label: '5岁', value: 11 },
   { label: '6岁', value: 12 },
 ];
+
+// 眼健康中心
+export const EYEHEALTHYOPTION = {
+  sno: '学号',
+  name: '姓名',
+};
+
+// 机构复查
+export const INSTITUTIONALREVIEWOPTION = {
+  1: '已就诊',
+  2: '未就诊',
+};

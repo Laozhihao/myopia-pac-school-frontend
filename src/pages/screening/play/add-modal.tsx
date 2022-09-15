@@ -16,7 +16,7 @@ import {
   getScreeningQrcode,
   updateScreeningNoticeConfig,
   getScreeningPlanstudents,
-} from '@/api/screen';
+} from '@/api/screen/plan';
 import type { OptionType } from 'antd/lib/select';
 import type { RadioChangeEvent } from 'antd';
 

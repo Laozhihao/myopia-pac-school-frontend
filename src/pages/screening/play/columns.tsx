@@ -1,6 +1,6 @@
 import type { ProColumns } from '@ant-design/pro-table';
 import { formatLength } from '@/utils/common';
-import { SCREENSTATUS, DATE, EMPTY } from '@/utils/constant';
+import { SCREENSTATUS, DATE, EMPTY, RELEASESTATUS } from '@/utils/constant';
 import moment from 'moment';
 
 export const listColumns: (show: (dom: any) => void) => ProColumns<API.ScreenListItem>[] = (
@@ -28,8 +28,14 @@ export const listColumns: (show: (dom: any) => void) => ProColumns<API.ScreenLis
   },
   {
     title: '筛查状态',
-    dataIndex: 'releaseStatus',
+    dataIndex: 'screeningStatus',
     valueEnum: SCREENSTATUS,
+  },
+
+  {
+    title: '发布状态',
+    dataIndex: 'releaseStatus',
+    valueEnum: RELEASESTATUS,
   },
   {
     title: '预计筛查学生数',

@@ -17,10 +17,10 @@ import {
   exportScreeningStudent,
   exportScreeningReport,
   exportScreeningData,
-} from '@/api/screen';
+} from '@/api/screen/plan';
 import styles from './index.less';
 import { EMPTY, DATE, SCREENSTATUS, GLASSESSUGGESTTYPE, EMPTY_TEXT } from '@/utils/constant';
-import { getScreeningWarn, getScreeningGradeList, getScreeningDetail } from '@/api/screen';
+import { getScreeningWarn, getScreeningGradeList, getScreeningDetail } from '@/api/screen/plan';
 import moment from 'moment';
 import { modalConfig } from '@/hook/ant-config';
 import type { IdsType } from './notice-report/index';

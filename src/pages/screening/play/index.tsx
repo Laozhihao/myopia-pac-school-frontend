@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Modal, Button, Card } from 'antd';
+import { Modal, Button, Card, message } from 'antd';
 import DynamicButtonGroup from '@/components/DynamicButtonGroup';
 import SwitchableButton from '@/components/SwitchableButton';
 import { PlusOutlined } from '@ant-design/icons';
@@ -16,9 +16,10 @@ import { PlanModal } from './modal/plan';
 import { escape2Html, deleteRedundantData } from '@/utils/common';
 import { EMPTY } from '@/utils/constant';
 import { modalConfig } from '@/hook/ant-config';
-import { getScreeningList } from '@/api/screen';
+import { getScreeningList, deleteScreeningPlan } from '@/api/screen/plan';
 import { FormItemOptions } from './form-item';
 import { TableListCtx } from '@/hook/ant-config';
+import { deleteTableRow } from '@/hook/table';
 
 const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ScreenListItem>();
@@ -27,7 +28,7 @@ const TableList: React.FC = () => {
   const [planModalData, setPlanModalData] = useState<API.ModalDataType>({
     title: '',
     visible: false,
-    currentRow: {},
+    currentRow: undefined,
   }); // 创建筛查计划信息
 
   const [searchForm, setSearchForm] = useState({}); // 搜索表单项
@@ -61,8 +62,16 @@ const TableList: React.FC = () => {
   /**
    * @desc 创建/编辑筛查计划
    */
-  const onCreate = (title: string = '创建筛查计划', row: API.ScreenListItem = {}) => {
+  const onHandle = (title: string = '创建筛查计划', row: API.ScreenListItem = {}) => {
     setPlanModalData({ visible: true, currentRow: row, title });
+  };
+
+  const onDelete = (screeningPlanId: React.Key) => {
+    deleteTableRow('该筛查计划', async () => {
+      await deleteScreeningPlan(screeningPlanId);
+      message.success('删除成功');
+      onReset();
+    });
   };
 
   /**
@@ -70,6 +79,7 @@ const TableList: React.FC = () => {
    */
   const onPlanCancel = (refresh?: boolean) => {
     setPlanModalData((s: API.ModalDataType) => ({ ...s, visible: false }));
+    refresh && onSearch();
     console.log('refresh', refresh);
   };
 
@@ -82,39 +92,55 @@ const TableList: React.FC = () => {
       render: (_, record) => {
         return [
           <DynamicButtonGroup key="operator">
-            <SwitchableButton
-              key="student"
-              icon="icon-a-Group120"
-              href={'/#/screening/play/student'}
-            >
-              筛查学生列表
-            </SwitchableButton>
-            <SwitchableButton
-              key="print"
-              onClick={() => {
-                handleModalVisible(true);
-                setCurrentRow(record);
-              }}
-              icon="icon-PrinterCode"
-            >
-              打印二维码/告知书
-            </SwitchableButton>
-            <SwitchableButton
-              key="manage"
-              href={`/screening/result/?id=${record?.schoolStatisticId}&screeningPlanId=${record?.planId}`}
-              icon="icon-a-Group120"
-              disabled={!record?.schoolStatisticId}
-              tooltip={!record?.schoolStatisticId ? '当前没有筛查结果' : ''}
-            >
-              筛查结果
-            </SwitchableButton>
-            {/* icon 替换 */}
-            <SwitchableButton key="student" icon="icon-a-Group120">
-              数据上交
-            </SwitchableButton>
-            <SwitchableButton key="student" icon="icon-a-Group120">
-              学校问卷
-            </SwitchableButton>
+            {record.releaseStatus ? (
+              <React.Fragment>
+                <SwitchableButton
+                  key="student"
+                  icon="icon-a-Group120"
+                  href={'/#/screening/play/student'}
+                >
+                  筛查学生列表
+                </SwitchableButton>
+                <SwitchableButton
+                  key="print"
+                  onClick={() => {
+                    handleModalVisible(true);
+                    setCurrentRow(record);
+                  }}
+                  icon="icon-PrinterCode"
+                >
+                  打印二维码/告知书
+                </SwitchableButton>
+                <SwitchableButton
+                  key="manage"
+                  href={`/#/screening/play/result/?id=${record?.schoolStatisticId}&screeningPlanId=${record?.planId}`}
+                  icon="icon-a-Group120"
+                  disabled={!record?.schoolStatisticId}
+                  tooltip={!record?.schoolStatisticId ? '当前没有筛查结果' : ''}
+                >
+                  筛查结果
+                </SwitchableButton>
+                {/* icon 替换 */}
+                <SwitchableButton key="student" icon="icon-a-Group120">
+                  数据上交
+                </SwitchableButton>
+                <SwitchableButton key="student" icon="icon-a-Group120">
+                  学校问卷
+                </SwitchableButton>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <Button type="link" key="edit" onClick={() => onHandle('创建筛查计划', record)}>
+                  编辑
+                </Button>
+                <Button type="link" key="delete" onClick={() => onDelete(record?.planId!)}>
+                  删除
+                </Button>
+                <Button type="link" key="release">
+                  发布
+                </Button>
+              </React.Fragment>
+            )}
           </DynamicButtonGroup>,
         ];
       },
@@ -141,7 +167,7 @@ const TableList: React.FC = () => {
           actionRef={tableRef}
           columnEmptyText={EMPTY}
           toolBarRender={() => [
-            <Button type="primary" icon={<PlusOutlined />} onClick={() => onCreate()}>
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => onHandle()}>
               创建
             </Button>,
           ]}
@@ -190,7 +216,7 @@ const TableList: React.FC = () => {
       >
         <div dangerouslySetInnerHTML={{ __html: textHtml }} className={styles.content} />
       </Modal>
-      <PlanModal {...planModalData} onCancel={onPlanCancel} option={[]} />
+      <PlanModal {...planModalData} onCancel={onPlanCancel} />
     </PageContainer>
   );
 };

@@ -98,4 +98,9 @@ declare namespace API {
     value: string;
     children?: string;
   };
+
+  type GradeInfoType = {
+    gradeId?: React.Key;
+    gradeName?: string;
+  };
 }

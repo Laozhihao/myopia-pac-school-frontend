@@ -1,7 +1,7 @@
 import { Form, Input, Row, Col, Upload, Spin, message } from 'antd';
 import styles from './pre-step.less';
 import type { IdsType } from '../index';
-import { getReportInfo } from '@/api/screen';
+import { getReportInfo } from '@/api/screen/plan';
 import { useMemo, useState, forwardRef } from 'react';
 import UploadDefaultImg from '@/assets/images/code.png';
 import { uploadFile } from '@/api/common';

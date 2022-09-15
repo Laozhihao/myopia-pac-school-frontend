@@ -167,3 +167,26 @@ export async function getScreeningQrcode(params: API.ObjectType) {
     params,
   });
 }
+
+/** 获取筛查学生 GET /school/student/screeningStudent */
+export async function getScreeningStudent(params?: API.ObjectType) {
+  return request<API.RequestResult>('/school/student/screeningStudent', {
+    method: 'GET',
+    params,
+  });
+}
+
+/** 创建/编辑筛查计划 GET /school/vision/screening/save */
+export async function editScreeningStudent(data?: API.ObjectType) {
+  return request<API.RequestResult>('/school/vision/screening/save', {
+    method: 'POST',
+    data,
+  });
+}
+
+/** 删除筛查计划 DELETE /school/vision/screening/delete/{screeningPlanId} */
+export async function deleteScreeningPlan(screeningPlanId: React.Key) {
+  return request<API.RequestResult>(`/school/vision/screening/delete/${screeningPlanId}`, {
+    method: 'DELETE',
+  });
+}

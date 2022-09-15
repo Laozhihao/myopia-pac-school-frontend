@@ -1,5 +1,5 @@
 import type { ProColumns } from '@ant-design/pro-table';
-import { isNotEmpty } from '@/utils/common';
+import { isNotEmpty } from '@vistel/vistel-utils/lib/tool';
 import { SCREENSTATUS, EMPTY } from '@/utils/constant';
 
 // 列合并

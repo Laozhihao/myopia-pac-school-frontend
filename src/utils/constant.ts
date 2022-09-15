@@ -46,6 +46,11 @@ export const SCREENSTATUS = {
   2: '已结束',
 };
 
+export const RELEASESTATUS = {
+  0: '未发布',
+  1: '已发布',
+};
+
 // 性别 （pro表格）
 export const TABLESEXOPTION = {
   0: '男',

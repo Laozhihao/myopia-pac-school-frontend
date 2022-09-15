@@ -60,7 +60,7 @@ declare namespace API {
     notificationConfig?: Record<string, any>;
     qrCodeFileUrl?: string; // 图片url
     schoolStatisticId?: string;
-    planId?: string;
+    planId?: React.Key;
     schoolId?: string;
     title?: string;
     startTime?: string;

@@ -169,18 +169,3 @@ export function getCorrectPath(path: string) {
   // 本地是一个 / ，线上包含二级域名 /school/
   return `${location.pathname}${path}`;
 }
-
-/**
- * @desc 判断是否非空
- * @param data 数据
- */
-export function isNotEmpty(data: any): boolean {
-  const typeObj = {
-    array: () => !!data.length,
-    object: () => !!Object.keys(data).length,
-    string: () => !!data.length,
-    boolean: () => data,
-    number: () => true,
-  };
-  return typeObj[typeof data] ? typeObj[typeof data]() : false;
-}

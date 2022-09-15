@@ -15,6 +15,7 @@ import DynamicButtonGroup from '@/components/DynamicButtonGroup';
 import { convertData } from '@/utils/common';
 import { AddModal } from './add/index';
 import { TableListCtx } from '@/hook/ant-config';
+import { getschoolGrade } from '@/api/school';
 
 const TableList: React.FC = () => {
   const [searchForm, setSearchForm] = useState({}); // 搜索表单项
@@ -34,10 +35,11 @@ const TableList: React.FC = () => {
   /**
    * @desc 获取年级班级
    */
-  useMemo(() => {
+  useMemo(async () => {
+    const { data = [] } = await getschoolGrade();
     setItemOptions((s) => ({
       ...s,
-      listTypeInfo: { ...s.listTypeInfo, gradeOptions: convertData([]) },
+      listTypeInfo: { ...s.listTypeInfo, gradeOptions: convertData(data) },
     }));
   }, []);
 

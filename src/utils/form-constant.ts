@@ -26,7 +26,7 @@ export const SCREENINGSTUDENTOPTIONS = {
 // 筛查类型
 export const SCREENTYPEOPTIONS = {
   1: '自主筛查',
-  2: '协助筛查',
+  0: '协助筛查',
 };
 
 export const SITUATIONOPTION = [

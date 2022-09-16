@@ -13,13 +13,14 @@ import styles from './index.less';
 import { listColumns } from './columns';
 import { AddModal } from './add-modal';
 import { PlanModal } from './modal/plan';
+import { TimeModal } from './modal/time';
 import { escape2Html, deleteRedundantData } from '@/utils/common';
 import { EMPTY } from '@/utils/constant';
 import { modalConfig } from '@/hook/ant-config';
-import { getScreeningList, deleteScreeningPlan } from '@/api/screen/plan';
+import { getScreeningList, deleteScreeningPlan, releaseScreeningPlan } from '@/api/screen/plan';
 import { FormItemOptions } from './form-item';
 import { TableListCtx } from '@/hook/ant-config';
-import { deleteTableRow } from '@/hook/table';
+import { deleteTableRow, secondaryConfirmation } from '@/hook/table';
 
 const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ScreenListItem>();
@@ -30,6 +31,12 @@ const TableList: React.FC = () => {
     visible: false,
     currentRow: undefined,
   }); // 创建筛查计划信息
+
+  const [screeningTimeModal, setScreeningTimeModal] = useState<API.ModalDataType>({
+    title: '增加筛查时间',
+    visible: false,
+    currentRow: undefined,
+  }); // 筛查时间信息
 
   const [searchForm, setSearchForm] = useState({}); // 搜索表单项
   const [textHtml, setTextHtml] = useState('');
@@ -66,6 +73,9 @@ const TableList: React.FC = () => {
     setPlanModalData({ visible: true, currentRow: row, title });
   };
 
+  /**
+   * @desc 删除
+   */
   const onDelete = (screeningPlanId: React.Key) => {
     deleteTableRow('该筛查计划', async () => {
       await deleteScreeningPlan(screeningPlanId);
@@ -75,12 +85,29 @@ const TableList: React.FC = () => {
   };
 
   /**
+   * @desc 发布
+   */
+  const onRelease = (screeningPlanId: React.Key) => {
+    secondaryConfirmation('一经发布无法撤回或删除，你确定发布这一筛查计划吗？', async () => {
+      await releaseScreeningPlan(screeningPlanId);
+      message.success('发布成功');
+      onReset();
+    });
+  };
+
+  /**
+   * @desc 新增筛查时间
+   */
+  const onAddSreenTime = (row: API.ScreenListItem) => {
+    setScreeningTimeModal((s: API.ModalDataType) => ({ ...s, visible: true, currentRow: row }));
+  };
+
+  /**
    * @desc 关闭筛查计划弹窗
    */
-  const onPlanCancel = (refresh?: boolean) => {
-    setPlanModalData((s: API.ModalDataType) => ({ ...s, visible: false }));
+  const onCancel = (refresh?: boolean, cb?: () => void) => {
+    cb?.();
     refresh && onSearch();
-    console.log('refresh', refresh);
   };
 
   const columns: ProColumns<API.ScreenListItem>[] = [
@@ -97,9 +124,17 @@ const TableList: React.FC = () => {
                 <SwitchableButton
                   key="student"
                   icon="icon-a-Group120"
-                  href={'/#/screening/play/student'}
+                  href={`/#/screening/play/student?screeningPlanId=${record?.planId}`}
                 >
                   筛查学生列表
+                </SwitchableButton>
+
+                <SwitchableButton
+                  key="add_time"
+                  icon="icon-a-Group120"
+                  onClick={() => onAddSreenTime(record)}
+                >
+                  新增筛查时间
                 </SwitchableButton>
                 <SwitchableButton
                   key="print"
@@ -121,12 +156,12 @@ const TableList: React.FC = () => {
                   筛查结果
                 </SwitchableButton>
                 {/* icon 替换 */}
-                <SwitchableButton key="student" icon="icon-a-Group120">
+                {/* <SwitchableButton key="student" icon="icon-a-Group120">
                   数据上交
                 </SwitchableButton>
                 <SwitchableButton key="student" icon="icon-a-Group120">
                   学校问卷
-                </SwitchableButton>
+                </SwitchableButton> */}
               </React.Fragment>
             ) : (
               <React.Fragment>
@@ -136,7 +171,7 @@ const TableList: React.FC = () => {
                 <Button type="link" key="delete" onClick={() => onDelete(record?.planId!)}>
                   删除
                 </Button>
-                <Button type="link" key="release">
+                <Button type="link" key="release" onClick={() => onRelease(record?.planId!)}>
                   发布
                 </Button>
               </React.Fragment>
@@ -216,7 +251,22 @@ const TableList: React.FC = () => {
       >
         <div dangerouslySetInnerHTML={{ __html: textHtml }} className={styles.content} />
       </Modal>
-      <PlanModal {...planModalData} onCancel={onPlanCancel} />
+      <PlanModal
+        {...planModalData}
+        onCancel={(refresh?: boolean) =>
+          onCancel(refresh, () =>
+            setPlanModalData((s: API.ModalDataType) => ({ ...s, visible: false })),
+          )
+        }
+      />
+      <TimeModal
+        {...screeningTimeModal}
+        onCancel={(refresh?: boolean) =>
+          onCancel(refresh, () =>
+            setScreeningTimeModal((s: API.ModalDataType) => ({ ...s, visible: false })),
+          )
+        }
+      />
     </PageContainer>
   );
 };

@@ -23,7 +23,7 @@ const kindergartenType = 5;
 const getTypeNumShow = (record: any, type: string) =>
   record[type].map((n: any) => (record.schoolAge === kindergartenType ? `幼${n}` : n)).join('或');
 
-export const firstColumns: ProColumns<API.ScreenResultListItem>[] = [
+export const screeningColumns: ProColumns<API.ScreenResultListItem>[] = [
   {
     title: '预计筛查学生数',
     dataIndex: 'planScreeningNumbers',
@@ -41,12 +41,48 @@ export const firstColumns: ProColumns<API.ScreenResultListItem>[] = [
         : EMPTY,
   },
   {
-    title: '有效实际筛查学生数',
+    title: '纳入视力统计学生数',
     dataIndex: 'validScreeningNumbers',
   },
 ];
 
-export const secondColumns: ProColumns<API.ScreenResultListItem>[] = [
+// 幼儿园 视力情况 key 值更改
+export const childSituationColumns: ProColumns<API.ScreenResultListItem>[] = [
+  {
+    title: '视力低常（人数/占比）',
+    dataIndex: 'myopiaNumbers',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
+  },
+  {
+    title: '平均视力（左/右）',
+    dataIndex: 'myopiaLevelLight',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
+  },
+  {
+    title: '远视储备不足（人数/占比）',
+    dataIndex: 'myopiaLevelMiddle',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
+  },
+  {
+    title: '屈光参差（人数/占比）',
+    dataIndex: 'myopiaLevelHigh',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
+  },
+
+  {
+    title: '屈光不足（人数/占比）',
+    dataIndex: 'lowVisionNumbers',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.validScreeningNumbers)}`,
+  },
+];
+
+// 小学及以上 视力情况
+export const teenagersSituationColumns: ProColumns<API.ScreenResultListItem>[] = [
   {
     title: '近视（人数/占比）',
     dataIndex: 'myopiaNumbers',
@@ -89,9 +125,17 @@ export const secondColumns: ProColumns<API.ScreenResultListItem>[] = [
     renderText: (val: number, record) =>
       `${val} / ${getPercentage(val, record?.realScreeningNumbers)}`,
   },
+
+  // 夜戴角膜塑形镜 key值替换
+  {
+    title: '夜戴角膜塑形镜（人数/占比）',
+    dataIndex: 'wearingGlassesNumbers',
+    renderText: (val: number, record) =>
+      `${val} / ${getPercentage(val, record?.realScreeningNumbers)}`,
+  },
 ];
 
-export const thirdColumns: ProColumns<API.ScreenResultListItem>[] = [
+export const monitorColumns: ProColumns<API.ScreenResultListItem>[] = [
   {
     title: '加入预警学生数（人数/占比）',
     dataIndex: 'visionLabel0Numbers',
@@ -139,15 +183,9 @@ export const thirdColumns: ProColumns<API.ScreenResultListItem>[] = [
     renderText: (val: number, record) =>
       `${val} / ${getPercentage(val, record?.realScreeningNumbers)}`,
   },
-  {
-    title: '远视储备不足（人数/占比）',
-    dataIndex: 'myopiaLevelInsufficient',
-    renderText: (val: number, record) =>
-      `${val} / ${getPercentage(val, record?.realScreeningNumbers)}`,
-  },
 ];
 
-export const fourthColumns: ProColumns<API.ScreenResultListItem>[] = [
+export const abnormalColumns: ProColumns<API.ScreenResultListItem>[] = [
   {
     title: '建议就诊学生数（人数/占比）',
     dataIndex: 'treatmentAdviceNumbers',
@@ -253,7 +291,6 @@ export const warnColumns: (params: WarnColumnsType) => ProColumns<API.ScreenWarn
     dataIndex: 'height',
     search: false,
     render: (_, record) => {
-      // todo 样式待调整
       return record?.height ? (
         <>
           <div>{getFixedNum(record?.height, 1)}cm</div>
@@ -276,5 +313,66 @@ export const warnColumns: (params: WarnColumnsType) => ProColumns<API.ScreenWarn
     dataIndex: 'myopiaLevel',
     search: false,
     renderText: (val?: number | string) => (val && val > 2 ? '与黑板相距5-6米' : EMPTY_TEXT),
+  },
+];
+
+export const diseasesColumns1: ProColumns<API.ScreenResultListItem>[] = [
+  {
+    title: '龋失补牙数',
+    dataIndex: 'a',
+  },
+  {
+    title: '龋均',
+    dataIndex: 'reviewNumbers',
+  },
+  {
+    title: '龋患（人数/占比）',
+    dataIndex: 'bindMpNumbers',
+  },
+
+  {
+    title: '龋失（人数/占比）',
+    dataIndex: 'ad',
+  },
+  {
+    title: '龋补（人数/占比）',
+    dataIndex: 'reviewNumbers',
+  },
+  {
+    title: '龋患（失、补）（人数/占比）',
+    dataIndex: 'bindMpNumbers',
+  },
+
+  {
+    title: '龋患(失、补）构成比（牙数/占比）',
+    dataIndex: 'bindMpNumbers',
+  },
+];
+
+export const diseasesColumns2: ProColumns<API.ScreenResultListItem>[] = [
+  {
+    title: '脊柱弯曲',
+    dataIndex: 'a',
+  },
+  {
+    title: '血压偏高',
+    dataIndex: 'reviewNumbers',
+  },
+  {
+    title: '超重',
+    dataIndex: 'bindMpNumbers',
+  },
+
+  {
+    title: '肥胖',
+    dataIndex: 'ad',
+  },
+  {
+    title: '营养不良',
+    dataIndex: 'reviewNumbers',
+  },
+  {
+    title: '生长迟缓',
+    dataIndex: 'bindMpNumbers',
   },
 ];

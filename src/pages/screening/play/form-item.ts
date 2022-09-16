@@ -11,7 +11,7 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList'> = {
     {
       label: '筛查类型',
       type: 'select',
-      value: 'screeningType',
+      value: 'screeningBizType',
       valueEnum: SCREENTYPEOPTIONS,
     },
   ],

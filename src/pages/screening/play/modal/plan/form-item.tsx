@@ -1,10 +1,7 @@
 import { Checkbox, Form } from 'antd';
 import { defaultRulesConfig } from '@/utils/common';
-import styles from './plan.less';
+import styles from './index.less';
 import { ProFormDateRangePicker } from '@ant-design/pro-form';
-// import React, { useState } from 'react';
-
-// const [selectGradeOption, setSelectGradeOption] = useState<React.Key[]>([]);
 
 export const FormItemOptions = (
   studentOption: (API.GradeInfoType & { studentNum?: number })[],
@@ -32,6 +29,7 @@ export const FormItemOptions = (
       slot: (
         <div>
           <ProFormDateRangePicker
+            className={styles.screen_item}
             name="time"
             label="筛查时间段"
             rules={[{ type: 'array', required: true, message: '请选择筛查时间段' }]}

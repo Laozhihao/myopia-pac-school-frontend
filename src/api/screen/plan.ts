@@ -190,3 +190,18 @@ export async function deleteScreeningPlan(screeningPlanId: React.Key) {
     method: 'DELETE',
   });
 }
+
+/** 发布筛查计划 PUT /school/vision/screening/release/{screeningPlanId} */
+export async function releaseScreeningPlan(screeningPlanId: React.Key) {
+  return request<API.RequestResult>(`/school/vision/screening/release/${screeningPlanId}`, {
+    method: 'PUT',
+  });
+}
+
+/** 新增筛查时间 POST /school/vision/screening/increased/screeningTime */
+export async function increasedScreeningTime(data?: API.ObjectType) {
+  return request<API.RequestResult>('/school/vision/screening/increased/screeningTime', {
+    method: 'POST',
+    data,
+  });
+}

@@ -18,6 +18,22 @@ export const deleteTableRow = (message: string, callback: (() => void) | undefin
 };
 
 /**
+ * @desc 二次确认框
+ * @param message 文本
+ * @param callback 确认回调
+ */
+export const secondaryConfirmation = (message: string, callback: (() => void) | undefined) => {
+  const { confirm } = Modal;
+  confirm({
+    title: message,
+    centered: true,
+    onOk() {
+      callback?.();
+    },
+  });
+};
+
+/**
  * @desc 身份证获取出生日期
  * @param idCard 删除文本
  */

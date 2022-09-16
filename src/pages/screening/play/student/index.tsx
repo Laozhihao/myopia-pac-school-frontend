@@ -7,15 +7,16 @@ import DynamicForm from '@/components/DynamicForm';
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { listColumns } from './columns';
-import { getStudentList } from '@/api/student';
 import { EMPTY } from '@/utils/constant';
 import SwitchableButton from '@/components/SwitchableButton';
 import { FormItemOptions } from './form-item';
 import DynamicButtonGroup from '@/components/DynamicButtonGroup';
 import { convertData } from '@/utils/common';
-import { AddModal } from './add/index';
+import { AddModal } from './modal/add/index';
 import { TableListCtx } from '@/hook/ant-config';
 import { getschoolGrade } from '@/api/school';
+import { getScreeningStudentList } from '@/api/screen/student';
+import { history } from 'umi';
 
 const TableList: React.FC = () => {
   const [searchForm, setSearchForm] = useState({}); // 搜索表单项
@@ -31,6 +32,8 @@ const TableList: React.FC = () => {
     visible: false,
     currentRow: {},
   }); // 新增筛查
+
+  const { query: { screeningPlanId } = {} } = history.location;
 
   /**
    * @desc 获取年级班级
@@ -87,7 +90,7 @@ const TableList: React.FC = () => {
       render: () => [
         <DynamicButtonGroup key="operator">
           <SwitchableButton key="detail" icon="icon-a-Group120">
-            查看详情
+            筛查详情
           </SwitchableButton>
           <SwitchableButton key="manage" icon="icon-a-Group120" href={'/#/screening/play/archives'}>
             学生档案
@@ -110,11 +113,10 @@ const TableList: React.FC = () => {
           </ProForm>
         </Card>
         <ProTable<API.StudentListItem, API.PageParams>
-          rowKey="id"
+          rowKey="planStudentId"
           pagination={{ pageSize: 10 }}
           options={false}
           actionRef={tableRef}
-          form={{ span: 8, labelWidth: 120 }}
           columnEmptyText={EMPTY}
           search={false}
           scroll={{
@@ -128,14 +130,20 @@ const TableList: React.FC = () => {
               fixed: 'right',
             },
           }}
+          headerTitle={
+            <span style={{ color: 'rgba(0,0,0,0.45)' }}>
+              数据完整性：数据完整情况下才会对此学生进行视力相关统计分析，如视力低下情况、近视情况等
+            </span>
+          }
           toolBarRender={() => [
             <Button type="primary" key="add" onClick={onHandle}>
               新增筛查学校
             </Button>,
           ]}
           request={async (params) => {
-            const { data } = await getStudentList({
+            const { data } = await getScreeningStudentList({
               ...searchForm,
+              screeningPlanId,
               current: params.current,
               size: params.pageSize,
             });
@@ -148,7 +156,7 @@ const TableList: React.FC = () => {
           columns={columns}
         />
       </TableListCtx.Provider>
-      <AddModal {...addModelInfo} option={[]} onCancel={onCancel}></AddModal>
+      <AddModal {...addModelInfo} onCancel={onCancel}></AddModal>
     </PageContainer>
   );
 };

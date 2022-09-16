@@ -1,10 +1,10 @@
 import type { ProColumns } from '@ant-design/pro-table';
-import { TABLESEXOPTION } from '@/utils/constant';
+import { INSPECTIONINSTRUCTIONS, TABLESEXOPTION } from '@/utils/constant';
 
 export const listColumns: ProColumns<API.StudentListItem>[] = [
   {
     title: '筛查编码',
-    dataIndex: 'sndo',
+    dataIndex: 'screeningCode',
   },
   {
     title: '学号',
@@ -26,26 +26,35 @@ export const listColumns: ProColumns<API.StudentListItem>[] = [
   },
   {
     title: '戴镜情况',
-    dataIndex: 'a',
+    dataIndex: 'glassesTypeDes',
   },
   {
     title: '裸眼视力（右/左）',
-    dataIndex: 'b',
+    dataIndex: 'nakedVision',
   },
   {
     title: '矫正视力（右/左）',
-    dataIndex: 'c',
+    dataIndex: 'correctedVision',
   },
   {
     title: '球镜（右/左）',
-    dataIndex: 'd',
+    dataIndex: 'sph',
+  },
+  {
+    title: '柱镜（右/左）',
+    dataIndex: 'cyl',
+  },
+  {
+    title: '轴位（右/左）',
+    dataIndex: 'axial',
   },
   {
     title: '未做检查原因',
-    dataIndex: 'd',
+    dataIndex: 'state',
+    valueEnum: INSPECTIONINSTRUCTIONS,
   },
   {
     title: '数据完整性',
-    dataIndex: 'd',
+    dataIndex: 'dataIntegrity',
   },
 ];

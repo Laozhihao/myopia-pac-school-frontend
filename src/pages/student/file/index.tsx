@@ -236,7 +236,7 @@ const FileList: React.FC = () => {
               }}
               onFinish={onFinish}
             >
-              <DynamicForm {...studentForm} />
+              <DynamicForm {...studentForm} isNeedBtn={false} />
               <LazyCascader
                 label="居住地址"
                 name="region"

@@ -118,7 +118,7 @@ const TableList: React.FC = () => {
           </Button>
           <SwitchableButton
             key="manage"
-            href={`/student/file?id=${record.id}&studentId=${record?.studentId}`}
+            href={`/#/student/file?id=${record.id}&studentId=${record?.studentId}`}
             icon="icon-a-Group120"
           >
             档案管理

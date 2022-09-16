@@ -57,6 +57,13 @@ export const TABLESEXOPTION = {
   1: '女',
 };
 
+// 未做检查说明
+export const INSPECTIONINSTRUCTIONS = {
+  1: '请假',
+  2: '转学',
+  3: '其他',
+};
+
 // 性别 （JSON表单）
 export const SEXOPTION = [
   { label: '男', value: 0 },
@@ -135,4 +142,32 @@ export const OCCUPATIONOPTION = [
   '军人',
   '不便分类的其他从业人员',
   '无职业',
+];
+
+// 增加筛查时间
+export const SCREENINGTIMEOPTIONS = [
+  {
+    value: 15,
+    label: '15天',
+  },
+  {
+    value: 30,
+    label: '30天',
+  },
+  {
+    value: 45,
+    label: '45天',
+  },
+  {
+    value: 60,
+    label: '60天',
+  },
+  {
+    value: 75,
+    label: '75天',
+  },
+  {
+    value: 90,
+    label: '90天',
+  },
 ];

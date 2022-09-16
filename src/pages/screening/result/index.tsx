@@ -1,11 +1,17 @@
-import React, { useMemo, useRef, Fragment } from 'react';
+import React, { useMemo, Fragment } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Tabs, Card, Button, Modal, message, Row, Col, Tooltip } from 'antd';
-import type { ProFormInstance } from '@ant-design/pro-form';
-import { firstColumns, secondColumns, thirdColumns, fourthColumns, warnColumns } from './columns';
+import { Tabs, Card, Button, Modal, message, Row, Col, Space } from 'antd';
+import {
+  screeningColumns,
+  teenagersSituationColumns,
+  childSituationColumns,
+  monitorColumns,
+  abnormalColumns,
+  diseasesColumns1,
+  diseasesColumns2,
+} from './columns';
 import ProTable from '@ant-design/pro-table';
-import type { ProColumns } from '@ant-design/pro-table';
-import { DownloadOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { history } from 'umi';
 import { AddModal } from './add-modal';
 import { NoticeReport } from './notice-report/index';
@@ -20,7 +26,7 @@ import {
 } from '@/api/screen/plan';
 import styles from './index.less';
 import { EMPTY, DATE, SCREENSTATUS, GLASSESSUGGESTTYPE, EMPTY_TEXT } from '@/utils/constant';
-import { getScreeningWarn, getScreeningGradeList, getScreeningDetail } from '@/api/screen/plan';
+import { getScreeningDetail } from '@/api/screen/plan';
 import moment from 'moment';
 import { modalConfig } from '@/hook/ant-config';
 import type { IdsType } from './notice-report/index';
@@ -39,7 +45,7 @@ type VisitResultType = {
   visitResult?: string;
 };
 
-let searchForm = {}; // 搜索表单项
+// let searchForm = {}; // 搜索表单项
 
 const ScreeningResult: React.FC = () => {
   const [exportVisible, setExportVisible] = useState(false); // 导出visible
@@ -49,7 +55,7 @@ const ScreeningResult: React.FC = () => {
     title: '',
   }); // 弹窗props
   const [resultInfo, setResultInfo] = useState<API.ScreenResultListItem[]>([]); // 结果分析
-  const [gradeOption, setGradeOption] = useState<any[]>([]);
+  // const [gradeOption, setGradeOption] = useState<any[]>([]);
   const [schoolDetail, setSchoolDetail] = useState<API.ObjectType>({}); // 筛查详情
   const [visitResultInfo, setVisitResultInfo] = useState<VisitResultType>({
     visible: false,
@@ -59,21 +65,46 @@ const ScreeningResult: React.FC = () => {
   const [reportVisible, setReportVisible] = useState(false); // 通知书弹窗
   const [ids, setIds] = useState<IdsType>();
   const [exportType, setExportType] = useState(0); // 导出弹窗类型 0 筛查报告 1 筛查数据 2 学生跟踪数据
-  const ref = useRef<ProFormInstance>();
+  const [ActiveKey, setActiveKey] = useState('1');
 
   const { query: { id, screeningPlanId } = {} } = history.location;
   const { initialState } = useModel('@@initialState');
 
-  const tableOptions = [
-    { title: '视力筛查情况', columns: firstColumns, key: 'screen' },
+  // const tableOptions = [
+  //   { title: '视力筛查情况', columns: firstColumns, key: 'screen' },
+  //   {
+  //     title: '视力情况统计',
+  //     subTitle: '*仅对有效实际筛查学生数进行统计分析',
+  //     columns: teenagersSituationColumns,
+  //     key: 'situation',
+  //   },
+  //   { title: '视力监测预警', columns: monitorColumns, key: 'monitor' },
+  //   { title: '视力异常跟踪', columns: abnormalColumns, key: 'abnormal' },
+  // ];
+
+  const childTableOptions = [
+    { title: '视力筛查情况', columns: [screeningColumns], key: 'screen' },
     {
       title: '视力情况统计',
       subTitle: '*仅对有效实际筛查学生数进行统计分析',
-      columns: secondColumns,
+      columns: [childSituationColumns],
       key: 'situation',
     },
-    { title: '视力监测预警', columns: thirdColumns, key: 'monitor' },
-    { title: '视力异常跟踪', columns: fourthColumns, key: 'abnormal' },
+    { title: '视力监测预警', columns: [monitorColumns], key: 'monitor' },
+    { title: '视力异常跟踪', columns: [abnormalColumns], key: 'abnormal' },
+  ];
+
+  const teenagersTableOptions = [
+    { title: '视力筛查情况', columns: [screeningColumns], key: 'screen' },
+    {
+      title: '视力情况统计',
+      subTitle: '*仅对有效实际筛查学生数进行统计分析',
+      columns: [teenagersSituationColumns],
+      key: 'situation',
+    },
+    { title: '视力监测预警', columns: [monitorColumns], key: 'monitor' },
+    { title: '视力异常跟踪', columns: [abnormalColumns], key: 'abnormal' },
+    { title: '常见病监测', columns: [diseasesColumns1, diseasesColumns2], key: 'diseases' },
   ];
 
   const exportOptions = {
@@ -82,46 +113,52 @@ const ScreeningResult: React.FC = () => {
     2: { title: '学生预警跟踪数据', content: '在所选择筛查计划下的筛查学生的预警跟踪反馈情况表' },
   };
 
-  /**
-   * @desc 查看医生建议
-   */
-  const showVisitResult = (row: API.ScreenWarnListItem) => {
-    const { glassesSuggest, visitResult } = row;
-    setVisitResultInfo({ glassesSuggest, visitResult, visible: true });
-  };
-
-  const studentWarnColumns: ProColumns<API.ScreenWarnListItem>[] = [
-    ...warnColumns({ gradeOption, show: showVisitResult }),
-    {
-      title: '操作',
-      dataIndex: 'option',
-      valueType: 'option',
-      render: (_, record) => {
-        return [
-          record?.schoolStudentId ? (
-            <Button
-              type="link"
-              size="small"
-              key="manage"
-              onClick={() =>
-                history.push(
-                  `/student/file?id=${record?.schoolStudentId}&studentId=${record?.studentId}`,
-                )
-              }
-            >
-              档案管理
-            </Button>
-          ) : (
-            <Tooltip title="当前没有档案管理" key="tooltip">
-              <Button disabled type="link" size="small">
-                档案管理
-              </Button>
-            </Tooltip>
-          ),
-        ];
-      },
-    },
+  const tabList = [
+    { label: '幼儿园', key: '1' },
+    { label: '小学及以上', key: '2' },
   ];
+
+  /**
+   * @desc 查看医生建议 预警跟踪
+   */
+  // const showVisitResult = (row: API.ScreenWarnListItem) => {
+  //   const { glassesSuggest, visitResult } = row;
+  //   setVisitResultInfo({ glassesSuggest, visitResult, visible: true });
+  // };
+
+  // 预警跟踪
+  // const studentWarnColumns: ProColumns<API.ScreenWarnListItem>[] = [
+  //   ...warnColumns({ gradeOption, show: showVisitResult }),
+  //   {
+  //     title: '操作',
+  //     dataIndex: 'option',
+  //     valueType: 'option',
+  //     render: (_, record) => {
+  //       return [
+  //         record?.schoolStudentId ? (
+  //           <Button
+  //             type="link"
+  //             size="small"
+  //             key="manage"
+  //             onClick={() =>
+  //               history.push(
+  //                 `/student/file?id=${record?.schoolStudentId}&studentId=${record?.studentId}`,
+  //               )
+  //             }
+  //           >
+  //             档案管理
+  //           </Button>
+  //         ) : (
+  //           <Tooltip title="当前没有档案管理" key="tooltip">
+  //             <Button disabled type="link" size="small">
+  //               档案管理
+  //             </Button>
+  //           </Tooltip>
+  //         ),
+  //       ];
+  //     },
+  //   },
+  // ];
 
   /**
    * @desc 字段说明弹窗
@@ -143,39 +180,43 @@ const ScreeningResult: React.FC = () => {
       });
     }
     if (screeningPlanId) {
-      getScreeningGradeList(screeningPlanId as string).then((res) => {
-        setGradeOption(res?.data);
-      });
+      // getScreeningGradeList(screeningPlanId as string).then((res) => {
+      //   setGradeOption(res?.data);
+      // });
       getScreeningDetail(screeningPlanId as string).then((res) => {
         setSchoolDetail(res?.data);
       });
     }
   }, []);
 
-  /**
-   * @desc 重置
-   */
-  const onReset = () => {
-    searchForm = {};
-    ref?.current?.resetFields();
-    ref?.current?.submit();
+  const onTabChange = (key: string) => {
+    setActiveKey(key);
   };
 
-  /**
-   * @desc 搜索
-   */
-  const onSearch = () => {
-    const formVal = ref?.current?.getFieldsFormatValue?.();
-    const [gradeId, classId] = formVal?.gradeName || [];
-    Object.assign(searchForm, {
-      gradeId,
-      classId,
-      visionLabel: formVal?.warningLevel,
-      isReview: formVal?.isReview ? !!Number(formVal?.isReview) : undefined,
-      isBindMp: formVal?.isBindMp ? !!Number(formVal?.isBindMp) : undefined,
-    });
-    ref?.current?.submit();
-  };
+  // /**
+  //  * @desc 重置
+  //  */
+  // const onReset = () => {
+  //   searchForm = {};
+  //   ref?.current?.resetFields();
+  //   ref?.current?.submit();
+  // };
+
+  // /**
+  //  * @desc 搜索
+  //  */
+  // const onSearch = () => {
+  //   const formVal = ref?.current?.getFieldsFormatValue?.();
+  //   const [gradeId, classId] = formVal?.gradeName || [];
+  //   Object.assign(searchForm, {
+  //     gradeId,
+  //     classId,
+  //     visionLabel: formVal?.warningLevel,
+  //     isReview: formVal?.isReview ? !!Number(formVal?.isReview) : undefined,
+  //     isBindMp: formVal?.isBindMp ? !!Number(formVal?.isBindMp) : undefined,
+  //   });
+  //   ref?.current?.submit();
+  // };
 
   /**
    * @desc 确定导出
@@ -215,51 +256,86 @@ const ScreeningResult: React.FC = () => {
   };
   return (
     <PageContainer>
+      <Card style={{ marginBottom: 12 }}>
+        <Row gutter={40}>
+          <Col className={styles.result_info}>
+            <Space size={[40, 10]} wrap={true}>
+              <span>筛查标题： {schoolDetail?.title}</span>
+              <span>
+                筛查时间段：
+                {schoolDetail?.startTime
+                  ? moment(schoolDetail?.startTime).format(DATE)
+                  : EMPTY} 至{' '}
+                {schoolDetail?.endTime ? moment(schoolDetail?.endTime).format(DATE) : EMPTY}
+              </span>
+              <span>筛查机构：{11111111111111111111111111}</span>
+              <span>筛查类型：{222221222}</span>
+              <span>状态：{SCREENSTATUS[schoolDetail?.releaseStatus]}</span>
+            </Space>
+          </Col>
+          <Col className={styles.judge_standard}>
+            <InfoCircleOutlined style={{ color: '#096DD9', fontSize: 16 }} />
+            判断标准
+          </Col>
+        </Row>
+      </Card>
       <Card>
-        <p>
-          筛查标题： {schoolDetail?.title}
-          <span className={styles.notice_tab}>
-            筛查时间段：
-            {schoolDetail?.startTime ? moment(schoolDetail?.startTime).format(DATE) : EMPTY} 至{' '}
-            {schoolDetail?.endTime ? moment(schoolDetail?.endTime).format(DATE) : EMPTY}
-          </span>
-          <span>状态：{SCREENSTATUS[schoolDetail?.releaseStatus]}</span>
-        </p>
-        <Tabs defaultActiveKey="1">
-          <TabPane tab="结果统计分析" key="1">
-            <div className={styles.btn}>
-              <Button type="primary" style={{ marginRight: 10 }} onClick={() => onExport(0)}>
-                导出筛查报告
-              </Button>
-              <Button type="primary" style={{ marginRight: 10 }} onClick={() => onExport(1)}>
-                导出筛查数据
-              </Button>
-              <Button type="primary" onClick={() => showNoticeReport()}>
-                导出结果通知书
-              </Button>
-            </div>
-            {tableOptions.map((item) => (
-              <Fragment key={item.key}>
-                <p className={styles.table_title}>
-                  {item.title}
-                  <span onClick={() => showModal({ tabKey: item.key, title: item.title })}>
-                    <QuestionCircleOutlined style={{ marginLeft: 5 }} />
-                  </span>
-                  <span className={styles.subTitle}>{item.subTitle}</span>
-                </p>
-                <ProTable<API.ScreenResultListItem>
-                  className={styles.table}
-                  columns={item.columns}
-                  rowKey="id"
-                  search={false}
-                  options={false}
-                  pagination={false}
-                  dataSource={resultInfo}
-                />
-              </Fragment>
-            ))}
-          </TabPane>
-          <TabPane tab="学生预警跟踪" key="2">
+        <Tabs defaultActiveKey={ActiveKey} onTabClick={onTabChange}>
+          {tabList.map((item) => (
+            <TabPane tab={item.label} key={item.key}>
+              <div className={styles.btn}>
+                <Space>
+                  <Button type="primary" ghost>
+                    预警跟踪
+                  </Button>
+                  <Button type="primary" onClick={() => onExport(0)} ghost>
+                    筛查报告
+                  </Button>
+                  <Button type="primary" onClick={() => onExport(1)} ghost>
+                    筛查数据
+                  </Button>
+                  <Button type="primary" onClick={() => onExport(0)} ghost>
+                    档案卡
+                  </Button>
+                  <Button type="primary" onClick={() => showNoticeReport()} ghost>
+                    结果通知书
+                  </Button>
+                </Space>
+              </div>
+              <div className={styles.modular}>
+                {(ActiveKey === '1' ? childTableOptions : teenagersTableOptions).map(
+                  (activeItem) => (
+                    <Fragment key={activeItem.key}>
+                      <p className={styles.title}>
+                        {activeItem.title}
+                        <span
+                          onClick={() =>
+                            showModal({ tabKey: activeItem.key, title: activeItem.title })
+                          }
+                        >
+                          <QuestionCircleOutlined style={{ marginLeft: 5 }} />
+                        </span>
+                        <span className={styles.subTitle}>{activeItem.subTitle}</span>
+                      </p>
+                      {activeItem.columns.map((eleItem, eleIndex) => (
+                        <ProTable<API.ScreenResultListItem>
+                          columns={eleItem}
+                          rowKey="id"
+                          key={eleIndex}
+                          className={styles.table}
+                          search={false}
+                          options={false}
+                          pagination={false}
+                          dataSource={resultInfo}
+                        />
+                      ))}
+                    </Fragment>
+                  ),
+                )}
+              </div>
+            </TabPane>
+          ))}
+          {/* <TabPane tab="学生预警跟踪" key="2">
             <ProTable<API.ScreenWarnListItem, API.PageParams>
               rowKey="studentId"
               formRef={ref}
@@ -323,7 +399,7 @@ const ScreeningResult: React.FC = () => {
                 ],
               }}
             />
-          </TabPane>
+          </TabPane> */}
         </Tabs>
       </Card>
       <AddModal

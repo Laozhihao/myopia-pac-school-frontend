@@ -15,7 +15,11 @@
 }
 
 .screen_item {
-  margin-bottom: 5px !important;
+  :global {
+    .ant-form-item {
+      margin-bottom: 5px !important;
+    }
+  }
 }
 .red_tip {
   margin: 0 0 12px 120px;

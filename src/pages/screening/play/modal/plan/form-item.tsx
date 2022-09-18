@@ -27,9 +27,8 @@ export const FormItemOptions = (
         span: 24,
       },
       slot: (
-        <div>
+        <div className={styles.screen_item}>
           <ProFormDateRangePicker
-            className={styles.screen_item}
             name="time"
             label="筛查时间段"
             rules={[{ type: 'array', required: true, message: '请选择筛查时间段' }]}

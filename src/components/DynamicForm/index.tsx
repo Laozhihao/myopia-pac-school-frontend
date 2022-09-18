@@ -51,7 +51,7 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
         !item.hasOwnProperty('show') || (item.hasOwnProperty('show') && item.show),
     );
     setFormList(arr);
-  }, []);
+  }, [props.filterList]);
 
   // 表单种类
   const FormTemp = {

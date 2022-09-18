@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Divider, Space, Tag } from 'antd';
 import { EMPTY } from '@/utils/constant';
 import ProTable from '@ant-design/pro-table';
@@ -23,6 +23,10 @@ export const InspectFile: React.FC = () => {
     { value: 'gender', icon: <SkinOutlined /> },
     { value: 'recordNo', icon: <FieldNumberOutlined /> },
   ];
+
+  useEffect(() => {
+    console.log('22222222222');
+  }, []);
 
   const columns: ProColumns<API.NoticeListItem>[] = [
     ...listColumns,

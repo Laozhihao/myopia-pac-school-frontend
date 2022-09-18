@@ -25,11 +25,12 @@ import {
   exportScreeningData,
 } from '@/api/screen/plan';
 import styles from './index.less';
-import { EMPTY, DATE, SCREENSTATUS, GLASSESSUGGESTTYPE, EMPTY_TEXT } from '@/utils/constant';
+import { EMPTY, DATE, SCREENSTATUS, GLASSESSUGGESTTYPE, EMPTY_TEXT, SCREENING_TYPE_LIST } from '@/utils/constant';
 import { getScreeningDetail } from '@/api/screen/plan';
 import moment from 'moment';
 import { modalConfig } from '@/hook/ant-config';
 import type { IdsType } from './notice-report/index';
+import { SCREENTYPEOPTIONS } from '@/utils/form-constant';
 
 const { TabPane } = Tabs;
 
@@ -65,22 +66,10 @@ const ScreeningResult: React.FC = () => {
   const [reportVisible, setReportVisible] = useState(false); // 通知书弹窗
   const [ids, setIds] = useState<IdsType>();
   const [exportType, setExportType] = useState(0); // 导出弹窗类型 0 筛查报告 1 筛查数据 2 学生跟踪数据
-  const [ActiveKey, setActiveKey] = useState('1');
+  const [ActiveKey, setActiveKey] = useState('8'); // tab 激活页
 
-  const { query: { id, screeningPlanId } = {} } = history.location;
+  const { query: { screeningPlanId } = {} } = history.location;
   const { initialState } = useModel('@@initialState');
-
-  // const tableOptions = [
-  //   { title: '视力筛查情况', columns: firstColumns, key: 'screen' },
-  //   {
-  //     title: '视力情况统计',
-  //     subTitle: '*仅对有效实际筛查学生数进行统计分析',
-  //     columns: teenagersSituationColumns,
-  //     key: 'situation',
-  //   },
-  //   { title: '视力监测预警', columns: monitorColumns, key: 'monitor' },
-  //   { title: '视力异常跟踪', columns: abnormalColumns, key: 'abnormal' },
-  // ];
 
   const childTableOptions = [
     { title: '视力筛查情况', columns: [screeningColumns], key: 'screen' },
@@ -113,52 +102,11 @@ const ScreeningResult: React.FC = () => {
     2: { title: '学生预警跟踪数据', content: '在所选择筛查计划下的筛查学生的预警跟踪反馈情况表' },
   };
 
-  const tabList = [
-    { label: '幼儿园', key: '1' },
-    { label: '小学及以上', key: '2' },
-  ];
+  const [tabList, setTabList] = useState<API.ObjectType[]>([
+    { label: '幼儿园', key: '8' },
+    { label: '小学及以上', key: '0' },
+  ]);
 
-  /**
-   * @desc 查看医生建议 预警跟踪
-   */
-  // const showVisitResult = (row: API.ScreenWarnListItem) => {
-  //   const { glassesSuggest, visitResult } = row;
-  //   setVisitResultInfo({ glassesSuggest, visitResult, visible: true });
-  // };
-
-  // 预警跟踪
-  // const studentWarnColumns: ProColumns<API.ScreenWarnListItem>[] = [
-  //   ...warnColumns({ gradeOption, show: showVisitResult }),
-  //   {
-  //     title: '操作',
-  //     dataIndex: 'option',
-  //     valueType: 'option',
-  //     render: (_, record) => {
-  //       return [
-  //         record?.schoolStudentId ? (
-  //           <Button
-  //             type="link"
-  //             size="small"
-  //             key="manage"
-  //             onClick={() =>
-  //               history.push(
-  //                 `/student/file?id=${record?.schoolStudentId}&studentId=${record?.studentId}`,
-  //               )
-  //             }
-  //           >
-  //             档案管理
-  //           </Button>
-  //         ) : (
-  //           <Tooltip title="当前没有档案管理" key="tooltip">
-  //             <Button disabled type="link" size="small">
-  //               档案管理
-  //             </Button>
-  //           </Tooltip>
-  //         ),
-  //       ];
-  //     },
-  //   },
-  // ];
 
   /**
    * @desc 字段说明弹窗
@@ -173,12 +121,7 @@ const ScreeningResult: React.FC = () => {
     });
   };
 
-  useMemo(() => {
-    if (id) {
-      getScreeningResult(id as string).then((res) => {
-        setResultInfo([res?.data]);
-      });
-    }
+  useMemo(async () => {
     if (screeningPlanId) {
       // getScreeningGradeList(screeningPlanId as string).then((res) => {
       //   setGradeOption(res?.data);
@@ -186,37 +129,20 @@ const ScreeningResult: React.FC = () => {
       getScreeningDetail(screeningPlanId as string).then((res) => {
         setSchoolDetail(res?.data);
       });
+
+      const { data } = await getScreeningDetail(screeningPlanId as string);
+      setSchoolDetail(data);
+      const arr = tabList.filter(item => data?.optionTabs?.includes(~~[item.key]));
+      // setTabList(arr);
+      getScreeningResult({screeningPlanId, type: ~~ActiveKey }).then((res) => {
+        setResultInfo([res?.data]);
+      });
     }
   }, []);
 
   const onTabChange = (key: string) => {
     setActiveKey(key);
   };
-
-  // /**
-  //  * @desc 重置
-  //  */
-  // const onReset = () => {
-  //   searchForm = {};
-  //   ref?.current?.resetFields();
-  //   ref?.current?.submit();
-  // };
-
-  // /**
-  //  * @desc 搜索
-  //  */
-  // const onSearch = () => {
-  //   const formVal = ref?.current?.getFieldsFormatValue?.();
-  //   const [gradeId, classId] = formVal?.gradeName || [];
-  //   Object.assign(searchForm, {
-  //     gradeId,
-  //     classId,
-  //     visionLabel: formVal?.warningLevel,
-  //     isReview: formVal?.isReview ? !!Number(formVal?.isReview) : undefined,
-  //     isBindMp: formVal?.isBindMp ? !!Number(formVal?.isBindMp) : undefined,
-  //   });
-  //   ref?.current?.submit();
-  // };
 
   /**
    * @desc 确定导出
@@ -268,8 +194,8 @@ const ScreeningResult: React.FC = () => {
                   : EMPTY} 至{' '}
                 {schoolDetail?.endTime ? moment(schoolDetail?.endTime).format(DATE) : EMPTY}
               </span>
-              <span>筛查机构：{11111111111111111111111111}</span>
-              <span>筛查类型：{222221222}</span>
+              <span>筛查机构：{schoolDetail?.screeningOrgName}</span>
+              <span>筛查类型：{ `${(SCREENTYPEOPTIONS[schoolDetail?.screeningBizType] || EMPTY)}-${(SCREENING_TYPE_LIST[schoolDetail?.screeningType] || EMPTY)}`}</span>
               <span>状态：{SCREENSTATUS[schoolDetail?.releaseStatus]}</span>
             </Space>
           </Col>
@@ -285,7 +211,7 @@ const ScreeningResult: React.FC = () => {
             <TabPane tab={item.label} key={item.key}>
               <div className={styles.btn}>
                 <Space>
-                  <Button type="primary" ghost>
+                  <Button type="primary" ghost href={'/#/prevention/eye-health'}>
                     预警跟踪
                   </Button>
                   <Button type="primary" onClick={() => onExport(0)} ghost>
@@ -303,7 +229,7 @@ const ScreeningResult: React.FC = () => {
                 </Space>
               </div>
               <div className={styles.modular}>
-                {(ActiveKey === '1' ? childTableOptions : teenagersTableOptions).map(
+                {(ActiveKey === '8' ? childTableOptions : teenagersTableOptions).map(
                   (activeItem) => (
                     <Fragment key={activeItem.key}>
                       <p className={styles.title}>
@@ -335,71 +261,6 @@ const ScreeningResult: React.FC = () => {
               </div>
             </TabPane>
           ))}
-          {/* <TabPane tab="学生预警跟踪" key="2">
-            <ProTable<API.ScreenWarnListItem, API.PageParams>
-              rowKey="studentId"
-              formRef={ref}
-              form={{ span: 8 }}
-              search={{
-                collapseRender: false,
-                collapsed: false,
-                optionRender: () => [
-                  <Button key="reset" onClick={onReset}>
-                    重 置
-                  </Button>,
-                  <Button key="search" type="primary" onClick={onSearch}>
-                    搜 索
-                  </Button>,
-                ],
-              }}
-              pagination={{ pageSize: 10 }}
-              options={false}
-              columns={studentWarnColumns}
-              columnEmptyText={EMPTY}
-              request={async (params) => {
-                const datas = await getScreeningWarn({
-                  ...searchForm,
-                  planId: screeningPlanId,
-                  current: params.current,
-                  size: params.pageSize,
-                });
-                return {
-                  data: datas.data.records,
-                  success: true,
-                  total: datas.data.total,
-                };
-              }}
-              columnsStateMap={{
-                sno: {
-                  fixed: 'left',
-                },
-                option: {
-                  fixed: 'right',
-                },
-              }}
-              toolbar={{
-                title: (
-                  <span
-                    className={styles.title}
-                    onClick={() => showModal({ tabKey: 'standard', title: '课桌椅标准' })}
-                  >
-                    课桌椅型号标准
-                  </span>
-                ),
-                actions: [
-                  <Button
-                    type="primary"
-                    key="primary"
-                    onClick={() => {
-                      onExport(2);
-                    }}
-                  >
-                    <DownloadOutlined /> 导出
-                  </Button>,
-                ],
-              }}
-            />
-          </TabPane> */}
         </Tabs>
       </Card>
       <AddModal

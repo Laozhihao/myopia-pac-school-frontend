@@ -1,27 +1,18 @@
 import type { ProColumns } from '@ant-design/pro-table';
-import { Cascader, Badge } from 'antd';
-import {
-  MYOPIAWARNOPTION,
-  MYOPIAWARNSELECTOPTION,
-  BINDOPTIONS,
-  REVIEWOPTIONS,
-  EMPTY,
-  TABLESEXOPTION,
-  EMPTY_TEXT,
-} from '@/utils/constant';
-import { visionColumn } from '@/utils/columns';
-import { getPercentage, getTotalNumber, getFixedNum } from '@/utils/common';
-import { convertData } from '@/utils/common';
-// 幼儿园类型
-const kindergartenType = 5;
+import { EMPTY } from '@/utils/constant';
+import { getPercentage, getTotalNumber } from '@/utils/common';
 
-/**
- * @desc 处理课桌椅几号显示
- * @param record 行记录
- * @param type 课桌椅类型key
- */
-const getTypeNumShow = (record: any, type: string) =>
-  record[type].map((n: any) => (record.schoolAge === kindergartenType ? `幼${n}` : n)).join('或');
+
+// 幼儿园类型
+// const kindergartenType = 5;
+
+// /**
+//  * @desc 处理课桌椅几号显示
+//  * @param record 行记录
+//  * @param type 课桌椅类型key
+//  */
+// const getTypeNumShow = (record: any, type: string) =>
+//   record[type].map((n: any) => (record.schoolAge === kindergartenType ? `幼${n}` : n)).join('或');
 
 export const screeningColumns: ProColumns<API.ScreenResultListItem>[] = [
   {
@@ -206,115 +197,116 @@ export const abnormalColumns: ProColumns<API.ScreenResultListItem>[] = [
   },
 ];
 
-type WarnColumnsType = {
-  gradeOption?: any[]; // 年级班级
-  show?: (dom: any) => void; // 查看医生反馈func
-};
+// type WarnColumnsType = {
+//   gradeOption?: any[]; // 年级班级
+//   show?: (dom: any) => void; // 查看医生反馈func
+// };
 
-export const warnColumns: (params: WarnColumnsType) => ProColumns<API.ScreenWarnListItem>[] = ({
-  gradeOption,
-  show,
-}) => [
-  {
-    title: '学号',
-    dataIndex: 'sno',
-    width: 150,
-    search: false,
-  },
-  {
-    title: '姓名',
-    dataIndex: 'name',
-    search: false,
-  },
-  {
-    title: '性别',
-    dataIndex: 'gender',
-    valueEnum: TABLESEXOPTION,
-    search: false,
-  },
-  {
-    title: '年级-班级',
-    dataIndex: 'gradeName',
-    order: 3,
-    renderFormItem: () => {
-      return (
-        <Cascader
-          options={convertData(gradeOption, 'classes')}
-          placeholder="请选择"
-          fieldNames={{ label: 'name', value: 'id', children: 'classes' }}
-        />
-      );
-    },
-    renderText: (val: string, record) => `${val}-${record?.className}`,
-  },
-  ...visionColumn,
-  {
-    title: '视力预警',
-    dataIndex: 'warningLevel',
-    renderText: (val?: number) =>
-      typeof val === 'number' && [0, 1, 2, 3, 4].includes(val) ? (
-        <Badge color={MYOPIAWARNOPTION[val]?.color} text={MYOPIAWARNOPTION[val]?.text} />
-      ) : (
-        EMPTY
-      ),
-    valueType: 'select',
-    fieldProps: {
-      options: MYOPIAWARNSELECTOPTION,
-    },
-    width: 200,
-    order: 1,
-  },
-  {
-    title: '绑定公众号',
-    dataIndex: 'isBindMp',
-    valueEnum: BINDOPTIONS,
-    renderText: (val: boolean | null | undefined) =>
-      `${typeof val === 'boolean' ? (val ? '已绑定' : '未绑定') : EMPTY}`,
-    order: 2,
-  },
-  {
-    title: '医院复查',
-    dataIndex: 'isReview',
-    valueEnum: REVIEWOPTIONS,
-    renderText: (val: boolean) => `${val ? '已去' : '未去'}`,
-  },
-  {
-    title: '复查反馈',
-    dataIndex: 'visitResult',
-    search: false,
-    render: (_, record) => {
-      return record?.visitResult ? <a onClick={() => show?.(record)}>查看</a> : EMPTY;
-    },
-  },
-  {
-    title: '防控建议-课桌椅',
-    dataIndex: 'height',
-    search: false,
-    render: (_, record) => {
-      return record?.height ? (
-        <>
-          <div>{getFixedNum(record?.height, 1)}cm</div>
-          <div>
-            <div>
-              课桌：{getTypeNumShow(record, 'deskType')}号，建议桌面高：{record?.deskAdviseHeight}
-            </div>
-            <div>
-              课椅：{getTypeNumShow(record, 'chairType')}号，建议座面高：{record?.chairAdviseHeight}
-            </div>
-          </div>
-        </>
-      ) : (
-        EMPTY_TEXT
-      );
-    },
-  },
-  {
-    title: '防控建议-座位调整',
-    dataIndex: 'myopiaLevel',
-    search: false,
-    renderText: (val?: number | string) => (val && val > 2 ? '与黑板相距5-6米' : EMPTY_TEXT),
-  },
-];
+// // 预警跟踪
+// export const warnColumns: (params: WarnColumnsType) => ProColumns<API.ScreenWarnListItem>[] = ({
+//   gradeOption,
+//   show,
+// }) => [
+//   {
+//     title: '学号',
+//     dataIndex: 'sno',
+//     width: 150,
+//     search: false,
+//   },
+//   {
+//     title: '姓名',
+//     dataIndex: 'name',
+//     search: false,
+//   },
+//   {
+//     title: '性别',
+//     dataIndex: 'gender',
+//     valueEnum: TABLESEXOPTION,
+//     search: false,
+//   },
+//   {
+//     title: '年级-班级',
+//     dataIndex: 'gradeName',
+//     order: 3,
+//     renderFormItem: () => {
+//       return (
+//         <Cascader
+//           options={convertData(gradeOption, 'classes')}
+//           placeholder="请选择"
+//           fieldNames={{ label: 'name', value: 'id', children: 'classes' }}
+//         />
+//       );
+//     },
+//     renderText: (val: string, record) => `${val}-${record?.className}`,
+//   },
+//   ...visionColumn,
+//   {
+//     title: '视力预警',
+//     dataIndex: 'warningLevel',
+//     renderText: (val?: number) =>
+//       typeof val === 'number' && [0, 1, 2, 3, 4].includes(val) ? (
+//         <Badge color={MYOPIAWARNOPTION[val]?.color} text={MYOPIAWARNOPTION[val]?.text} />
+//       ) : (
+//         EMPTY
+//       ),
+//     valueType: 'select',
+//     fieldProps: {
+//       options: MYOPIAWARNSELECTOPTION,
+//     },
+//     width: 200,
+//     order: 1,
+//   },
+//   {
+//     title: '绑定公众号',
+//     dataIndex: 'isBindMp',
+//     valueEnum: BINDOPTIONS,
+//     renderText: (val: boolean | null | undefined) =>
+//       `${typeof val === 'boolean' ? (val ? '已绑定' : '未绑定') : EMPTY}`,
+//     order: 2,
+//   },
+//   {
+//     title: '医院复查',
+//     dataIndex: 'isReview',
+//     valueEnum: REVIEWOPTIONS,
+//     renderText: (val: boolean) => `${val ? '已去' : '未去'}`,
+//   },
+//   {
+//     title: '复查反馈',
+//     dataIndex: 'visitResult',
+//     search: false,
+//     render: (_, record) => {
+//       return record?.visitResult ? <a onClick={() => show?.(record)}>查看</a> : EMPTY;
+//     },
+//   },
+//   {
+//     title: '防控建议-课桌椅',
+//     dataIndex: 'height',
+//     search: false,
+//     render: (_, record) => {
+//       return record?.height ? (
+//         <>
+//           <div>{getFixedNum(record?.height, 1)}cm</div>
+//           <div>
+//             <div>
+//               课桌：{getTypeNumShow(record, 'deskType')}号，建议桌面高：{record?.deskAdviseHeight}
+//             </div>
+//             <div>
+//               课椅：{getTypeNumShow(record, 'chairType')}号，建议座面高：{record?.chairAdviseHeight}
+//             </div>
+//           </div>
+//         </>
+//       ) : (
+//         EMPTY_TEXT
+//       );
+//     },
+//   },
+//   {
+//     title: '防控建议-座位调整',
+//     dataIndex: 'myopiaLevel',
+//     search: false,
+//     renderText: (val?: number | string) => (val && val > 2 ? '与黑板相距5-6米' : EMPTY_TEXT),
+//   },
+// ];
 
 export const diseasesColumns1: ProColumns<API.ScreenResultListItem>[] = [
   {

@@ -8,7 +8,7 @@ type InputGroupType = {
   bottom?: number;
   selectOption?: any[];
   onPressEnter?: () => void;
-} & API.FilterListType;
+} & Pick<API.FilterListType, 'selectName' | 'inputName' | 'valueEnum' | 'fieldProps' | 'selectInitial' | 'selectWidth'>;
 
 export const InputGroup: React.FC<InputGroupType> = (props) => {
   const {

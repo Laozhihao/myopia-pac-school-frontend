@@ -9,11 +9,13 @@ export async function getScreeningList(params: API.ObjectType) {
 }
 
 /** 筛查结果统计分析 GET /school/vision/screening */
-export async function getScreeningResult(schoolStatisticId: React.Key) {
-  return request<API.RequestResult>(`/school/vision/screening/${schoolStatisticId}`, {
+export async function getScreeningResult(params: API.ObjectType) {
+  return request<API.RequestResult>('/school/vision/screening', {
     method: 'GET',
+    params,
   });
 }
+
 
 /** 学生预警跟踪 GET /school/vision/screening/statStudents/list */
 export async function getScreeningWarn(params: API.ObjectType) {

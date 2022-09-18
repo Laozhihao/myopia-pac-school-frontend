@@ -115,6 +115,13 @@ export const STATE_TEXT = {
   0: '正常',
   1: '异常',
 };
+
+// 筛查类型
+export const SCREENING_TYPE_LIST = {
+  0: '视力筛查',
+  1: '常见病筛查',
+};
+
 // 文化程度
 export const EDUCATIONOPTION = [
   '研究生',

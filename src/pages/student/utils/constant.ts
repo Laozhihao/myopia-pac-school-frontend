@@ -119,11 +119,13 @@ export const studentFormOptions = (
           },
         },
       ],
-      selectChange: (val: string | number) => {
-        const { inputValue } = ref?.current?.getFieldValue();
-        cache[val === 'idCard' ? 'passport' : 'idCard'] = inputValue;
-        ref?.current?.resetFields(['inputValue']); // 重置值和验证状态
-        ref?.current?.setFieldsValue({ inputValue: cache[val] });
+      fieldProps: {
+        onChange: (val: string | number) => {
+          const { inputValue } = ref?.current?.getFieldValue();
+          cache[val === 'idCard' ? 'passport' : 'idCard'] = inputValue;
+          ref?.current?.resetFields(['inputValue']); // 重置值和验证状态
+          ref?.current?.setFieldsValue({ inputValue: cache[val] });
+        },
       },
       inputChange: (e: { target: { value: any } }) => {
         const { selectValue } = ref?.current?.getFieldValue();

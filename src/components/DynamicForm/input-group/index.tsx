@@ -8,7 +8,17 @@ type InputGroupType = {
   bottom?: number;
   selectOption?: any[];
   onPressEnter?: () => void;
-} & Pick<API.FilterListType, 'selectName' | 'inputName' | 'valueEnum' | 'fieldProps' | 'selectInitial' | 'selectWidth'>;
+  inputChange?: () => void;
+} & Pick<
+  API.FilterListType,
+  | 'selectName'
+  | 'inputName'
+  | 'valueEnum'
+  | 'fieldProps'
+  | 'selectInitial'
+  | 'selectWidth'
+  | 'rules'
+>;
 
 export const InputGroup: React.FC<InputGroupType> = (props) => {
   const {
@@ -54,6 +64,7 @@ export const InputGroup: React.FC<InputGroupType> = (props) => {
           onBlur={() => setIsFocus(false)}
           onMouseOver={() => setIsHover(true)}
           onMouseOut={() => setIsHover(false)}
+          onChange={props?.inputChange}
         />
       </Form.Item>
     </Input.Group>

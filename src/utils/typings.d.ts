@@ -72,7 +72,6 @@ declare namespace API {
     selectName?: string; // inputGroup select
     selectInitial?: string; // inputGroup select initialValue
     inputName?: string; // inputGroup input
-    selectChange?: () => void; // select change 事件
     inputChange?: () => void; // input change 事件
   };
 

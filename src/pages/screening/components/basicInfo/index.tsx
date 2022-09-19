@@ -12,10 +12,29 @@ import { getCascaderOption } from '@/hook/district';
 import { getManagementWorkbenchDistrict } from '@/api/screen/archives';
 import LazyCascader from '@/pages/components/lazy-cascader';
 
+type BasicInfoForm = {
+  fatherName: string
+  fatherPhone: string
+  fatherBirthday: string
+  fatherDiploma: string
+  fatherProfession: string
+  motherName: string
+  motherPhone: string
+  motherBirthday: string
+  motherDiploma: string
+  motherProfession: string
+  gradeIds: string[]
+}
+
 export const BasicInfo: React.FC = () => {
-  const ref = useRef<ProFormInstance>();
+  const ref = useRef<ProFormInstance<BasicInfoForm>>();
   const [areaOption, setAreaOption] = useState([]);
   const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
+
+  const [ItemOptions, setItemOptions] = useState<
+    Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
+  >({ ...FormItemOptions(ref, [], () => {}
+  ) });
 
 
   // 地区修改
@@ -24,16 +43,15 @@ export const BasicInfo: React.FC = () => {
     if (Array.isArray(e)) {
       const code = e[e.length - 1];
       const { data = [] } = await getManagementWorkbenchDistrict(code);
-      console.log(ItemOptions, 'areaOption');
-      // const targetData = ItemOptions; // 更新传递地区参数
-      // setItemOptions({ ...ItemOptions, listTypeInfo: { ...ItemOptions.listTypeInfo, typeList: data }});
+      setItemOptions((s) => ({
+        ...s,
+        listTypeInfo: {
+          ...s.listTypeInfo,
+          typeList: data
+        }
+      }))
     }
   }
-
-  const [ItemOptions, setItemOptions] = useState<
-  Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
->({ ...FormItemOptions(ref, [], onAreaChange
-  ) });
 
   useMemo(async () => {
     const arr = await getCascaderOption();
@@ -44,7 +62,7 @@ export const BasicInfo: React.FC = () => {
   }, []);
 
   const onUpdate = () => {
-    const value = ref?.current?.getFieldsValue();
+    const value = ref?.current?.getFieldsValue()!;
     console.log(value, 'value');
     const { gradeIds = [], fatherName, fatherPhone, fatherBirthday, fatherDiploma, fatherProfession,  motherName, motherPhone, motherBirthday, motherDiploma, motherProfession} = value;
     console.log(ItemOptions, 'ItemOptions');
@@ -68,8 +86,8 @@ export const BasicInfo: React.FC = () => {
         diploma: motherDiploma,
         profession: motherProfession,
       },
-      // gradeId: gradeId[0],
-      // classId: gradeId[1]
+      gradeId: gradeIds[0],
+      classId: gradeIds[1]
     });
     console.log(parm, 'pram');
   }
@@ -95,7 +113,7 @@ export const BasicInfo: React.FC = () => {
         // }}
       />
       <ProFormTextArea
-        name="address"
+        name="remark"
         disabled={addressFlag}
         fieldProps={{ maxLength: 50 }}
         placeholder="请输入详细地址"

@@ -6,7 +6,7 @@ import type { ProColumns } from '@ant-design/pro-table';
 // 默认第一列
 const defaultColumns: ProColumns<API.FileDetailItem>[] = [
   {
-    title: '眼别',
+    title: '',
     width: 150,
     dataIndex: 'eyeType',
     render: (text) => {

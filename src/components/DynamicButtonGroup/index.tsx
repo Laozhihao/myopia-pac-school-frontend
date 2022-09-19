@@ -24,16 +24,15 @@ const DynamicButtonGroup: React.FC<DynamicButtonGroupProps> = ({ children }) => 
               <Menu>
                 {next.map((item, index) => (
                   <Menu.Item key={index}>
-                    {item}
-                    {/* {cloneElement(item as React.FunctionComponentElement<MoreTypeProps>, {
+                    {cloneElement(item as React.FunctionComponentElement<MoreTypeProps>, {
                       isMoreType: true,
-                    })} */}
+                    })}
                   </Menu.Item>
                 ))}
               </Menu>
             }
           >
-            <SwitchableButton icon="iconicon-gegnduo-20" needTooltip={false}>
+            <SwitchableButton icon="icon-icon-gegnduo-20" needTooltip={false}>
               更多
             </SwitchableButton>
           </Dropdown>

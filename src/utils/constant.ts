@@ -86,6 +86,14 @@ export const GLASSESSUGGESTTYPE = {
   3: '配隐形眼镜',
 };
 
+// 戴镜类型
+export const GLASSES_TYPE_LIST = {
+  0: '不戴镜',
+  1: '框架眼镜',
+  2: '隐形眼镜',
+  3: '夜戴角膜塑形镜',
+};
+
 // 近视情况
 export const MYOPIATYPE = {
   0: '正常',
@@ -178,3 +186,27 @@ export const SCREENINGTIMEOPTIONS = [
     label: '90天',
   },
 ];
+
+// 近视等级
+export const MYOPIA_LEVEL = {
+  1: '筛查性近视',
+  2: '近视前期',
+  3: '低度近视',
+  4: '中度近视',
+  5: '高度近视',
+};
+
+// 远视等级
+export const HYPEROPIA_LEVEL = {
+  1: '远视',
+  2: '低度远视',
+  3: '中度远视',
+  4: '高度远视',
+};
+
+// 散光等级
+export const ASTIGMATISM_LEVEL = {
+  1: '低度散光',
+  2: '中度散光',
+  3: '高度散光',
+};

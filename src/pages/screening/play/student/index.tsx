@@ -17,11 +17,19 @@ import { TableListCtx } from '@/hook/ant-config';
 import { getschoolGrade } from '@/api/school';
 import { getScreeningStudentList } from '@/api/screen/student';
 import { history } from 'umi';
+import { DetailModal } from './modal/detail/index';
 
 const TableList: React.FC = () => {
   const [searchForm, setSearchForm] = useState({}); // 搜索表单项
   const ref = useRef<ProFormInstance>();
   const tableRef = useRef<ActionType>();
+
+  // 查看详情弹窗
+  const [detailInfo, setDetailInfo] = useState<API.ModalDataType>({
+    visible: false,
+    title: '查看详情',
+    currentRow: {},
+  });
 
   const [ItemOptions, setItemOptions] = useState<
     Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
@@ -53,6 +61,10 @@ const TableList: React.FC = () => {
     setAddModelInfo((s) => ({ ...s, visible: true }));
   };
 
+  const onDetail = (record: API.ScreeningStudentListItem)  => {
+    setDetailInfo((s) => ({...s, visible: true, currentRow: {screeningPlanStudentId: record?.planStudentId, screeningPlanId}}))
+  };
+
   /**
    * @desc 重置
    */
@@ -81,20 +93,20 @@ const TableList: React.FC = () => {
     refresh && onSearch();
   };
 
-  const columns: ProColumns<API.StudentListItem>[] = [
+  const columns: ProColumns<API.ScreeningStudentListItem>[] = [
     ...listColumns,
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: () => [
+      render: (_, record) => [
         <DynamicButtonGroup key="operator">
-          <SwitchableButton key="detail" icon="icon-a-Group120">
+          <SwitchableButton key="detail" icon="icon-a-Group120" onClick={() => onDetail(record)}>
             筛查详情
           </SwitchableButton>
-          <SwitchableButton key="manage" icon="icon-a-Group120" href={'/#/screening/play/archives'}>
+          {record.id && <SwitchableButton key="manage" icon="icon-a-Group120" href={`/#/screening/play/archives?id=${record?.id}`}>
             学生档案
-          </SwitchableButton>
+          </SwitchableButton>}
         </DynamicButtonGroup>,
       ],
     },
@@ -112,7 +124,7 @@ const TableList: React.FC = () => {
             <DynamicForm {...ItemOptions} onSearch={onSearch} onReset={onReset} />
           </ProForm>
         </Card>
-        <ProTable<API.StudentListItem, API.PageParams>
+        <ProTable<API.ScreeningStudentListItem, API.PageParams>
           rowKey="planStudentId"
           pagination={{ pageSize: 10 }}
           options={false}
@@ -156,7 +168,8 @@ const TableList: React.FC = () => {
           columns={columns}
         />
       </TableListCtx.Provider>
-      <AddModal {...addModelInfo} onCancel={onCancel}></AddModal>
+      <AddModal {...addModelInfo} onCancel={onCancel} />
+      <DetailModal {...detailInfo} onCancel={() => setDetailInfo((s) => ({...s, visible: false, currentRow: {}}))} />
     </PageContainer>
   );
 };

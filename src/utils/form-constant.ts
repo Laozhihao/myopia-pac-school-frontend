@@ -29,11 +29,6 @@ export const SCREENTYPEOPTIONS = {
   0: '协助筛查',
 };
 
-// 证件
-export const CERTIFICATESTYPEOPTIONS = {
-  idCard: '身份证',
-  passport: '协助筛查',
-};
 
 export const SITUATIONOPTION = [
   { label: '新生儿', value: 0 },

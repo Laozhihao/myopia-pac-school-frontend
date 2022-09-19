@@ -3,16 +3,6 @@ import { EMPTY } from '@/utils/constant';
 import { getPercentage, getTotalNumber } from '@/utils/common';
 
 
-// 幼儿园类型
-// const kindergartenType = 5;
-
-// /**
-//  * @desc 处理课桌椅几号显示
-//  * @param record 行记录
-//  * @param type 课桌椅类型key
-//  */
-// const getTypeNumShow = (record: any, type: string) =>
-//   record[type].map((n: any) => (record.schoolAge === kindergartenType ? `幼${n}` : n)).join('或');
 
 export const screeningColumns: ProColumns<API.ScreenResultListItem>[] = [
   {

@@ -21,7 +21,7 @@ const NoticeIconView = () => {
 
   useEffect(() => {
     // 在登录状态中才定时请求
-    getToken() && run();
+    // getToken() && run();
   }, []);
 
   const onRouter = (item: any, props: any) => {

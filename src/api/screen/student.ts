@@ -17,3 +17,12 @@ export async function addScreeningStudentList(params: API.ObjectType, options?: 
     ...(options || {}),
   });
 }
+
+/** 详情 GET /school/vision/screening/studentScreeningDetail */
+export async function getScreeningStudentDetailList(params: API.ObjectType, options?: API.ObjectType) {
+  return request<API.RequestResult>('/school/vision/screening/studentScreeningDetail', {
+    method: 'GET',
+    params,
+    ...(options || {}),
+  });
+}

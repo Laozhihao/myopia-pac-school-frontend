@@ -68,16 +68,18 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
 
     // inputGroup
     inputGroup: (item: API.FilterListType & { bottom?: number; onPressEnter?: () => void }) => (
-      <InputGroup
-        {...item}
-        valueEnum={item?.valueEnum}
-        selectOption={
-          item?.valueEnum
-            ? undefined
-            : getOptions(props?.listTypeInfo?.[item?.list] ?? [], item?.fieldNames)
-        }
-        onPressEnter={props[item?.event || 'onSearch']}
-      />
+      <Form.Item label={item?.showLabel ? item?.label : ''} style={{ marginBottom: 0 }}>
+        <InputGroup
+          {...item}
+          valueEnum={item?.valueEnum}
+          selectOption={
+            item?.valueEnum
+              ? undefined
+              : getOptions(props?.listTypeInfo?.[item?.list] ?? [], item?.fieldNames)
+          }
+          onPressEnter={props[item?.event || 'onSearch']}
+        />
+      </Form.Item>
     ),
 
     // 输入文本框

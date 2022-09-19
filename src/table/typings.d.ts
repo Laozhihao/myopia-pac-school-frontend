@@ -26,6 +26,27 @@ declare namespace API {
     passport?: string; // 护照
   } & MyopiaType;
 
+
+  // 筛查学生列表
+  type ScreeningStudentListItem = {
+    id?: React.Key,
+    planStudentId?: React.Key,
+    screeningCode?: string,
+    sno?: string,
+    name?: string,
+    gender?: string,
+    gradeName?: string,
+    className?: string,	
+    glassesTypeDes?: string, // 戴镜情况		
+    nakedVision?: string, // 裸眼视力（右/左）					
+    correctedVision?: string, // 矫正视力（右/左）		
+    sph?: string, // 球镜（右/左）	
+    cyl?: string, // 柱镜（右/左）
+    axial?: string, // 轴位（右/左）	
+    state?: React.Key, // 未做检查原因	
+    dataIntegrity?: string // 数据完整性
+  };
+
   // 档案管理列表
   type FileListItem = {
     templateId: string | number;

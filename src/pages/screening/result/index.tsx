@@ -1,6 +1,6 @@
 import React, { useMemo, Fragment } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Tabs, Card, Button, Modal, message, Row, Col, Space } from 'antd';
+import { Tabs, Card, Button, message, Row, Col, Space } from 'antd';
 import {
   screeningColumns,
   teenagersSituationColumns,
@@ -25,10 +25,9 @@ import {
   exportScreeningData,
 } from '@/api/screen/plan';
 import styles from './index.less';
-import { EMPTY, DATE, SCREENSTATUS, GLASSESSUGGESTTYPE, EMPTY_TEXT, SCREENING_TYPE_LIST } from '@/utils/constant';
+import { EMPTY, DATE, SCREENSTATUS, SCREENING_TYPE_LIST } from '@/utils/constant';
 import { getScreeningDetail } from '@/api/screen/plan';
 import moment from 'moment';
-import { modalConfig } from '@/hook/ant-config';
 import type { IdsType } from './notice-report/index';
 import { SCREENTYPEOPTIONS } from '@/utils/form-constant';
 
@@ -40,13 +39,6 @@ type DetailType = {
   title?: string; // 标题
 };
 
-type VisitResultType = {
-  visible: boolean;
-  glassesSuggest?: string;
-  visitResult?: string;
-};
-
-// let searchForm = {}; // 搜索表单项
 
 const ScreeningResult: React.FC = () => {
   const [exportVisible, setExportVisible] = useState(false); // 导出visible
@@ -58,11 +50,7 @@ const ScreeningResult: React.FC = () => {
   const [resultInfo, setResultInfo] = useState<API.ScreenResultListItem[]>([]); // 结果分析
   // const [gradeOption, setGradeOption] = useState<any[]>([]);
   const [schoolDetail, setSchoolDetail] = useState<API.ObjectType>({}); // 筛查详情
-  const [visitResultInfo, setVisitResultInfo] = useState<VisitResultType>({
-    visible: false,
-    glassesSuggest: '',
-    visitResult: '',
-  }); // 医院复查反馈弹窗
+
   const [reportVisible, setReportVisible] = useState(false); // 通知书弹窗
   const [ids, setIds] = useState<IdsType>();
   const [exportType, setExportType] = useState(0); // 导出弹窗类型 0 筛查报告 1 筛查数据 2 学生跟踪数据
@@ -291,22 +279,6 @@ const ScreeningResult: React.FC = () => {
       >
         <p className={styles.content}>导出内容：{exportOptions[exportType].content}</p>
       </ExportModal>
-      <Modal
-        title="医生复查反馈"
-        {...visitResultInfo}
-        onCancel={() => setVisitResultInfo({ ...visitResultInfo, visible: false })}
-        footer={null}
-        {...modalConfig}
-      >
-        <Row>
-          <Col span={4}>建议配镜：</Col>
-          <Col span={20}>{GLASSESSUGGESTTYPE[visitResultInfo?.glassesSuggest!] ?? EMPTY_TEXT}</Col>
-        </Row>
-        <Row>
-          <Col span={4}>医生诊断：</Col>
-          <Col span={20}>{visitResultInfo?.visitResult}</Col>
-        </Row>
-      </Modal>
     </PageContainer>
   );
 };

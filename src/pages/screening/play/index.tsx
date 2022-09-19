@@ -151,6 +151,7 @@ const TableList: React.FC = () => {
                   icon="icon-a-Group120"
                   disabled={!record?.schoolStatisticId}
                   tooltip={!record?.schoolStatisticId ? '当前没有筛查结果' : ''}
+                  onClick={() => {console.log('22')}}
                 >
                   筛查结果
                 </SwitchableButton>,

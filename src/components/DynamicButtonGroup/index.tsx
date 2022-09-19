@@ -24,9 +24,10 @@ const DynamicButtonGroup: React.FC<DynamicButtonGroupProps> = ({ children }) => 
               <Menu>
                 {next.map((item, index) => (
                   <Menu.Item key={index}>
-                    {cloneElement(item as React.FunctionComponentElement<MoreTypeProps>, {
+                    {item}
+                    {/* {cloneElement(item as React.FunctionComponentElement<MoreTypeProps>, {
                       isMoreType: true,
-                    })}
+                    })} */}
                   </Menu.Item>
                 ))}
               </Menu>

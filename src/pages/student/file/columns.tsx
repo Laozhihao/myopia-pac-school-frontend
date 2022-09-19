@@ -1,6 +1,5 @@
 import type { ProColumns } from '@ant-design/pro-table';
-import { EMPTY, STATE_TEXT } from '@/utils/constant';
-import { MYOPIAWARNOPTION } from '@/utils/constant';
+import { EMPTY, STATE_TEXT, MYOPIAWARNOPTION } from '@/utils/constant';
 import { Badge } from 'antd';
 import { visionResultColumn } from '@/utils/columns';
 import { formatLength, typeNumberHandle, symbolHandle } from '@/utils/common';

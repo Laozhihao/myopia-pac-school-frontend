@@ -1,17 +1,20 @@
-// import { defaultRulesConfig } from '@/utils/common';
-import { InputGroup } from '@/components/DynamicForm/input-group';
 import { getNationOption } from '@/hook/district';
 import LazyCascader from '@/pages/components/lazy-cascader';
+import { isPassport } from '@/utils/common';
 import { SEXOPTION, EDUCATIONOPTION, OCCUPATIONOPTION } from '@/utils/constant';
-import { CERTIFICATESTYPEOPTIONS } from '@/utils/form-constant';
+import {  IDENTITYINFORMATIONOPTIONS } from '@/utils/form-constant';
+import { isPhoneNum86, isIdCard } from '@vistel/vistel-utils/lib/validator';
 import { Form, Radio } from 'antd';
+
+
+const cache = {}; // 用来缓存身份证/证件号
 
 const nationArr = await getNationOption();
 const commonConfig = {
   col: { span: 12 },
   showLabel: true,
 };
-export const FormItemOptions = (areaOption: any[]) => ({
+export const FormItemOptions = (ref?: any, areaOption?: any[], onAreaChange?: (e:any) => void) => ({
   filterList: [
     {
       label: '学号',
@@ -44,13 +47,43 @@ export const FormItemOptions = (areaOption: any[]) => ({
       ...commonConfig,
     },
     {
-      value: 'certificates',
+      label: '证件号',
+      type: 'inputGroup',
+      value: 'inputValue',
+      selectName: 'selectValue',
+      inputName: 'inputValue',
       ...commonConfig,
-      slot: <Form.Item label="证件号" style={{ marginBottom: 0 }} >
-        <InputGroup valueEnum={CERTIFICATESTYPEOPTIONS} selectInitial="idCard" fieldProps={{
-          onChange: e => console.log(e, '3'),
-        }}></InputGroup>
-      </Form.Item>,
+      selectInitial: ref?.current?.getFieldValue('passport') ? 'passport' : 'idCard',
+      valueEnum: IDENTITYINFORMATIONOPTIONS,
+      rules: [
+        {
+          validator(_: any, value: any) {
+            const { selectValue } = ref?.current?.getFieldValue();
+            const idCardFlag = selectValue === 'idCard'; // 证件号类型标志位
+            if (!value)
+              return idCardFlag ? Promise.reject('请输入身份证号') : Promise.reject('请输入护照号');
+
+            // 身份证
+            if (idCardFlag && !isIdCard(value)) return Promise.reject('请输入正确的身份证号');
+
+            // 护照号
+            if (!idCardFlag && !isPassport(value)) return Promise.reject('请输入正确的护照号');
+            return Promise.resolve();
+          },
+        },
+      ],
+      fieldProps: {
+        onChange: (val: string | number) => {
+          const { inputValue } = ref?.current?.getFieldValue();
+          cache[val === 'idCard' ? 'passport' : 'idCard'] = inputValue;
+          ref?.current?.resetFields(['inputValue']); // 重置值和验证状态
+          ref?.current?.setFieldsValue({ inputValue: cache[val] });
+        },
+      },
+      inputChange: (e: { target: { value: any } }) => {
+        const { selectValue } = ref?.current?.getFieldValue();
+        cache[selectValue] = e.target.value;
+      },
     },
     {
       value: 'isNewbornWithoutIdCard',
@@ -64,7 +97,7 @@ export const FormItemOptions = (areaOption: any[]) => ({
     {
       label: '出生日期',
       type: 'datePicker',
-      value: 'date',
+      value: 'birthday',
       ...commonConfig,
     },
     {
@@ -103,7 +136,7 @@ export const FormItemOptions = (areaOption: any[]) => ({
       options={areaOption}
       fieldNames={{ label: 'name', value: 'code', children: 'child' }}
       originProps={{
-        onChange: () => {},
+        onChange: (e:any) => onAreaChange?.(e),
       }}
     />
     },
@@ -112,11 +145,8 @@ export const FormItemOptions = (areaOption: any[]) => ({
       value: 'type',
       type: 'select',
       list: 'typeList',
-      showLabel: true,
-      col: {
-        span: 12,
-        // offset: 12,
-      },
+      fieldNames: { label: 'name', value: 'id' },
+      ...commonConfig,
     },
     {
       label: '筛查内容',

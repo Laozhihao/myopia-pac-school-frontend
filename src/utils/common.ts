@@ -169,3 +169,15 @@ export function getCorrectPath(path: string) {
   // 本地是一个 / ，线上包含二级域名 /school/
   return `${location.pathname}${path}`;
 }
+
+
+/**
+ * @desc 值大于0，默认需要增加一个+号
+ * @param {number} num - 数据
+ * @param {number} digit - 保留几位小数
+ * @param {string} prefix - + 加号
+ */
+ export function getCorrectNum(num: any, digit = 2, prefix = '+') {
+  const val = Number(num);
+  return `${val >= 0 ? prefix : ''}${getFixedNum(val, digit)}`;
+}

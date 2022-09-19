@@ -1,7 +1,7 @@
 import type { ProColumns } from '@ant-design/pro-table';
 import { INSPECTIONINSTRUCTIONS, TABLESEXOPTION } from '@/utils/constant';
 
-export const listColumns: ProColumns<API.StudentListItem>[] = [
+export const listColumns: ProColumns<API.ScreeningStudentListItem>[] = [
   {
     title: '筛查编码',
     dataIndex: 'screeningCode',

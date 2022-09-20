@@ -1,36 +1,40 @@
 import type { ProColumns } from '@ant-design/pro-table';
-import { SCREENSTATUS } from '@/utils/constant';
+import { EMPTY, SCREENSTATUS } from '@/utils/constant';
+import { INSTITUTIONALREVIEWOPTION, SITUATIONOPTION } from '@/utils/form-constant';
 
 export const listColumns: ProColumns<API.StudentListItem>[] = [
   {
     title: '检查日期',
-    dataIndex: 'releaseTime',
+    dataIndex: 'updateTime',
     valueType: 'date',
   },
   {
     title: '对应月龄',
-    dataIndex: 'index',
-    valueType: 'index',
+    dataIndex: 'monthAge',
+    renderText: (text) => (SITUATIONOPTION[text] ? SITUATIONOPTION[text].label : EMPTY)
   },
   {
     title: '检查前-转诊',
-    dataIndex: 'title',
+    dataIndex: 'isReferral',
+    render: () => {
+      return <span>查看</span>
+    }
   },
   {
     title: '眼病筛查及视力评估',
-    dataIndex: 'startTime',
+    dataIndex: 'conclusion',
   },
   {
     title: '就诊医院',
-    dataIndex: 'releaseStatus',
-    valueEnum: SCREENSTATUS,
+    dataIndex: 'hospitalName',
   },
   {
     title: '医师',
-    dataIndex: 'planScreeningNumbers',
+    dataIndex: 'doctorsName',
   },
   {
     title: '状态',
-    dataIndex: 'realScreeningNumbers',
+    dataIndex: 'referralStatus',
+    valueEnum: INSTITUTIONALREVIEWOPTION,
   },
 ];

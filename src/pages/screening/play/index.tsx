@@ -154,6 +154,15 @@ const TableList: React.FC = () => {
                 >
                   筛查结果
                 </SwitchableButton>,
+
+                <SwitchableButton
+                  key="manage"
+                  icon="icon-a-Group120"
+                  disabled={!record?.schoolStatisticId}
+                  tooltip={!record?.schoolStatisticId ? '当前没有筛查结果' : ''}
+                  >
+                  筛查结果
+                </SwitchableButton>,
                 <SwitchableButton key="student" icon="icon-a-Group120" >
                   数据上交
                 </SwitchableButton>,

@@ -1,20 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Divider, Space } from 'antd';
-import { EMPTY } from '@/utils/constant';
+import { EMPTY, TABLESEXOPTION } from '@/utils/constant';
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';
 import { listColumns } from './columns';
 import styles from '../inspectFile/index.less';
 import { CarryOutOutlined, SkinOutlined, UserOutlined } from '@ant-design/icons';
+import { history } from 'umi';
 import DynamicButtonGroup from '@/components/DynamicButtonGroup';
 import SwitchableButton from '@/components/SwitchableButton';
+import { StudentInfoType } from '../typings';
+import { getStudentReportList } from '@/api/screen/archives';
 
 export const TreatmentFile: React.FC = () => {
   const childInfo = [
     { value: 'name', icon: <UserOutlined /> },
     { value: 'birthdayInfo', icon: <CarryOutOutlined /> },
-    { value: 'gender', icon: <SkinOutlined /> },
+    { value: 'gender', icon: <SkinOutlined />, slot: (val: StudentInfoType) => val?.gender && TABLESEXOPTION[val?.gender] },
   ];
+
+  const [studentInfo, setStudentInfo] = useState<StudentInfoType>({});
+
+  const { query: { id } = {} } = history.location;
 
   const columns: ProColumns<API.ScreenListItem>[] = [
     ...listColumns,
@@ -40,6 +47,7 @@ export const TreatmentFile: React.FC = () => {
         {childInfo.map((item) => (
           <span key={item.value}>
             {item.icon}
+            <span style={{marginLeft: 8}}>{item.slot ? item.slot(studentInfo) : studentInfo?.[item.value]}</span>
             <Divider type="vertical" />
           </span>
         ))}
@@ -54,25 +62,19 @@ export const TreatmentFile: React.FC = () => {
           x: '100vw',
         }}
         style={{ marginTop: 15 }}
-        // columnsStateMap={{
-        //   sno: {
-        //     fixed: 'left',
-        //   },
-        //   option: {
-        //     fixed: 'right',
-        //   },
-        // }}
-        // request={async (params) => {
-        //   const { data } = await getStudentList({
-        //     current: params.current,
-        //     size: params.pageSize,
-        //   });
-        //   return {
-        //     data: data?.records || [],
-        //     success: true,
-        //     total: data?.total || 0,
-        //   };
-        // }}
+        request={async (params) => {
+          const { data } = await getStudentReportList({
+            id,
+            current: params.current,
+            size: params.pageSize,
+          });
+          setStudentInfo(data?.studentInfo);
+          return {
+            data: data?.pageData?.records || [],
+            success: true,
+            total: data?.pageData?.total || 0,
+          };
+        }}
         columns={columns}
       />
     </>

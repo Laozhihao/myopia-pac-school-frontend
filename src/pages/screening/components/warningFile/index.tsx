@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
 import { Col, Modal, Row, Space } from 'antd';
-import { EMPTY, EMPTY_TEXT, GLASSESSUGGESTTYPE } from '@/utils/constant';
+import { EMPTY, EMPTY_TEXT, GLASSESSUGGESTTYPE, TABLESEXOPTION } from '@/utils/constant';
 import ProTable from '@ant-design/pro-table';
 import { columns } from './columns';
 import { getStudentWarningArchiveList } from '@/api/screen/archives';
 import { history } from 'umi';
 import { modalConfig } from '@/hook/ant-config';
-
-
-type VisitResultType = {
-  visible: boolean;
-  glassesSuggest?: string;
-  visitResult?: string;
-};
+import { StudentInfoType, VisitResultType } from '../typings';
 
 export const WarningFile: React.FC = () => {
 
@@ -24,6 +18,8 @@ export const WarningFile: React.FC = () => {
     visitResult: '',
   }); // 医院复查反馈弹窗
 
+  const [studentInfo, setStudentInfo] = useState<StudentInfoType>({});
+
   const onShow = (record: { glassesSuggest: any; visitResult: any; }) => {
     setVisitResultInfo({visible: true, glassesSuggest: record?.glassesSuggest, visitResult: record?.visitResult});
   }
@@ -31,13 +27,13 @@ export const WarningFile: React.FC = () => {
   return (
     <>
       <Space size={30}>
-        <span>学号：</span>
-        <span>姓名：</span>
-        <span>年级班级：</span>
-        <span>性别：</span>
+        <span>学号：{studentInfo?.sno}</span>
+        <span>姓名：{studentInfo?.name}</span>
+        <span>年级班级：{`${studentInfo?.gradeName}-${studentInfo?.className}`}</span>
+        <span>性别：{ studentInfo?.gender ? TABLESEXOPTION[studentInfo?.gender] : ''}</span>
       </Space>
       <ProTable<API.StudentListItem, API.PageParams>
-        rowKey="id"
+        rowKey="screeningPlanSchoolStudentId"
         pagination={{ pageSize: 10 }}
         options={false}
         columnEmptyText={EMPTY}
@@ -51,7 +47,7 @@ export const WarningFile: React.FC = () => {
             current: params.current,
             size: params.pageSize,
           });
-          console.log(data, '22');
+          setStudentInfo(data?.studentInfo);
           return {
             data: data?.pageData?.records || [],
             success: true,

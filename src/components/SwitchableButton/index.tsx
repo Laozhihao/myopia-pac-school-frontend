@@ -37,7 +37,7 @@ const SwitchableButton: React.FC<SwitchableButtonProps> = ({
       </div>
     </div>
   ) : (
-    <Button type="link" {...rest}>
+    <Button {...rest} type="link">
       {icon && <IconFont type={icon} />}
       {children}
     </Button>

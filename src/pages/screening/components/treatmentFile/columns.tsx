@@ -1,35 +1,36 @@
 import type { ProColumns } from '@ant-design/pro-table';
-import { SCREENSTATUS } from '@/utils/constant';
+import { GLASSESSUGGESTTYPE } from '@/utils/constant';
+import { Image } from 'antd';
 
 export const listColumns: ProColumns<API.StudentListItem>[] = [
   {
     title: '检查日期',
-    dataIndex: 'releaseTime',
+    dataIndex: 'createTime',
     valueType: 'date',
   },
   {
     title: '配镜',
-    dataIndex: 'index',
-    valueType: 'index',
+    dataIndex: 'glassesSituation',
+    valueEnum: GLASSESSUGGESTTYPE,
   },
   {
     title: '医生诊断',
-    dataIndex: 'title',
-    // render: (_, record) => {
-    //   return <p title={record?.title}>{record?.title ? formatLength(record?.title) : EMPTY}</p>;
-    // },
+    dataIndex: 'medicalContent',
   },
   {
     title: '处方',
-    dataIndex: 'startTime',
+    dataIndex: 'imageFileUrl',
+    render: (text?: any) => {
+      return  text?.length ? <Image.PreviewGroup>{
+        text.map((item: string, index: number) => <Image key={index} height={28} src={item} /> )}</Image.PreviewGroup> : null 
+    }
   },
   {
     title: '就诊医院',
-    dataIndex: 'releaseStatus',
-    valueEnum: SCREENSTATUS,
+    dataIndex: 'hospitalName',
   },
   {
     title: '医师',
-    dataIndex: 'planScreeningNumbers',
+    dataIndex: 'doctorName',
   },
 ];

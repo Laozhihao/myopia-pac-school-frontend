@@ -7,9 +7,9 @@ import { FormItemOptions, FormInfoItemOptions } from './form-item';
 import styles from './index.less';
 import { getschoolGrade } from '@/api/school';
 import { convertData } from '@/utils/common';
-
+import { history } from 'umi';
 import { getCascaderOption } from '@/hook/district';
-import { getManagementWorkbenchDistrict } from '@/api/screen/archives';
+import { getManagementWorkbenchDistrict, getStudentBaseInfoList } from '@/api/screen/archives';
 import LazyCascader from '@/pages/components/lazy-cascader';
 
 type BasicInfoForm = {
@@ -24,6 +24,7 @@ type BasicInfoForm = {
   motherDiploma: string
   motherProfession: string
   gradeIds: string[]
+  addressArr?: React.Key[]
 }
 
 export const BasicInfo: React.FC = () => {
@@ -35,6 +36,8 @@ export const BasicInfo: React.FC = () => {
     Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
   >({ ...FormItemOptions(ref, [], () => {}
   ) });
+
+  const { query: { id } = {} } = history.location;
 
 
   // 地区修改
@@ -53,19 +56,31 @@ export const BasicInfo: React.FC = () => {
     }
   }
 
+  /**
+   * @desc 初始化回填
+   */
+  const init = async () => {
+    const { data } = await getStudentBaseInfoList(id as React.Key);
+    ref?.current?.setFieldsValue(data);
+    console.log(data, '123');
+
+  }
+
   useMemo(async () => {
     const arr = await getCascaderOption();
     setAreaOption(arr);
     const { data = [] } = await getschoolGrade();
     const targetData = FormItemOptions(ref, arr, onAreaChange); // 更新传递地区参数
     setItemOptions({ ...targetData, listTypeInfo: { ...targetData.listTypeInfo, gradeOptions: convertData(data) }});
+    init();
   }, []);
 
+
+  // 更新基本资料
   const onUpdate = () => {
     const value = ref?.current?.getFieldsValue()!;
-    console.log(value, 'value');
-    const { gradeIds = [], fatherName, fatherPhone, fatherBirthday, fatherDiploma, fatherProfession,  motherName, motherPhone, motherBirthday, motherDiploma, motherProfession} = value;
-    console.log(ItemOptions, 'ItemOptions');
+    const { gradeIds = [], fatherName, fatherPhone, fatherBirthday, fatherDiploma, fatherProfession,  motherName, motherPhone, motherBirthday, motherDiploma, motherProfession, addressArr = []} = value;
+    const [provinceCode, cityCode, areaCode, townCode] = addressArr;
     const parmKey = ['sno', 'nation', 'name', 'gender', 'parentPhone', 'birthday'];
     const parm = {}
     parmKey.forEach(element => {
@@ -87,9 +102,17 @@ export const BasicInfo: React.FC = () => {
         profession: motherProfession,
       },
       gradeId: gradeIds[0],
-      classId: gradeIds[1]
+      classId: gradeIds[1],
+      provinceCode, 
+      cityCode, 
+      areaCode, 
+      townCode,
     });
     console.log(parm, 'pram');
+  }
+
+  const changeRegion = (value: string | any[]) => {
+    setAddressFlag(!value.length);
   }
 
   return (
@@ -108,12 +131,12 @@ export const BasicInfo: React.FC = () => {
         name="region"
         options={areaOption}
         fieldNames={{ label: 'name', value: 'code', children: 'child' }}
-        // originProps={{
-        //   onChange: changeRegion,
-        // }}
+        originProps={{
+          onChange: changeRegion,
+        }}
       />
       <ProFormTextArea
-        name="remark"
+        name="address"
         disabled={addressFlag}
         fieldProps={{ maxLength: 50 }}
         placeholder="请输入详细地址"

@@ -132,7 +132,7 @@ export const FormItemOptions = (ref?: any, areaOption?: any[], onAreaChange?: (e
       },
       slot: <LazyCascader
       label="省市县镇（街道）"
-      name="address"
+      name="addressArr"
       options={areaOption}
       fieldNames={{ label: 'name', value: 'code', children: 'child' }}
       originProps={{

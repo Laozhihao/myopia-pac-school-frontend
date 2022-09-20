@@ -11,7 +11,7 @@ import { message } from 'antd';
 export const PlanModal: React.FC<API.ModalItemType> = (props) => {
   const modalRef = useRef<ProFormInstance>();
   const [screeningStudentInfo, setScreeningStudentInfo] = useState<API.ObjectType>({
-    noSelectList: [],
+    allList: [],
     selectList: [],
   });
 
@@ -25,16 +25,14 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
       const parm = currentRow ? { screeningPlanId: currentRow?.planId } : undefined;
       const { data = {} } = await getScreeningStudent(parm);
       setScreeningStudentInfo(data);
-      // 编辑回填
-      currentRow &&
-        modalRef?.current?.setFieldsValue({
-          ...currentRow,
-          time: [currentRow?.startTime, currentRow?.endTime],
-          gradeIds:
-            Array.isArray(data?.selectList) && data?.selectList.length
-              ? data?.selectList.map((item: API.GradeInfoType) => item.gradeId)
-              : [],
-        });
+
+      modalRef?.current?.setFieldsValue({
+        ...currentRow,
+        time: currentRow ? [currentRow?.startTime, currentRow?.endTime] : [],
+        gradeIds: currentRow
+          ? data?.selectList.map((item: API.GradeInfoType) => item.gradeId)
+          : data?.allList?.map((item: API.GradeInfoType) => item.gradeId),
+      });
     }
   }, [visible]);
 
@@ -66,7 +64,7 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
         onCancel: () => props.onCancel(false),
       }}
     >
-      <DynamicForm {...FormItemOptions(screeningStudentInfo?.noSelectList)} isNeedBtn={false} />
+      <DynamicForm {...FormItemOptions(screeningStudentInfo?.allList)} isNeedBtn={false} />
     </ModalForm>
   );
 };

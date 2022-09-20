@@ -193,7 +193,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   // 用fetches管理并发请求的多个loading 就无须声明多个loading变量 (二维码请求)
   const { run } = useRequest(getScreeningQrcode, {
     manual: true,
-    fetchKey: (params: { type: any; }) => params.type,
+    fetchKey: (params: { type: any }) => params.type,
     onSuccess: (result: any) => {
       result && openPdf(result);
       setLoading(false);

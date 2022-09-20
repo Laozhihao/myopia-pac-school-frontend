@@ -34,12 +34,6 @@ export default [
         hideInMenu: true,
       },
       {
-        name: '学生档案',
-        path: '/screening/play/archives',
-        component: './screening/play/archives',
-        hideInMenu: true,
-      },
-      {
         path: '/screening/play/result',
         component: './screening/result',
         name: '筛查结果',

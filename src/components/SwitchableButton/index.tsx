@@ -37,10 +37,12 @@ const SwitchableButton: React.FC<SwitchableButtonProps> = ({
       </div>
     </div>
   ) : (
-    <Button {...rest} type="link">
-      {icon && <IconFont type={icon} />}
-      {children}
-    </Button>
+    <Tooltip title={needTooltip && tooltip}>
+      <Button type="link" {...rest}>
+        {icon && <IconFont type={icon} />}
+        {children}
+      </Button>
+    </Tooltip>
   );
 };
 

@@ -26,25 +26,24 @@ declare namespace API {
     passport?: string; // 护照
   } & MyopiaType;
 
-
   // 筛查学生列表
   type ScreeningStudentListItem = {
-    id?: React.Key,
-    planStudentId?: React.Key,
-    screeningCode?: string,
-    sno?: string,
-    name?: string,
-    gender?: string,
-    gradeName?: string,
-    className?: string,	
-    glassesTypeDes?: string, // 戴镜情况		
-    nakedVision?: string, // 裸眼视力（右/左）					
-    correctedVision?: string, // 矫正视力（右/左）		
-    sph?: string, // 球镜（右/左）	
-    cyl?: string, // 柱镜（右/左）
-    axial?: string, // 轴位（右/左）	
-    state?: React.Key, // 未做检查原因	
-    dataIntegrity?: string // 数据完整性
+    id?: React.Key;
+    planStudentId?: React.Key;
+    screeningCode?: string;
+    sno?: string;
+    name?: string;
+    gender?: string;
+    gradeName?: string;
+    className?: string;
+    glassesTypeDes?: string; // 戴镜情况
+    nakedVision?: string; // 裸眼视力（右/左）
+    correctedVision?: string; // 矫正视力（右/左）
+    sph?: string; // 球镜（右/左）
+    cyl?: string; // 柱镜（右/左）
+    axial?: string; // 轴位（右/左）
+    state?: React.Key; // 未做检查原因
+    dataIntegrity?: string; // 数据完整性
   };
 
   // 档案管理列表
@@ -92,32 +91,8 @@ declare namespace API {
     screeningOrgName?: string; // 筛查机构名称
     content?: string; // 内容
     releaseTime?: string; // 通知日期
+    hasScreeningResults?: boolean; // 是否有筛查结果
   };
-
-  // // 筛查结果列表
-  // type ScreenResultListItem = {
-  //   id?: string;
-  //   screeningPlanId?: number | string; // 计划id
-  //   screeningOrgId?: number | string; // 筛查计划id
-  //   planScreeningNumbers?: number; // 预计筛查学生数
-  //   realScreeningNumbers?: number; // 实际筛查学生数
-  //   validScreeningNumbers: number; // 有效实际筛查学生数
-  //   myopiaNumbers?: number; // 近视人数
-  //   myopiaRatio?: number; // 近视比例
-  //   myopiaLevelLight?: number;
-  //   myopiaLevelMiddle?: number;
-  //   avgLeftVision?: number; // 平均视力 （左眼）
-  //   avgRightVision?: number; // 平均视力 （右眼）
-  //   wearingGlassesNumbers?: number; // 戴镜人数
-  //   visionLabel0Numbers?: number; // 0级预警人数
-  //   visionLabel1Numbers?: number; // 1级预警人数
-  //   visionLabel2Numbers?: number; // 2级预警人数
-  //   visionLabel3Numbers?: number; // 3级预警人数
-  //   myopiaLevelInsufficient?: number; // 远视储备不足人数
-  //   treatmentAdviceNumbers?: number; // 就诊学生数
-  //   reviewNumbers?: number; // 就诊医院数
-  //   bindMpNumbers?: number; // 绑定公众号人数
-  // };
 
   // 筛查结果列表
   type ScreenResultListItem = {
@@ -143,9 +118,6 @@ declare namespace API {
     reviewNumbers?: number; // 就诊医院数
     bindMpNumbers?: number; // 绑定公众号人数
   };
-
-
-
 
   // 学生跟踪数据列表
   type ScreenWarnListItem = {

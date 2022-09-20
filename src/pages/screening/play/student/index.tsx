@@ -61,8 +61,12 @@ const TableList: React.FC = () => {
     setAddModelInfo((s) => ({ ...s, visible: true }));
   };
 
-  const onDetail = (record: API.ScreeningStudentListItem)  => {
-    setDetailInfo((s) => ({...s, visible: true, currentRow: {screeningPlanStudentId: record?.planStudentId, screeningPlanId}}))
+  const onDetail = (record: API.ScreeningStudentListItem) => {
+    setDetailInfo((s) => ({
+      ...s,
+      visible: true,
+      currentRow: { screeningPlanStudentId: record?.planStudentId, screeningPlanId },
+    }));
   };
 
   /**
@@ -104,9 +108,15 @@ const TableList: React.FC = () => {
           <SwitchableButton key="detail" icon="icon-a-Group120" onClick={() => onDetail(record)}>
             筛查详情
           </SwitchableButton>
-          {record.id && <SwitchableButton key="manage" icon="icon-a-Group120" href={`/#/screening/play/archives?id=${record?.id}`}>
-            学生档案
-          </SwitchableButton>}
+          {record.id && (
+            <SwitchableButton
+              key="manage"
+              icon="icon-a-Group120"
+              href={`/#/screening/play/archives?id=${record?.id}`}
+            >
+              学生档案
+            </SwitchableButton>
+          )}
         </DynamicButtonGroup>,
       ],
     },
@@ -169,7 +179,10 @@ const TableList: React.FC = () => {
         />
       </TableListCtx.Provider>
       <AddModal {...addModelInfo} onCancel={onCancel} />
-      <DetailModal {...detailInfo} onCancel={() => setDetailInfo((s) => ({...s, visible: false, currentRow: {}}))} />
+      <DetailModal
+        {...detailInfo}
+        onCancel={() => setDetailInfo((s) => ({ ...s, visible: false, currentRow: {} }))}
+      />
     </PageContainer>
   );
 };

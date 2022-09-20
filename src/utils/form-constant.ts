@@ -29,7 +29,6 @@ export const SCREENTYPEOPTIONS = {
   0: '协助筛查',
 };
 
-
 export const SITUATIONOPTION = [
   { label: '新生儿', value: 0 },
   { label: '满月', value: 1 },

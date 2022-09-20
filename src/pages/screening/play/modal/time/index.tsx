@@ -56,21 +56,23 @@ export const TimeModal: React.FC<API.ModalItemType> = (props) => {
       <p className={styles.screen_tip}>
         注：每次筛查计划有且仅有1次增加筛查时间的机会，请合理增加时间确保所负责的学校可以在该时间段内完成
       </p>
-      <ProFormSelect
-        label="增加筛查时间"
-        placeholder="请选择增加筛查时间"
-        name="endTime"
-        rules={defaultRulesConfig('请选择筛查时间')}
-        options={SCREENINGTIMEOPTIONS}
-        fieldProps={{
-          onChange,
-        }}
-      />
-      {selectTime ? (
-        <p className={styles.select_time}>
-          新的筛查时间 {`${currentRow?.startTime} 至 ${endTime}`}{' '}
-        </p>
-      ) : null}
+      <div className={styles.time_item}>
+        <ProFormSelect
+          label="增加筛查时间"
+          placeholder="请选择增加筛查时间"
+          name="endTime"
+          rules={defaultRulesConfig('选择筛查时间')}
+          options={SCREENINGTIMEOPTIONS}
+          fieldProps={{
+            onChange,
+          }}
+        />
+        {selectTime ? (
+          <p className={styles.select_time}>
+            新的筛查时间 {`${currentRow?.startTime} 至 ${endTime}`}{' '}
+          </p>
+        ) : null}
+      </div>
     </ModalForm>
   );
 };

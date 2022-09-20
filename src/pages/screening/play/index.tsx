@@ -69,7 +69,7 @@ const TableList: React.FC = () => {
   /**
    * @desc 创建/编辑筛查计划
    */
-  const onHandle = (title: string = '创建筛查计划', row: API.ScreenListItem = {}) => {
+  const onHandle = (title: string = '创建筛查计划', row: API.ScreenListItem) => {
     setPlanModalData({ visible: true, currentRow: row, title });
   };
 
@@ -119,67 +119,60 @@ const TableList: React.FC = () => {
       render: (_, record) => {
         return [
           <DynamicButtonGroup key="operator">
-            {record.releaseStatus ? [
-                <SwitchableButton
-                  key="student"
-                  icon="icon-a-Group120"
-                  href={`/#/screening/play/student?screeningPlanId=${record?.planId}`}
-                >
-                  筛查学生列表
-                </SwitchableButton>,
-
-                <SwitchableButton
-                  key="add_time"
-                  icon="icon-a-Group120"
-                  onClick={() => onAddSreenTime(record)}
-                >
-                  新增筛查时间
-                </SwitchableButton>,
-                <SwitchableButton
-                  key="print"
-                  onClick={() => {
-                    handleModalVisible(true);
-                    setCurrentRow(record);
-                  }}
-                  icon="icon-PrinterCode"
-                >
-                  打印二维码/告知书
-                </SwitchableButton>,
-                <SwitchableButton
-                  key="manage"
-                  href={`/#/screening/play/result/?id=${record?.schoolStatisticId}&screeningPlanId=${record?.planId}`}
-                  icon="icon-a-Group120"
-                  disabled={!record?.schoolStatisticId}
-                  tooltip={!record?.schoolStatisticId ? '当前没有筛查结果' : ''}
-                >
-                  筛查结果
-                </SwitchableButton>,
-
-                <SwitchableButton
-                  key="manage"
-                  icon="icon-a-Group120"
-                  disabled={!record?.schoolStatisticId}
-                  tooltip={!record?.schoolStatisticId ? '当前没有筛查结果' : ''}
+            {record.releaseStatus
+              ? [
+                  <SwitchableButton
+                    key="student"
+                    icon="icon-a-Group120"
+                    href={`/#/screening/play/student?screeningPlanId=${record?.planId}`}
                   >
-                  筛查结果
-                </SwitchableButton>,
-                <SwitchableButton key="student" icon="icon-a-Group120" >
-                  数据上交
-                </SwitchableButton>,
-                <SwitchableButton key="student" icon="icon-a-Group120">
-                  学校问卷
-                </SwitchableButton>,
-            ] : [
-                <Button type="link" key="edit" onClick={() => onHandle('创建筛查计划', record)}>
-                  编辑
-                </Button>,
-                <Button type="link" key="delete" onClick={() => onDelete(record?.planId!)}>
-                  删除
-                </Button>,
-                <Button type="link" key="release" onClick={() => onRelease(record?.planId!)}>
-                  发布
-                </Button>,
-              ]}
+                    筛查学生列表
+                  </SwitchableButton>,
+
+                  <SwitchableButton
+                    key="add_time"
+                    icon="icon-a-Group120"
+                    onClick={() => onAddSreenTime(record)}
+                  >
+                    新增筛查时间
+                  </SwitchableButton>,
+                  <SwitchableButton
+                    key="print"
+                    onClick={() => {
+                      handleModalVisible(true);
+                      setCurrentRow(record);
+                    }}
+                    icon="icon-PrinterCode"
+                  >
+                    打印二维码/告知书
+                  </SwitchableButton>,
+                  <SwitchableButton
+                    key="manage"
+                    href={`/#/screening/play/result/?screeningPlanId=${record?.planId}`}
+                    icon="icon-a-Group120"
+                    disabled={!record?.hasScreeningResults}
+                    tooltip={!record?.hasScreeningResults ? '当前没有筛查结果' : ''}
+                  >
+                    筛查结果
+                  </SwitchableButton>,
+                  // <SwitchableButton key="student" icon="icon-a-Group120" >
+                  //   数据上交
+                  // </SwitchableButton>,
+                  // <SwitchableButton key="student" icon="icon-a-Group120">
+                  //   学校问卷
+                  // </SwitchableButton>,
+                ]
+              : [
+                  <Button type="link" key="edit" onClick={() => onHandle('创建筛查计划', record)}>
+                    编辑
+                  </Button>,
+                  <Button type="link" key="delete" onClick={() => onDelete(record?.planId!)}>
+                    删除
+                  </Button>,
+                  <Button type="link" key="release" onClick={() => onRelease(record?.planId!)}>
+                    发布
+                  </Button>,
+                ]}
           </DynamicButtonGroup>,
         ];
       },

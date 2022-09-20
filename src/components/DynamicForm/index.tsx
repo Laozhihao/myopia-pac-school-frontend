@@ -14,6 +14,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import { InputGroup } from './input-group';
 import { getOptions } from '@/utils/common';
+import locale from 'antd/es/date-picker/locale/zh_CN';
 
 // 默认按钮配置类型
 type FormButtonType = {
@@ -155,6 +156,7 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
         fieldProps={{
           style: { width: '100%' },
           getPopupContainer,
+          locale,
           ...fieldProps,
         }}
       />

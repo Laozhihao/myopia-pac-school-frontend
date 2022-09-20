@@ -11,6 +11,7 @@ import {
   diseasesColumns2,
 } from './columns';
 import ProTable from '@ant-design/pro-table';
+import type { ProColumns } from '@ant-design/pro-table';
 import { InfoCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { history } from 'umi';
 import { AddModal } from './add-modal';
@@ -39,7 +40,6 @@ type DetailType = {
   title?: string; // 标题
 };
 
-
 const ScreeningResult: React.FC = () => {
   const [exportVisible, setExportVisible] = useState(false); // 导出visible
   const [detailInfo, setDetailInfo] = useState<DetailType>({
@@ -47,14 +47,14 @@ const ScreeningResult: React.FC = () => {
     tabKey: '',
     title: '',
   }); // 弹窗props
-  const [resultInfo, setResultInfo] = useState<API.ScreenResultListItem[]>([]); // 结果分析
-  // const [gradeOption, setGradeOption] = useState<any[]>([]);
+  const [resultInfo, setResultInfo] = useState<any[]>([]); // 结果分析
+
   const [schoolDetail, setSchoolDetail] = useState<API.ObjectType>({}); // 筛查详情
 
   const [reportVisible, setReportVisible] = useState(false); // 通知书弹窗
   const [ids, setIds] = useState<IdsType>();
   const [exportType, setExportType] = useState(0); // 导出弹窗类型 0 筛查报告 1 筛查数据 2 学生跟踪数据
-  const [ActiveKey, setActiveKey] = useState('8'); // tab 激活页
+  const [ActiveKey, setActiveKey] = useState('0'); // tab 激活页
 
   const { query: { screeningPlanId } = {} } = history.location;
   const { initialState } = useModel('@@initialState');
@@ -95,7 +95,6 @@ const ScreeningResult: React.FC = () => {
     { label: '小学及以上', key: '0' },
   ]);
 
-
   /**
    * @desc 字段说明弹窗
    */
@@ -111,20 +110,19 @@ const ScreeningResult: React.FC = () => {
 
   useMemo(async () => {
     if (screeningPlanId) {
-      // getScreeningGradeList(screeningPlanId as string).then((res) => {
-      //   setGradeOption(res?.data);
-      // });
-      getScreeningDetail(screeningPlanId as string).then((res) => {
-        setSchoolDetail(res?.data);
-      });
-
       const { data } = await getScreeningDetail(screeningPlanId as string);
+      const { optionTabs = [] } = data;
       setSchoolDetail(data);
-      const arr = tabList.filter(item => data?.optionTabs?.includes(~~[item.key]));
-      // setTabList(arr);
-      getScreeningResult({screeningPlanId, type: ~~ActiveKey }).then((res) => {
-        setResultInfo([res?.data]);
-      });
+      const tabOptionKeys = optionTabs.map((item: { type: any }) => item.type); // 有tab 的数据
+      const arr = tabList.filter((item) => tabOptionKeys.includes(Number([item.key])));
+      setTabList([...arr]);
+      if (optionTabs.length) {
+        setActiveKey(optionTabs[0].type.toString());
+        getScreeningResult(screeningPlanId as string, { type: Number(ActiveKey) }).then((res) => {
+          setResultInfo([res?.data]);
+          console.log(res, '222');
+        });
+      }
     }
   }, []);
 
@@ -183,7 +181,12 @@ const ScreeningResult: React.FC = () => {
                 {schoolDetail?.endTime ? moment(schoolDetail?.endTime).format(DATE) : EMPTY}
               </span>
               <span>筛查机构：{schoolDetail?.screeningOrgName}</span>
-              <span>筛查类型：{ `${(SCREENTYPEOPTIONS[schoolDetail?.screeningBizType] || EMPTY)}-${(SCREENING_TYPE_LIST[schoolDetail?.screeningType] || EMPTY)}`}</span>
+              <span>
+                筛查类型：
+                {`${SCREENTYPEOPTIONS[schoolDetail?.screeningBizType] || EMPTY}-${
+                  SCREENING_TYPE_LIST[schoolDetail?.screeningType] || EMPTY
+                }`}
+              </span>
               <span>状态：{SCREENSTATUS[schoolDetail?.releaseStatus]}</span>
             </Space>
           </Col>
@@ -231,18 +234,23 @@ const ScreeningResult: React.FC = () => {
                         </span>
                         <span className={styles.subTitle}>{activeItem.subTitle}</span>
                       </p>
-                      {activeItem.columns.map((eleItem, eleIndex) => (
-                        <ProTable<API.ScreenResultListItem>
-                          columns={eleItem}
-                          rowKey="id"
-                          key={eleIndex}
-                          className={styles.table}
-                          search={false}
-                          options={false}
-                          pagination={false}
-                          dataSource={resultInfo}
-                        />
-                      ))}
+                      {activeItem.columns.map(
+                        (
+                          eleItem: ProColumns<any, 'text'>[] | undefined,
+                          eleIndex: React.Key | null | undefined,
+                        ) => (
+                          <ProTable
+                            columns={eleItem}
+                            rowKey="id"
+                            key={eleIndex}
+                            className={styles.table}
+                            search={false}
+                            options={false}
+                            pagination={false}
+                            dataSource={resultInfo}
+                          />
+                        ),
+                      )}
                     </Fragment>
                   ),
                 )}

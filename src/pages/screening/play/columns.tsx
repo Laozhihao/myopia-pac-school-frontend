@@ -1,11 +1,12 @@
 import type { ProColumns } from '@ant-design/pro-table';
 import { formatLength } from '@/utils/common';
-import { SCREENSTATUS, DATE, EMPTY, RELEASESTATUS } from '@/utils/constant';
+import { DATE, EMPTY, RELEASESTATUS, SCREENING_TYPE_LIST } from '@/utils/constant';
 import moment from 'moment';
+import { isNotEmpty } from '@vistel/vistel-utils/lib/tool';
+import { Badge } from 'antd';
+import { SCREENTYPEOPTIONS } from '@/utils/form-constant';
 
-export const listColumns: (show: (dom: any) => void) => ProColumns<API.ScreenListItem>[] = (
-  show,
-) => [
+export const listColumns: (show: (dom: any) => void) => ProColumns[] = (show) => [
   {
     title: '序号',
     dataIndex: 'index',
@@ -27,14 +28,31 @@ export const listColumns: (show: (dom: any) => void) => ProColumns<API.ScreenLis
       }`,
   },
   {
-    title: '筛查状态',
-    dataIndex: 'screeningStatus',
-    valueEnum: SCREENSTATUS,
+    title: '筛查类型',
+    dataIndex: 'screeningBizType',
+    render: (text, record) => {
+      return isNotEmpty(text) ? (
+        <Badge
+          color={text === 1 ? '#3C6CFE' : '#D8345F'}
+          text={
+            <>
+              <span>{isNotEmpty(text) ? SCREENTYPEOPTIONS[text] : ''}</span>
+              <span style={{ marginLeft: 10 }}>
+                {isNotEmpty(record?.screeningType)
+                  ? SCREENING_TYPE_LIST[record?.screeningType]
+                  : ''}
+              </span>
+            </>
+          }
+        />
+      ) : (
+        EMPTY
+      );
+    },
   },
-
   {
-    title: '发布状态',
-    dataIndex: 'releaseStatus',
+    title: '状态',
+    dataIndex: 'status',
     valueEnum: RELEASESTATUS,
   },
   {

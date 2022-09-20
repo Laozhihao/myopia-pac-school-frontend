@@ -47,8 +47,10 @@ export const SCREENSTATUS = {
 };
 
 export const RELEASESTATUS = {
-  0: '未发布',
-  1: '已发布',
+  0: { text: '未发布', status: 'Error' },
+  1: { text: '未开始', status: 'Warning' },
+  2: { text: '进行中', status: 'processing' },
+  3: { text: '已结束', status: 'Default' },
 };
 
 // 性别 （pro表格）

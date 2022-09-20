@@ -1,6 +1,5 @@
 import type { ProColumns } from '@ant-design/pro-table';
 
-
 /** ------------------------------------------------------- 查看详情列 */
 
 // 默认第一列
@@ -10,7 +9,7 @@ const defaultColumns: ProColumns<API.FileDetailItem>[] = [
     width: 150,
     dataIndex: 'eyeType',
     render: (text) => {
-      return <span>{text ? '右眼' : '左眼'}</span>
+      return <span>{text ? '右眼' : '左眼'}</span>;
     },
   },
 ];

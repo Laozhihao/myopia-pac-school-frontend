@@ -90,8 +90,8 @@ const TableList: React.FC = () => {
   /**
    * @desc 学生档案
    */
-  const onJumpArchives = () => {
-    history.push('/student/file');
+  const onJumpArchives = (record: API.ScreeningStudentListItem) => {
+    history.push(`/student/file?id=${record.id}&studentId=${record?.studentId}`);
   }
 
   const columns: ProColumns<API.ScreeningStudentListItem>[] = [
@@ -105,11 +105,11 @@ const TableList: React.FC = () => {
           <SwitchableButton key="detail" icon="icon-a-Group1000006854" onClick={() => onDetail(record)}>
             筛查详情
           </SwitchableButton>
-          {record.id && (
+          {(record.id && record?.studentId) && (
             <SwitchableButton
               key="manage"
               icon="icon-Frame-1"
-              onClick={onJumpArchives}
+              onClick={() => onJumpArchives(record)}
             >
               学生档案
             </SwitchableButton>

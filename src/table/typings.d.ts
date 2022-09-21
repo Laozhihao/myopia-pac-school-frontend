@@ -29,6 +29,7 @@ declare namespace API {
   // 筛查学生列表
   type ScreeningStudentListItem = {
     id?: React.Key;
+    studentId?: React.Key;
     planStudentId?: React.Key;
     screeningCode?: string;
     sno?: string;

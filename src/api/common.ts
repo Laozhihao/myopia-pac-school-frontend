@@ -34,9 +34,9 @@ export async function getDistrict(options?: Record<string, any>) {
   });
 }
 
-/** 民族 GET /management/student/nation */
+/** 民族 GET /school/student/nation */
 export async function getNation(options?: Record<string, any>) {
-  return request<any[]>('/management/student/nation', {
+  return request<any[]>('/school/student/nation', {
     method: 'GET',
     ...(options || {}),
   });

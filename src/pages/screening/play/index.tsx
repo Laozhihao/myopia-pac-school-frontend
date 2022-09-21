@@ -154,7 +154,6 @@ const TableList: React.FC = () => {
                   </SwitchableButton>,
                   <SwitchableButton
                     key="manage"
-                    // href={`/#/screening/play/result/?screeningPlanId=${record?.planId}`}
                     icon="icon-FundView1"
                     disabled={!record?.hasScreeningResults}
                     tooltip={!record?.hasScreeningResults ? '当前没有筛查结果' : ''}

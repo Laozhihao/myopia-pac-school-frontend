@@ -11,13 +11,11 @@ import { addScreeningStudentList } from '@/api/screen/student';
 
 export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const modalRef = useRef<ProFormInstance>();
-  const { title, visible, currentRow } = props;
+  const { title, visible } = props;
   const [screeningStudentInfo, setScreeningStudentInfo] = useState<API.ObjectType>({
     noSelectList: [],
     selectList: [],
   });
-
-  console.log(currentRow);
 
   const { query: { screeningPlanId } = {} } = history.location;
 
@@ -41,7 +39,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     };
     await addScreeningStudentList(parm);
     props.onCancel(true);
-    message.success('新增学生');
+    message.success('新增成功');
   };
 
   return (

@@ -57,6 +57,7 @@ export const DetailModal: React.FC<API.ModalItemType> = (props) => {
                     ? detailDataSource[item.dataIndex]
                     : [detailDataSource[item.dataIndex]]
                 }
+                rowKey="eyeType"
                 columns={item.columns}
                 scroll={{ x: 'max-content' }}
                 pagination={false}

@@ -21,6 +21,7 @@ import { getScreeningList, deleteScreeningPlan, releaseScreeningPlan } from '@/a
 import { FormItemOptions } from './form-item';
 import { TableListCtx } from '@/hook/ant-config';
 import { deleteTableRow, secondaryConfirmation } from '@/hook/table';
+import { history } from 'umi';
 
 const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.ScreenListItem>();
@@ -69,8 +70,8 @@ const TableList: React.FC = () => {
   /**
    * @desc 创建/编辑筛查计划
    */
-  const onHandle = (title: string = '创建筛查计划', row: API.ScreenListItem) => {
-    setPlanModalData({ visible: true, currentRow: row, title });
+  const onHandle = (row?: API.ScreenListItem) => {
+    setPlanModalData({ visible: true, currentRow: row, title: row ? '编辑筛查计划' : '创建筛查计划' });
   };
 
   /**
@@ -102,6 +103,10 @@ const TableList: React.FC = () => {
     setScreeningTimeModal((s: API.ModalDataType) => ({ ...s, visible: true, currentRow: row }));
   };
 
+  const onJumpRouter = (path: string) => {
+    history.push(path);
+  }
+
   /**
    * @desc 关闭筛查计划弹窗
    */
@@ -119,19 +124,20 @@ const TableList: React.FC = () => {
       render: (_, record) => {
         return [
           <DynamicButtonGroup key="operator">
-            {record.releaseStatus
+            {record.status
               ? [
                   <SwitchableButton
                     key="student"
-                    icon="icon-a-Group120"
-                    href={`/#/screening/play/student?screeningPlanId=${record?.planId}`}
+                    icon="icon-Team"
+                    // href={`/#/screening/play/student?screeningPlanId=${record?.planId}`}
+                    onClick={() => onJumpRouter(`/screening/play/student?screeningPlanId=${record?.planId}`)}
                   >
                     筛查学生列表
                   </SwitchableButton>,
 
                   <SwitchableButton
                     key="add_time"
-                    icon="icon-a-Group120"
+                    icon="icon-a-Group1000006856"
                     onClick={() => onAddSreenTime(record)}
                   >
                     新增筛查时间
@@ -148,10 +154,11 @@ const TableList: React.FC = () => {
                   </SwitchableButton>,
                   <SwitchableButton
                     key="manage"
-                    href={`/#/screening/play/result/?screeningPlanId=${record?.planId}`}
-                    icon="icon-a-Group120"
+                    // href={`/#/screening/play/result/?screeningPlanId=${record?.planId}`}
+                    icon="icon-FundView1"
                     disabled={!record?.hasScreeningResults}
                     tooltip={!record?.hasScreeningResults ? '当前没有筛查结果' : ''}
+                    onClick={() => onJumpRouter(`/screening/play/result/?screeningPlanId=${record?.planId}`)}
                   >
                     筛查结果
                   </SwitchableButton>,
@@ -163,7 +170,7 @@ const TableList: React.FC = () => {
                   // </SwitchableButton>,
                 ]
               : [
-                  <Button type="link" key="edit" onClick={() => onHandle('创建筛查计划', record)}>
+                  <Button type="link" key="edit" onClick={() => onHandle(record)}>
                     编辑
                   </Button>,
                   <Button type="link" key="delete" onClick={() => onDelete(record?.planId!)}>

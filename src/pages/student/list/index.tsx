@@ -19,6 +19,7 @@ import { FormItemOptions } from './form-item';
 import DynamicButtonGroup from '@/components/DynamicButtonGroup';
 import { convertData } from '@/utils/common';
 import { TableListCtx } from '@/hook/ant-config';
+import { history } from 'umi';
 
 const TableList: React.FC = () => {
   const [searchForm, setSearchForm] = useState({}); // 搜索表单项
@@ -89,6 +90,14 @@ const TableList: React.FC = () => {
     });
   };
 
+
+  /**
+   * @desc 跳转档案管理
+   */
+  const onJumpArchives = (record: API.StudentListItem) => {
+    history.push(`/student/file?id=${record.id}&studentId=${record?.studentId}`);
+  }
+
   /**
    * @desc 导入导出弹窗
    */
@@ -118,8 +127,8 @@ const TableList: React.FC = () => {
           </Button>
           <SwitchableButton
             key="manage"
-            href={`/#/student/file?id=${record.id}&studentId=${record?.studentId}`}
             icon="icon-a-Group120"
+            onClick={() => onJumpArchives(record)}
           >
             档案管理
           </SwitchableButton>

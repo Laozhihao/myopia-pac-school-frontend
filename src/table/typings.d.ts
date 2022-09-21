@@ -91,6 +91,7 @@ declare namespace API {
     screeningOrgName?: string; // 筛查机构名称
     content?: string; // 内容
     releaseTime?: string; // 通知日期
+    status?: string; // 状态
     hasScreeningResults?: boolean; // 是否有筛查结果
   };
 

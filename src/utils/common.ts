@@ -89,14 +89,13 @@ export const symbolHandle = (val: any, digit: number, unit?: string) =>
  * @desc 级联数据转换 number 类型的id 转换成string
  * @param {string} option - option 列表
  * @param {string} children - option 子集名称
+ * @param {string} isNeedHandlClasses 是否需要处理班级
  */
-export const convertData = (option?: any[], children = 'child') => {
+export const convertData = (option?: any[], children = 'child', isNeedHandlClasses = false) => {
   if (!option || !option.length) return [];
   option?.forEach((item: any) => {
     item.id = item.id.toString();
-    if (item[children]) {
-      convertData(item.children);
-    }
+    isNeedHandlClasses && (item[children] && convertData(item[children])); // 处理班级id
   });
   return option;
 };

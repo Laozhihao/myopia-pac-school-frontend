@@ -35,11 +35,7 @@ const TableList: React.FC = () => {
     Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
   >({ ...FormItemOptions });
 
-  const [addModelInfo, setAddModelInfo] = useState<API.ModalDataType>({
-    title: '新增筛查学生',
-    visible: false,
-    currentRow: {},
-  }); // 新增筛查
+  const [addModalVisible, setAddModalVisible] = useState(false); // 新增筛查学生
 
   const { query: { screeningPlanId } = {} } = history.location;
 
@@ -54,12 +50,6 @@ const TableList: React.FC = () => {
     }));
   }, []);
 
-  /**
-   * @desc 新增/编辑
-   */
-  const onHandle = () => {
-    setAddModelInfo((s) => ({ ...s, visible: true }));
-  };
 
   const onDetail = (record: API.ScreeningStudentListItem) => {
     setDetailInfo((s) => ({
@@ -93,9 +83,16 @@ const TableList: React.FC = () => {
   };
 
   const onCancel = (refresh?: boolean) => {
-    setAddModelInfo((s) => ({ ...s, visible: false }));
+    setAddModalVisible(false);
     refresh && onSearch();
   };
+
+  /**
+   * @desc 学生档案
+   */
+  const onJumpArchives = () => {
+    history.push('/student/file');
+  }
 
   const columns: ProColumns<API.ScreeningStudentListItem>[] = [
     ...listColumns,
@@ -105,14 +102,14 @@ const TableList: React.FC = () => {
       valueType: 'option',
       render: (_, record) => [
         <DynamicButtonGroup key="operator">
-          <SwitchableButton key="detail" icon="icon-a-Group120" onClick={() => onDetail(record)}>
+          <SwitchableButton key="detail" icon="icon-a-Group1000006854" onClick={() => onDetail(record)}>
             筛查详情
           </SwitchableButton>
           {record.id && (
             <SwitchableButton
               key="manage"
-              icon="icon-a-Group120"
-              href={`/#/screening/play/archives?id=${record?.id}`}
+              icon="icon-Frame-1"
+              onClick={onJumpArchives}
             >
               学生档案
             </SwitchableButton>
@@ -158,8 +155,8 @@ const TableList: React.FC = () => {
             </span>
           }
           toolBarRender={() => [
-            <Button type="primary" key="add" onClick={onHandle}>
-              新增筛查学校
+            <Button type="primary" key="add" onClick={() => setAddModalVisible(true)}>
+              新增筛查学生
             </Button>,
           ]}
           request={async (params) => {
@@ -178,7 +175,7 @@ const TableList: React.FC = () => {
           columns={columns}
         />
       </TableListCtx.Provider>
-      <AddModal {...addModelInfo} onCancel={onCancel} />
+      <AddModal visible={addModalVisible} onCancel={onCancel} />
       <DetailModal
         {...detailInfo}
         onCancel={() => setDetailInfo((s) => ({ ...s, visible: false, currentRow: {} }))}

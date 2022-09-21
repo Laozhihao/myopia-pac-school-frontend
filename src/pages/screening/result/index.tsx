@@ -17,6 +17,8 @@ import { history } from 'umi';
 import { AddModal } from './add-modal';
 import { NoticeReport } from './notice-report/index';
 import { ExportModal } from '@/pages/components/export-modal';
+import { StandardModal } from './modal/standard-modal';
+import { ExportArchivesModal } from './modal/export-modal';
 import { useState } from 'react';
 import { useModel } from 'umi';
 import {
@@ -26,7 +28,7 @@ import {
   exportScreeningData,
 } from '@/api/screen/plan';
 import styles from './index.less';
-import { EMPTY, DATE, SCREENSTATUS, SCREENING_TYPE_LIST } from '@/utils/constant';
+import { EMPTY, DATE, SCREENING_TYPE_LIST, RELEASESTATUS } from '@/utils/constant';
 import { getScreeningDetail } from '@/api/screen/plan';
 import moment from 'moment';
 import type { IdsType } from './notice-report/index';
@@ -47,6 +49,14 @@ const ScreeningResult: React.FC = () => {
     tabKey: '',
     title: '',
   }); // 弹窗props
+
+  const [archivesModalInfo, setArchivesModalInfo] = useState<API.ModalDataType>({
+    visible: false,
+    currentRow: undefined,
+    title: '',
+  });
+
+  const [standardModalVisible, setStandardModalVisible] = useState(false); // 判断标准
   const [resultInfo, setResultInfo] = useState<any[]>([]); // 结果分析
 
   const [schoolDetail, setSchoolDetail] = useState<API.ObjectType>({}); // 筛查详情
@@ -108,26 +118,34 @@ const ScreeningResult: React.FC = () => {
     });
   };
 
+  const onShowStandard = () => {
+    setStandardModalVisible(true);
+  };
+
+  /**
+   * @desc 获取筛查结果
+   */
+  const init = () => {
+    getScreeningResult(screeningPlanId as string, { type: Number(ActiveKey) }).then((res) => {
+      setResultInfo([res?.data]);
+    });
+  }
+
   useMemo(async () => {
     if (screeningPlanId) {
       const { data } = await getScreeningDetail(screeningPlanId as string);
       const { optionTabs = [] } = data;
       setSchoolDetail(data);
-      const tabOptionKeys = optionTabs.map((item: { type: any }) => item.type); // 有tab 的数据
-      const arr = tabList.filter((item) => tabOptionKeys.includes(Number([item.key])));
+      const arr = tabList.filter((item) => optionTabs.includes(Number([item.key])));
       setTabList([...arr]);
       if (optionTabs.length) {
-        setActiveKey(optionTabs[0].type.toString());
-        getScreeningResult(screeningPlanId as string, { type: Number(ActiveKey) }).then((res) => {
-          setResultInfo([res?.data]);
-          console.log(res, '222');
-        });
+        setActiveKey(optionTabs[0].toString()),init()
       }
     }
   }, []);
 
   const onTabChange = (key: string) => {
-    setActiveKey(key);
+    setActiveKey(key),init();
   };
 
   /**
@@ -155,6 +173,14 @@ const ScreeningResult: React.FC = () => {
     setExportType(val);
     setExportVisible(true);
   };
+
+  /**
+   * @desc 导出档案卡
+   */
+  const onExportArchives = () => {
+    setArchivesModalInfo({visible: true, title: ActiveKey === '8' ? '导出档案卡' : '导出监测卡'});
+  }
+
   const showNoticeReport = () => {
     const user = initialState?.currentUser;
     const { id: planId, screeningOrgId } = schoolDetail;
@@ -187,12 +213,14 @@ const ScreeningResult: React.FC = () => {
                   SCREENING_TYPE_LIST[schoolDetail?.screeningType] || EMPTY
                 }`}
               </span>
-              <span>状态：{SCREENSTATUS[schoolDetail?.releaseStatus]}</span>
+              <span>状态：{RELEASESTATUS?.[schoolDetail?.status]?.text}</span>
             </Space>
           </Col>
           <Col className={styles.judge_standard}>
-            <InfoCircleOutlined style={{ color: '#096DD9', fontSize: 16 }} />
-            判断标准
+            <span onClick={onShowStandard}>
+              <InfoCircleOutlined style={{ color: '#096DD9', fontSize: 16 }} />
+              判断标准
+            </span>
           </Col>
         </Row>
       </Card>
@@ -211,8 +239,8 @@ const ScreeningResult: React.FC = () => {
                   <Button type="primary" onClick={() => onExport(1)} ghost>
                     筛查数据
                   </Button>
-                  <Button type="primary" onClick={() => onExport(0)} ghost>
-                    档案卡
+                  <Button type="primary" onClick={() => onExportArchives()} ghost>
+                    { ActiveKey === '8' ? '档案卡' : '监测表'}
                   </Button>
                   <Button type="primary" onClick={() => showNoticeReport()} ghost>
                     结果通知书
@@ -287,6 +315,8 @@ const ScreeningResult: React.FC = () => {
       >
         <p className={styles.content}>导出内容：{exportOptions[exportType].content}</p>
       </ExportModal>
+      <StandardModal visible={standardModalVisible} onCancel={() => setStandardModalVisible(false)}></StandardModal>
+      <ExportArchivesModal {...archivesModalInfo}  onCancel={() => setArchivesModalInfo((s) => ({...s, visible: false}))}></ExportArchivesModal>
     </PageContainer>
   );
 };

@@ -64,7 +64,7 @@ const ScreeningResult: React.FC = () => {
   const [reportVisible, setReportVisible] = useState(false); // 通知书弹窗
   const [ids, setIds] = useState<IdsType>();
   const [exportType, setExportType] = useState(0); // 导出弹窗类型 0 筛查报告 1 筛查数据 2 学生跟踪数据
-  const [ActiveKey, setActiveKey] = useState('0'); // tab 激活页
+  const [ActiveKey, setActiveKey] = useState(); // tab 激活页
 
   const { query: { screeningPlanId } = {} } = history.location;
   const { initialState } = useModel('@@initialState');
@@ -138,7 +138,7 @@ const ScreeningResult: React.FC = () => {
    * @desc tab key 变化重新初始化数据
    */
   useEffect(() => {
-    init();
+    ActiveKey && init();
   }, [ActiveKey]);
 
   useMemo(async () => {

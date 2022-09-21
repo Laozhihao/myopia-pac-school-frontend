@@ -90,13 +90,12 @@ const TableList: React.FC = () => {
     });
   };
 
-
   /**
    * @desc 跳转档案管理
    */
   const onJumpArchives = (record: API.StudentListItem) => {
     history.push(`/student/file?id=${record.id}&studentId=${record?.studentId}`);
-  }
+  };
 
   /**
    * @desc 导入导出弹窗

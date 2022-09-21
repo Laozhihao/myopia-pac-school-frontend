@@ -1,4 +1,4 @@
-import React, { useMemo, Fragment } from 'react';
+import React, { useMemo, Fragment, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Tabs, Card, Button, message, Row, Col, Space } from 'antd';
 import {
@@ -118,10 +118,6 @@ const ScreeningResult: React.FC = () => {
     });
   };
 
-  const onShowStandard = () => {
-    setStandardModalVisible(true);
-  };
-
   /**
    * @desc 获取筛查结果
    */
@@ -129,7 +125,21 @@ const ScreeningResult: React.FC = () => {
     getScreeningResult(screeningPlanId as string, { type: Number(ActiveKey) }).then((res) => {
       setResultInfo([res?.data]);
     });
-  }
+  };
+
+  /**
+   * @desc 判断标准
+   */
+  const onShowStandard = () => {
+    setStandardModalVisible(true);
+  };
+
+  /**
+   * @desc tab key 变化重新初始化数据
+   */
+  useEffect(() => {
+    init();
+  }, [ActiveKey]);
 
   useMemo(async () => {
     if (screeningPlanId) {
@@ -139,13 +149,13 @@ const ScreeningResult: React.FC = () => {
       const arr = tabList.filter((item) => optionTabs.includes(Number([item.key])));
       setTabList([...arr]);
       if (optionTabs.length) {
-        setActiveKey(optionTabs[0].toString()),init()
+        setActiveKey(optionTabs[0].toString());
       }
     }
   }, []);
 
   const onTabChange = (key: string) => {
-    setActiveKey(key),init();
+    setActiveKey(key);
   };
 
   /**
@@ -178,8 +188,12 @@ const ScreeningResult: React.FC = () => {
    * @desc 导出档案卡
    */
   const onExportArchives = () => {
-    setArchivesModalInfo({visible: true, title: ActiveKey === '8' ? '导出档案卡' : '导出监测卡'});
-  }
+    setArchivesModalInfo({ visible: true, title: ActiveKey === '8' ? '导出档案卡' : '导出监测卡' });
+  };
+
+  const onWarning = () => {
+    history.push('/prevention/eye-health');
+  };
 
   const showNoticeReport = () => {
     const user = initialState?.currentUser;
@@ -230,7 +244,7 @@ const ScreeningResult: React.FC = () => {
             <TabPane tab={item.label} key={item.key}>
               <div className={styles.btn}>
                 <Space>
-                  <Button type="primary" ghost href={'/#/prevention/eye-health'}>
+                  <Button type="primary" ghost onClick={onWarning}>
                     预警跟踪
                   </Button>
                   <Button type="primary" onClick={() => onExport(0)} ghost>
@@ -240,7 +254,7 @@ const ScreeningResult: React.FC = () => {
                     筛查数据
                   </Button>
                   <Button type="primary" onClick={() => onExportArchives()} ghost>
-                    { ActiveKey === '8' ? '档案卡' : '监测表'}
+                    {ActiveKey === '8' ? '档案卡' : '监测表'}
                   </Button>
                   <Button type="primary" onClick={() => showNoticeReport()} ghost>
                     结果通知书
@@ -315,8 +329,14 @@ const ScreeningResult: React.FC = () => {
       >
         <p className={styles.content}>导出内容：{exportOptions[exportType].content}</p>
       </ExportModal>
-      <StandardModal visible={standardModalVisible} onCancel={() => setStandardModalVisible(false)}></StandardModal>
-      <ExportArchivesModal {...archivesModalInfo}  onCancel={() => setArchivesModalInfo((s) => ({...s, visible: false}))}></ExportArchivesModal>
+      <StandardModal
+        visible={standardModalVisible}
+        onCancel={() => setStandardModalVisible(false)}
+      ></StandardModal>
+      <ExportArchivesModal
+        {...archivesModalInfo}
+        onCancel={() => setArchivesModalInfo((s) => ({ ...s, visible: false }))}
+      ></ExportArchivesModal>
     </PageContainer>
   );
 };

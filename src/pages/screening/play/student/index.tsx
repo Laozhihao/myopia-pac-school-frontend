@@ -37,7 +37,7 @@ const TableList: React.FC = () => {
 
   const [addModalVisible, setAddModalVisible] = useState(false); // 新增筛查学生
 
-  const { query: { screeningPlanId } = {} } = history.location;
+  const { query: { screeningPlanId, screeningBizType } = {} } = history.location;
 
   /**
    * @desc 获取年级班级
@@ -49,7 +49,6 @@ const TableList: React.FC = () => {
       listTypeInfo: { ...s.listTypeInfo, gradeOptions: convertData(data) },
     }));
   }, []);
-
 
   const onDetail = (record: API.ScreeningStudentListItem) => {
     setDetailInfo((s) => ({
@@ -92,7 +91,7 @@ const TableList: React.FC = () => {
    */
   const onJumpArchives = (record: API.ScreeningStudentListItem) => {
     history.push(`/student/file?id=${record.id}&studentId=${record?.studentId}`);
-  }
+  };
 
   const columns: ProColumns<API.ScreeningStudentListItem>[] = [
     ...listColumns,
@@ -102,10 +101,14 @@ const TableList: React.FC = () => {
       valueType: 'option',
       render: (_, record) => [
         <DynamicButtonGroup key="operator">
-          <SwitchableButton key="detail" icon="icon-a-Group1000006854" onClick={() => onDetail(record)}>
+          <SwitchableButton
+            key="detail"
+            icon="icon-a-Group1000006854"
+            onClick={() => onDetail(record)}
+          >
             筛查详情
           </SwitchableButton>
-          {(record.id && record?.studentId) && (
+          {record.id && record?.studentId && (
             <SwitchableButton
               key="manage"
               icon="icon-Frame-1"
@@ -155,9 +158,11 @@ const TableList: React.FC = () => {
             </span>
           }
           toolBarRender={() => [
-            <Button type="primary" key="add" onClick={() => setAddModalVisible(true)}>
-              新增筛查学生
-            </Button>,
+            screeningBizType === '1' ? (
+              <Button type="primary" key="add" onClick={() => setAddModalVisible(true)}>
+                新增筛查学生
+              </Button>
+            ) : null,
           ]}
           request={async (params) => {
             const { data } = await getScreeningStudentList({

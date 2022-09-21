@@ -95,7 +95,7 @@ export const convertData = (option?: any[], children = 'child', isNeedHandlClass
   if (!option || !option.length) return [];
   option?.forEach((item: any) => {
     item.id = item.id.toString();
-    isNeedHandlClasses && (item[children] && convertData(item[children])); // 处理班级id
+    isNeedHandlClasses && item[children] && convertData(item[children]); // 处理班级id
   });
   return option;
 };

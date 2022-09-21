@@ -67,7 +67,7 @@ export const teenagersSituationColumns: ProColumns[] = [
     renderText: (val: number, record) => `${val} / ${record?.myopiaLevelEarlyRatio}`,
   },
   {
-    title: '重度近视（人数/占比）',
+    title: '高度近视（人数/占比）',
     dataIndex: 'highMyopiaNum',
     renderText: (val: number, record) => `${val} / ${record?.highMyopiaRatio}`,
   },

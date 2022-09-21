@@ -5,6 +5,7 @@ import styles from './next-step.less';
 import { useState, useMemo, forwardRef } from 'react';
 import { getPopupContainer } from '@/hook/ant-config';
 import type { IdsType } from '../index';
+import { convertData } from '@/utils/common';
 
 type NextStepType = {
   ids: IdsType;
@@ -22,7 +23,7 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
 
   const [studentList, setStudentList] = useState([]);
   const [studentIds, setStudentIds] = useState<number[]>([]);
-  const [gradeList, setGradeList] = useState([]);
+  const [gradeList, setGradeList] = useState<any[]>([]);
   const [currentGrade, setCurrentGrade] = useState('');
   const [currentStuNames, setCurrentStuNames] = useState('');
   useMemo(async () => {
@@ -47,13 +48,7 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
     const { planId } = ids;
     if (planId) {
       const { data = [] } = await getGrades(planId);
-      data.forEach((item: any) => {
-        item.classes.unshift({
-          id: `'all' + ${item.id}`,
-          name: '全部',
-        });
-      });
-      setGradeList(data);
+      setGradeList(convertData(data));
     }
   }, []);
 
@@ -76,8 +71,7 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
   };
   // 年级班级 变化
   const gradeChange = async (value: any[], option: any[]) => {
-    const gradeId = value[0];
-    const classId = value[1].toString().indexOf('all') === -1 ? value[1] : '';
+    const [gradeId, classId] = value;
     const { orgId, planId, schoolId } = ids;
     setCurrentGrade(getName(option, 'id'));
     const params = {
@@ -112,6 +106,7 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
           </Form.Item>
           <Form.Item label="选择年级/班级" name="grade">
             <Cascader
+              changeOnSelect
               options={gradeList}
               fieldNames={{ label: 'name', value: 'id', children: 'classes' }}
               onChange={gradeChange}

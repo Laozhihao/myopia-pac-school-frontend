@@ -24,7 +24,7 @@ import { deleteTableRow, secondaryConfirmation } from '@/hook/table';
 import { history } from 'umi';
 
 const TableList: React.FC = () => {
-  const [currentRow, setCurrentRow] = useState<API.ScreenListItem>();
+  const [currentRow, setCurrentRow] = useState<API.ObjectType>();
   const [createModalVisible, handleModalVisible] = useState(false);
   const [textModalVisible, setTextModalVisible] = useState(false); // 筛查内容visible
   const [planModalData, setPlanModalData] = useState<API.ModalDataType>({
@@ -70,8 +70,12 @@ const TableList: React.FC = () => {
   /**
    * @desc 创建/编辑筛查计划
    */
-  const onHandle = (row?: API.ScreenListItem) => {
-    setPlanModalData({ visible: true, currentRow: row, title: row ? '编辑筛查计划' : '创建筛查计划' });
+  const onHandle = (row?: API.ObjectType) => {
+    setPlanModalData({
+      visible: true,
+      currentRow: row,
+      title: row ? '编辑筛查计划' : '创建筛查计划',
+    });
   };
 
   /**
@@ -99,13 +103,16 @@ const TableList: React.FC = () => {
   /**
    * @desc 新增筛查时间
    */
-  const onAddSreenTime = (row: API.ScreenListItem) => {
+  const onAddSreenTime = (row: API.ObjectType) => {
     setScreeningTimeModal((s: API.ModalDataType) => ({ ...s, visible: true, currentRow: row }));
   };
 
+  /**
+   * @desc 路由跳转
+   */
   const onJumpRouter = (path: string) => {
     history.push(path);
-  }
+  };
 
   /**
    * @desc 关闭筛查计划弹窗
@@ -115,7 +122,7 @@ const TableList: React.FC = () => {
     refresh && onSearch();
   };
 
-  const columns: ProColumns<API.ScreenListItem>[] = [
+  const columns: ProColumns[] = [
     ...listColumns(onShow),
     {
       title: '操作',
@@ -129,8 +136,11 @@ const TableList: React.FC = () => {
                   <SwitchableButton
                     key="student"
                     icon="icon-Team"
-                    // href={`/#/screening/play/student?screeningPlanId=${record?.planId}`}
-                    onClick={() => onJumpRouter(`/screening/play/student?screeningPlanId=${record?.planId}`)}
+                    onClick={() =>
+                      onJumpRouter(
+                        `/screening/play/student?screeningPlanId=${record?.planId}&screeningBizType=${record?.screeningBizType}`,
+                      )
+                    }
                   >
                     筛查学生列表
                   </SwitchableButton>,
@@ -157,7 +167,9 @@ const TableList: React.FC = () => {
                     icon="icon-FundView1"
                     disabled={!record?.hasScreeningResults}
                     tooltip={!record?.hasScreeningResults ? '当前没有筛查结果' : ''}
-                    onClick={() => onJumpRouter(`/screening/play/result/?screeningPlanId=${record?.planId}`)}
+                    onClick={() =>
+                      onJumpRouter(`/screening/play/result/?screeningPlanId=${record?.planId}`)
+                    }
                   >
                     筛查结果
                   </SwitchableButton>,
@@ -197,7 +209,7 @@ const TableList: React.FC = () => {
             <DynamicForm {...FormItemOptions} onSearch={onSearch} onReset={onReset} />
           </ProForm>
         </Card>
-        <ProTable<API.ScreenListItem, API.PageParams>
+        <ProTable<API.PageParams>
           rowKey="planId"
           search={false}
           pagination={{ pageSize: 10 }}

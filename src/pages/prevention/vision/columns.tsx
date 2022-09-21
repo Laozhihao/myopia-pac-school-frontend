@@ -1,51 +1,34 @@
 import type { ProColumns } from '@ant-design/pro-table';
-// import { formatLength } from '@/utils/common';
-import { SCREENSTATUS } from '@/utils/constant';
+import { TABLESEXOPTION, VISIONSTATUS } from '@/utils/constant';
+import { getShowIdCardText, getShowPassportText } from '@/utils/common';
 
-export const listColumns: ProColumns<API.ScreenListItem>[] = [
-  {
-    title: '学籍号',
-    dataIndex: 'index',
-  },
+export const listColumns: ProColumns[] = [
   {
     title: '姓名',
-    dataIndex: 'title',
-    // render: (_, record) => {
-    //   return <p title={record?.title}>{record?.title ? formatLength(record?.title) : EMPTY}</p>;
-    // },
+    dataIndex: 'staffName',
   },
   {
-    title: '年级-班级',
-    dataIndex: 'startTime',
+    title: '性别',
+    dataIndex: 'gender',
+    valueEnum: TABLESEXOPTION,
   },
   {
-    title: '视力情况',
-    dataIndex: 'releaseStatus',
-    valueEnum: SCREENSTATUS,
+    title: '身份证号',
+    dataIndex: 'idCard',
+    renderText: (val: string, record) =>
+    val ? getShowIdCardText(val) : getShowPassportText(record?.passport),
   },
   {
-    title: '屈光情况',
-    dataIndex: 'planScreeningNumbers',
+    title: '手机号码/账号',
+    dataIndex: 'phone',
   },
   {
-    title: '近视矫正',
-    dataIndex: 'realScreeningNumbers',
+    title: '说明',
+    dataIndex: 'remark',
   },
   {
-    title: '视力预警',
-    dataIndex: 'screeningOrgName',
-  },
-  {
-    title: '防控建议',
-    dataIndex: 'content',
-  },
-  {
-    title: '公众号在线档案',
-    dataIndex: 'content',
-  },
-  {
-    title: '通知日期',
-    dataIndex: 'releaseTime',
-    valueType: 'date',
+    title: '状态',
+    dataIndex: 'status',
+    valueEnum: VISIONSTATUS
   },
 ];

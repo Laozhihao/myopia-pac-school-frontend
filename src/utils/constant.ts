@@ -46,11 +46,18 @@ export const SCREENSTATUS = {
   2: '已结束',
 };
 
+// 发布状态
 export const RELEASESTATUS = {
   0: { text: '未发布', status: 'Error' },
   1: { text: '未开始', status: 'Warning' },
   2: { text: '进行中', status: 'processing' },
   3: { text: '已结束', status: 'Default' },
+};
+
+// 视力情况
+export const VISIONSTATUS = {
+  0: { text: '使用中', status: 'processing' },
+  1: { text: '停用', status: 'Default' },
 };
 
 // 性别 （pro表格）

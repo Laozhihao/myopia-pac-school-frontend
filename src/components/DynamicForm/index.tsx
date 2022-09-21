@@ -56,7 +56,7 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
 
   // 表单种类
   const FormTemp = {
-    input: ({ label, value, rules, tooltip, fieldProps, showLabel }: API.FilterListType) => (
+    input: ({ label, value, rules, tooltip, fieldProps, showLabel, required }: API.FilterListType) => (
       <ProFormText
         name={value}
         label={showLabel ? label : ''}
@@ -64,6 +64,7 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
         rules={rules}
         placeholder={`请输入${label}`}
         fieldProps={fieldProps}
+        required={required}
       />
     ),
 
@@ -84,12 +85,14 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
     ),
 
     // 输入文本框
-    textArea: ({ label, value, fieldProps, rules, showLabel }: API.FilterListType) => (
+    textArea: ({ label, value, fieldProps, rules, showLabel, required }: API.FilterListType) => (
       <ProFormTextArea
         label={showLabel ? label : ''}
         name={value}
         fieldProps={fieldProps}
         rules={rules}
+        required={required}
+        placeholder={`请输入${label}`}
       />
     ),
 
@@ -103,6 +106,7 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
       showLabel,
       valueEnum,
       fieldNames,
+      required
     }: API.FilterListType) => (
       <ProFormSelect
         label={showLabel ? label : ''}
@@ -110,19 +114,21 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
         name={value}
         fieldProps={fieldProps}
         rules={rules}
+        required={required}
         valueEnum={valueEnum}
         options={valueEnum ? undefined : getOptions(props?.listTypeInfo?.[list] ?? [], fieldNames)}
       />
     ),
 
     // 级联
-    cascader: ({ label, value, list, rules, fieldNames, showLabel }: API.FilterListType) => (
+    cascader: ({ label, value, list, rules, fieldNames, showLabel, required }: API.FilterListType) => (
       <Form.Item label={showLabel ? label : ''} rules={rules} name={value}>
         <Cascader
           options={props?.listTypeInfo?.[list] ?? []}
           changeOnSelect
           placeholder={`请选择${label}`}
           fieldNames={fieldNames}
+          required={required}
           getPopupContainer={getPopupContainer}
         />
       </Form.Item>
@@ -137,22 +143,25 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
       showLabel,
       fieldProps,
       fieldNames,
+      required
     }: API.FilterListType) => (
       <ProFormRadio.Group
         label={showLabel ? label : ''}
         name={value}
         rules={rules}
+        required={required}
         fieldProps={fieldProps}
         options={getOptions(props?.listTypeInfo?.[list] ?? [], fieldNames)}
       />
     ),
 
     // 时间选择器
-    datePicker: ({ label, rules, value, showLabel, fieldProps }: API.FilterListType) => (
+    datePicker: ({ label, rules, value, showLabel, fieldProps, required }: API.FilterListType) => (
       <ProFormDatePicker
         name={value}
         label={showLabel ? label : ''}
         rules={rules}
+        required={required}
         fieldProps={{
           style: { width: '100%' },
           getPopupContainer,

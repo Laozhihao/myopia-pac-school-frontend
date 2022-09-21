@@ -9,6 +9,7 @@ import { FooterTips } from '@/pages/screening/result/notice-report/components/fo
 import { Cascader, Form, message, Select } from 'antd';
 import React, { useMemo, useRef, useState } from 'react';
 import { useModel, history } from 'umi';
+import type { SelectValue } from 'antd/lib/select';
 
 const { Option } = Select;
 
@@ -27,7 +28,7 @@ export const ExportArchivesModal: React.FC<API.ModalItemType> = (props) => {
 
   const [gradeList, setGradeList] = useState<any[]>([]);
   const [studentList, setStudentList] = useState([]);
-  const [selectStudentIds, setSelectStudentIds] = useState<any[]>([]); // 当前已选的筛查学生
+  const [selectStudentIds, setSelectStudentIds] = useState<SelectValue>([]); // 当前已选的筛查学生
 
   /**
    * @desc 确认导出
@@ -42,6 +43,7 @@ export const ExportArchivesModal: React.FC<API.ModalItemType> = (props) => {
       planStudentId: studentIds.join(','),
       screeningPlanId,
       isSchoolClient: true,
+      type: studentIds.length ? 5 : classId ? 4 : gradeId ? 3 : 2,
     };
     const { data } = await exportScreeningArchiveCard(params);
     if (classId) {
@@ -58,7 +60,6 @@ export const ExportArchivesModal: React.FC<API.ModalItemType> = (props) => {
     const initValue = modalRef?.current?.getFieldsValue();
     modalRef?.current?.setFieldsValue({ ...initValue, studentIds: [] });
     const [gradeId, classId] = e || [];
-    console.log(e);
     const params = {
       schoolId,
       planId: screeningPlanId,
@@ -73,7 +74,7 @@ export const ExportArchivesModal: React.FC<API.ModalItemType> = (props) => {
   /**
    * @desc 筛查学生修改
    */
-  const onSelectStudentChange = (e: React.SetStateAction<any[]>) => {
+  const onSelectStudentChange = (e: React.SetStateAction<SelectValue>) => {
     setSelectStudentIds(e);
   };
 

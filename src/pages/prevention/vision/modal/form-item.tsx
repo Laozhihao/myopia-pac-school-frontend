@@ -10,6 +10,9 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList'> = {
       value: 'staffName',
       ...dialogColConfig,
       rules: defaultRulesConfig('输入姓名'),
+      fieldProps: {
+        maxLength: 30,
+      },
     },
     {
       label: '身份证',
@@ -49,6 +52,9 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList'> = {
       type: 'textArea',
       value: 'remark',
       ...dialogColConfig,
+      fieldProps: {
+        maxLength: 100,
+      },
     },
   ],
 };

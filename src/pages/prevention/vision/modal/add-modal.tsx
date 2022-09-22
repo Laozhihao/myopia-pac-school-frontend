@@ -21,7 +21,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
    */
   const onConfirm = async (value: any) => {
     console.log(value, '232');
-    await saveVisionStaff(value);
+    await saveVisionStaff({...value, id: currentRow ? currentRow?.id : undefined});
     message.success(currentRow ? '编辑成功' : '新增成功');
     props.onCancel(true);
   };

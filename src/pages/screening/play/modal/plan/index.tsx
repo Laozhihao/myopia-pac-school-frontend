@@ -43,7 +43,7 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
     const { time = [] } = value;
     const [startTime, endTime] = time;
     await editScreeningStudent(
-      deleteRedundantData({ ...value, screeningType: 0, startTime, endTime }, ['time']),
+      deleteRedundantData({ ...value, screeningType: 0, startTime, endTime, id: currentRow ? currentRow?.planId : undefined }, ['time']),
     );
     props.onCancel(true);
     message.success(`${currentRow ? '编辑' : '创建'}成功`);
@@ -64,7 +64,7 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
         onCancel: () => props.onCancel(false),
       }}
     >
-      <DynamicForm {...FormItemOptions(screeningStudentInfo?.allList)} isNeedBtn={false} />
+      <DynamicForm {...FormItemOptions(screeningStudentInfo?.allList, screeningStudentInfo?.selectList, currentRow)} isNeedBtn={false} />
     </ModalForm>
   );
 };

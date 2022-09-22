@@ -39,7 +39,7 @@ export const notificationHook = (Option: ArgsProps) => {
  * @param apiFn 重置密码api
  */
 
- export const resetPwdHook =  (record: any, apiFn: (record?: any) => {}, isNeedAlert = true, callback?: (() => void) | undefined) => {
+ export const resetPwdHook =  (record: any, apiFn: (record?: any) => {}, isNeedAlert = true, callback?: ((data: any) => void) | undefined) => {
   const { confirm } = Modal;
   confirm({
     title: '提示',
@@ -55,7 +55,7 @@ export const notificationHook = (Option: ArgsProps) => {
           duration: 15,
         });
       }
-      callback?.();
+      callback?.(data);
     },
   });
 };

@@ -7,7 +7,7 @@ import { listColumns } from './columns';
 import { EMPTY } from '@/utils/constant';
 import { PlusOutlined } from '@ant-design/icons';
 import { editVisionStaffStatus, getVisionStaffList, resetVisionStaffPassword } from '@/api/prevention/vision';
-import { resetPwdHook } from '@/hook/table';
+import { notificationHook, resetPwdHook } from '@/hook/table';
 import { AddModal } from './modal/add-modal';
 
 const TableList: React.FC = () => {
@@ -36,7 +36,20 @@ const TableList: React.FC = () => {
    * @desc 启用/停用
    */
   const onReset = (record: any) => {
-    resetPwdHook({id: record?.id}, resetVisionStaffPassword);
+    resetPwdHook({id: record?.id}, resetVisionStaffPassword, false, (data = []) => {
+      const schoolIndex = data.findIndex((item: { systemCode: number }) => item.systemCode === 2)
+      const screenIndex = data.findIndex((item: { systemCode: number }) => item.systemCode === 3)
+      notificationHook({
+        message: '重置密码成功！',
+        description: <>
+          <p style={{ marginTop: 10}}>学校管理后台</p>
+          <p>{`账号：${data?.[schoolIndex]?.username}，密码：${data?.[schoolIndex]?.password}`}</p>
+          <p style={{ marginTop: 10}}>筛查APP</p>
+          <p>{`账号：${data?.[screenIndex]?.username}，密码：${data?.[screenIndex]?.password}`}</p>
+        </>,
+        duration: 15,
+      });
+    });
   }
 
   /**
@@ -44,6 +57,11 @@ const TableList: React.FC = () => {
    */
   const onHandle = (row?: any) => {
     setAddModalInfo({ visible: true, title: row ? '编辑视力小队' : '创建视力小队', currentRow: row });
+  }
+
+  const onCancel = (refresh?: boolean) => {
+    setAddModalInfo({ visible: false });
+    refresh && tableRef?.current?.reload?.();
   }
 
   const columns: ProColumns[] = [
@@ -108,7 +126,7 @@ const TableList: React.FC = () => {
           },
         }}
       />
-      <AddModal {...addModalInfo} onCancel={() => setAddModalInfo({visible: false})} />
+      <AddModal {...addModalInfo} onCancel={(refresh) => onCancel(refresh)} />
     </PageContainer>
   );
 };

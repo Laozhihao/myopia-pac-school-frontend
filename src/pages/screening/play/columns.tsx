@@ -20,7 +20,7 @@ export const listColumns: (show: (dom: any) => void) => ProColumns[] = (show) =>
     },
   },
   {
-    title: '筛查时间段',
+    title: '发布/通知日期',
     dataIndex: 'startTime',
     renderText: (val: any, record) =>
       `${val ? moment(val).format(DATE) : EMPTY} 至 ${
@@ -36,7 +36,7 @@ export const listColumns: (show: (dom: any) => void) => ProColumns[] = (show) =>
           color={text === 1 ? '#3C6CFE' : '#D8345F'}
           text={
             <>
-              <span>{isNotEmpty(text) ? SCREENTYPEOPTIONS[text] : ''}</span>
+              <span>{isNotEmpty(text) ? SCREENTYPEOPTIONS[text as React.Key] : ''}</span>
               <span style={{ marginLeft: 10 }}>
                 {isNotEmpty(record?.screeningType)
                   ? SCREENING_TYPE_LIST[record?.screeningType]

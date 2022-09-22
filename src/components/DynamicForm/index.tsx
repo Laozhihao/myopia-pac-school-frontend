@@ -56,7 +56,15 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
 
   // 表单种类
   const FormTemp = {
-    input: ({ label, value, rules, tooltip, fieldProps, showLabel, required }: API.FilterListType) => (
+    input: ({
+      label,
+      value,
+      rules,
+      tooltip,
+      fieldProps,
+      showLabel,
+      required,
+    }: API.FilterListType) => (
       <ProFormText
         name={value}
         label={showLabel ? label : ''}
@@ -70,7 +78,11 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
 
     // inputGroup
     inputGroup: (item: API.FilterListType & { bottom?: number; onPressEnter?: () => void }) => (
-      <Form.Item label={item?.showLabel ? item?.label : ''} style={{ marginBottom: 0 }}>
+      <Form.Item
+        label={item?.showLabel ? item?.label : ''}
+        style={{ marginBottom: 0 }}
+        required={item?.required}
+      >
         <InputGroup
           {...item}
           valueEnum={item?.valueEnum}
@@ -106,7 +118,7 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
       showLabel,
       valueEnum,
       fieldNames,
-      required
+      required,
     }: API.FilterListType) => (
       <ProFormSelect
         label={showLabel ? label : ''}
@@ -121,14 +133,13 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
     ),
 
     // 级联
-    cascader: ({ label, value, list, rules, fieldNames, showLabel, required }: API.FilterListType) => (
+    cascader: ({ label, value, list, rules, fieldNames, showLabel }: API.FilterListType) => (
       <Form.Item label={showLabel ? label : ''} rules={rules} name={value}>
         <Cascader
           options={props?.listTypeInfo?.[list] ?? []}
           changeOnSelect
           placeholder={`请选择${label}`}
           fieldNames={fieldNames}
-          required={required}
           getPopupContainer={getPopupContainer}
         />
       </Form.Item>
@@ -143,7 +154,7 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
       showLabel,
       fieldProps,
       fieldNames,
-      required
+      required,
     }: API.FilterListType) => (
       <ProFormRadio.Group
         label={showLabel ? label : ''}

@@ -142,6 +142,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     // 处理二维码配置权限，告知书默认显示
     const confitArr = [
       0,
+      2,
       ...(props?.currentRow?.qrCodeConfig?.split(',')?.map((i: string) => +i) || []),
     ];
     const dynamicPrintTypeArr = defaultPrintTypeArr.filter((item) => confitArr.includes(item.type));

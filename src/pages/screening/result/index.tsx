@@ -64,7 +64,7 @@ const ScreeningResult: React.FC = () => {
   const [reportVisible, setReportVisible] = useState(false); // 通知书弹窗
   const [ids, setIds] = useState<IdsType>();
   const [exportType, setExportType] = useState(0); // 导出弹窗类型 0 筛查报告 1 筛查数据 2 学生跟踪数据
-  const [ActiveKey, setActiveKey] = useState(); // tab 激活页
+  const [ActiveKey, setActiveKey] = useState<string | undefined>(); // tab 激活页
 
   const { query: { screeningPlanId } = {} } = history.location;
   const { initialState } = useModel('@@initialState');

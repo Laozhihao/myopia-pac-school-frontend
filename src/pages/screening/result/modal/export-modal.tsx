@@ -24,11 +24,11 @@ export const ExportArchivesModal: React.FC<API.ModalItemType> = (props) => {
   const { currentUser } = initialState!;
   const schoolId = currentUser?.orgId;
 
-  const { orgName } = currentUser;
+  const { orgName } = currentUser!;
 
   const [gradeList, setGradeList] = useState<any[]>([]);
   const [studentList, setStudentList] = useState([]);
-  const [selectStudentIds, setSelectStudentIds] = useState<SelectValue>([]); // 当前已选的筛查学生
+  const [selectStudentIds, setSelectStudentIds] = useState<SelectValue[]>([]); // 当前已选的筛查学生
 
   /**
    * @desc 确认导出
@@ -75,7 +75,7 @@ export const ExportArchivesModal: React.FC<API.ModalItemType> = (props) => {
    * @desc 筛查学生修改
    */
   const onSelectStudentChange = (e: React.SetStateAction<SelectValue>) => {
-    setSelectStudentIds(e);
+    setSelectStudentIds(e as SelectValue[]); // 只需要数组类型的e
   };
 
   useMemo(async () => {
@@ -127,7 +127,7 @@ export const ExportArchivesModal: React.FC<API.ModalItemType> = (props) => {
                 value={item.planStudentId}
                 key={item.planStudentId}
                 disabled={
-                  !selectStudentIds.includes(item?.planStudentId) && selectStudentIds.length > 9
+                  !selectStudentIds?.includes(item?.planStudentId) && selectStudentIds?.length > 9
                 }
               >
                 {item.name}

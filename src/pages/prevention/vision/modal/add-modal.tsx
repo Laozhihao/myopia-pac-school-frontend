@@ -13,19 +13,18 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const { title, visible, currentRow } = props;
 
   useEffect(() => {
-    (visible && currentRow) && modalRef?.current?.setFieldsValue(currentRow); // 编辑回填
-  }, [visible, currentRow])
+    visible && currentRow && modalRef?.current?.setFieldsValue(currentRow); // 编辑回填
+  }, [visible, currentRow]);
 
   /**
    * @desc 新增/编辑
    */
   const onConfirm = async (value: any) => {
     console.log(value, '232');
-    await saveVisionStaff({...value, id: currentRow ? currentRow?.id : undefined});
+    await saveVisionStaff({ ...value, id: currentRow ? currentRow?.id : undefined });
     message.success(currentRow ? '编辑成功' : '新增成功');
     props.onCancel(true);
   };
-
 
   return (
     <ModalForm

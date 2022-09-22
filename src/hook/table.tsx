@@ -19,7 +19,6 @@ export const deleteTableRow = (message: string, callback: (() => void) | undefin
   });
 };
 
-
 export const notificationHook = (Option: ArgsProps) => {
   notification.open({
     icon: <SmileOutlined style={{ color: '#108ee9' }} />,
@@ -31,7 +30,6 @@ export const notificationHook = (Option: ArgsProps) => {
   });
 };
 
-
 /**
  * @desc 重置密码
  * @param record 当前记录的数据
@@ -39,7 +37,12 @@ export const notificationHook = (Option: ArgsProps) => {
  * @param apiFn 重置密码api
  */
 
- export const resetPwdHook =  (record: any, apiFn: (record?: any) => {}, isNeedAlert = true, callback?: ((data: any) => void) | undefined) => {
+export const resetPwdHook = (
+  record: any,
+  apiFn: (record?: any) => Promise<API.RequestResult>,
+  isNeedAlert = true,
+  callback?: ((data: any) => void) | undefined,
+) => {
   const { confirm } = Modal;
   confirm({
     title: '提示',

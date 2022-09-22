@@ -1,8 +1,20 @@
 import type { ProColumns } from '@ant-design/pro-table';
 import { TABLESEXOPTION, VISIONSTATUS } from '@/utils/constant';
-import { getShowIdCardText, getShowPassportText } from '@/utils/common';
+import { getShowIdCardText } from '@/utils/common';
 
-export const listColumns: ProColumns[] = [
+// 视力小队类型
+export type VisionColumnsType = {
+  id: React.Key;
+  staffName?: string;
+  gender?: React.Key;
+  idCard?: string;
+  passport?: string;
+  phone?: string;
+  remark?: string;
+  status?: React.Key;
+};
+
+export const listColumns: ProColumns<VisionColumnsType>[] = [
   {
     title: '姓名',
     dataIndex: 'staffName',
@@ -15,8 +27,7 @@ export const listColumns: ProColumns[] = [
   {
     title: '身份证号',
     dataIndex: 'idCard',
-    renderText: (val: string, record) =>
-    val ? getShowIdCardText(val) : getShowPassportText(record?.passport),
+    renderText: (val: string) => (val ? getShowIdCardText(val) : ''),
   },
   {
     title: '手机号码/账号',
@@ -29,6 +40,6 @@ export const listColumns: ProColumns[] = [
   {
     title: '状态',
     dataIndex: 'status',
-    valueEnum: VISIONSTATUS
+    valueEnum: VISIONSTATUS,
   },
 ];

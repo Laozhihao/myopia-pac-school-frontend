@@ -9,9 +9,12 @@ export async function getVisionStaffList(params: API.ObjectType, options?: API.O
   });
 }
 
-
 /** 启用停用 GET /school/staff/editStatus/ */
-export async function editVisionStaffStatus(id?: React.Key, status?: React.Key, options?: API.ObjectType) {
+export async function editVisionStaffStatus(
+  id?: React.Key,
+  status?: React.Key,
+  options?: API.ObjectType,
+) {
   return request<API.RequestResult>(`/school/staff/editStatus/${id}/${status}`, {
     method: 'POST',
     ...(options || {}),

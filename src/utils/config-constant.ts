@@ -7,10 +7,10 @@ export const defaultColConfig = {
   xs: 24,
 };
 
-// 弹窗的默认Col 
+// 弹窗的默认Col
 export const dialogColConfig = {
   showLabel: true,
   col: {
     span: 24,
   },
-}
+};

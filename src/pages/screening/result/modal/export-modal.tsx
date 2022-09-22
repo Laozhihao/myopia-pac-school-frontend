@@ -1,5 +1,4 @@
-import { getsGradeAll } from '@/api/school';
-import { screeningNoticeResult } from '@/api/screen/plan';
+import { getScreeningGradeList, screeningNoticeResult } from '@/api/screen/plan';
 import { exportScreeningArchiveCard } from '@/api/screen/result';
 import { getPopupContainer, modalConfig } from '@/hook/ant-config';
 import { convertData } from '@/utils/common';
@@ -13,8 +12,10 @@ import type { SelectValue } from 'antd/lib/select';
 
 const { Option } = Select;
 
-export const ExportArchivesModal: React.FC<API.ModalItemType> = (props) => {
-  const { title, visible } = props;
+export const ExportArchivesModal: React.FC<API.ModalItemType & { exportType?: string }> = (
+  props,
+) => {
+  const { title, visible, exportType } = props;
 
   const modalRef = useRef<ProFormInstance>();
 
@@ -66,6 +67,7 @@ export const ExportArchivesModal: React.FC<API.ModalItemType> = (props) => {
       gradeId,
       classId,
       isSchoolClient: true,
+      isData: true,
     };
     const { data } = await screeningNoticeResult(params);
     setStudentList(data);
@@ -80,7 +82,7 @@ export const ExportArchivesModal: React.FC<API.ModalItemType> = (props) => {
 
   useMemo(async () => {
     if (visible) {
-      const { data = [] } = await getsGradeAll();
+      const { data = [] } = await getScreeningGradeList(screeningPlanId as React.Key);
       setGradeList(convertData(data));
     }
   }, [visible]);
@@ -136,7 +138,8 @@ export const ExportArchivesModal: React.FC<API.ModalItemType> = (props) => {
           </Select>
         </Form.Item>
         <Form.Item label="导出内容">
-          所选择<span style={{ color: '#3c6cfe' }}>{orgName}</span>的学生筛查结果通知书
+          所选择<span style={{ color: '#3c6cfe' }}>{orgName}</span>的学生
+          {exportType === 'archives' ? '档案卡' : '监测表'}详情
         </Form.Item>
       </div>
       <FooterTips />

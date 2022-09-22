@@ -109,13 +109,6 @@ export async function setReportInfo(data: API.ObjectType, id: React.Key) {
   });
 }
 
-/** 获取年级 GET /school/vision/screening/grades/{screeningPlanId}  */
-export async function getGrades(id: React.Key) {
-  return request<API.RequestResult>(`/school/vision/screening/grades/${id}`, {
-    method: 'GET',
-  });
-}
-
 /** 获取学生 GET /school/vision/screening/screeningNoticeResult/list */
 export async function screeningNoticeResult(params: API.ObjectType) {
   return request<API.RequestResult>('/school/vision/screening/screeningNoticeResult/list', {

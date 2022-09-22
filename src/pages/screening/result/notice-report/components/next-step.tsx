@@ -1,6 +1,6 @@
 import { Form, Select, Cascader } from 'antd';
 import { FooterTips } from '../components/footer-tips';
-import { screeningNoticeResult, getGrades } from '@/api/screen/plan';
+import { screeningNoticeResult, getScreeningGradeList } from '@/api/screen/plan';
 import styles from './next-step.less';
 import { useState, useMemo, forwardRef } from 'react';
 import { getPopupContainer } from '@/hook/ant-config';
@@ -47,7 +47,7 @@ export const NextStep = forwardRef<any, NextStepType>((props, ref) => {
   useMemo(async () => {
     const { planId } = ids;
     if (planId) {
-      const { data = [] } = await getGrades(planId);
+      const { data = [] } = await getScreeningGradeList(planId);
       setGradeList(convertData(data));
     }
   }, []);

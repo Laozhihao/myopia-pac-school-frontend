@@ -87,8 +87,6 @@ export const teenagersSituationColumns: ProColumns[] = [
     dataIndex: 'wearingGlassesNum',
     renderText: (val: number, record) => `${val} / ${record?.wearingGlassesRatio}`,
   },
-
-  // 夜戴角膜塑形镜 key值替换
   {
     title: '夜戴角膜塑形镜（人数/占比）',
     dataIndex: 'nightWearingOrthokeratologyLensesNum',

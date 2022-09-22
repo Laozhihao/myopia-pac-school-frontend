@@ -50,10 +50,13 @@ const ScreeningResult: React.FC = () => {
     title: '',
   }); // 弹窗props
 
-  const [archivesModalInfo, setArchivesModalInfo] = useState<API.ModalDataType>({
+  const [archivesModalInfo, setArchivesModalInfo] = useState<
+    API.ModalDataType & { exportType?: string }
+  >({
     visible: false,
     currentRow: undefined,
     title: '',
+    exportType: '',
   });
 
   const [standardModalVisible, setStandardModalVisible] = useState(false); // 判断标准
@@ -188,7 +191,11 @@ const ScreeningResult: React.FC = () => {
    * @desc 导出档案卡
    */
   const onExportArchives = () => {
-    setArchivesModalInfo({ visible: true, title: ActiveKey === '8' ? '导出档案卡' : '导出监测卡' });
+    setArchivesModalInfo({
+      visible: true,
+      title: ActiveKey === '8' ? '导出档案卡' : '导出监测卡',
+      exportType: ActiveKey === '8' ? 'archives' : 'monitor',
+    });
   };
 
   const onWarning = () => {

@@ -11,7 +11,7 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList'> = {
       ...dialogColConfig,
       rules: defaultRulesConfig('输入姓名'),
       fieldProps: {
-        maxLength: 30,
+        maxLength: 15,
       },
     },
     {

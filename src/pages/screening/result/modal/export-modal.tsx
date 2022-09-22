@@ -82,7 +82,9 @@ export const ExportArchivesModal: React.FC<API.ModalItemType & { exportType?: st
 
   useMemo(async () => {
     if (visible) {
-      const { data = [] } = await getScreeningGradeList(screeningPlanId as React.Key);
+      const { data = [] } = await getScreeningGradeList(screeningPlanId as React.Key, {
+        isData: true,
+      });
       setGradeList(convertData(data));
     }
   }, [visible]);

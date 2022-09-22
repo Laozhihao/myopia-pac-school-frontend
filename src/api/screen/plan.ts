@@ -25,9 +25,10 @@ export async function getScreeningWarn(params: API.ObjectType) {
 }
 
 /** 学生年级 GET /school/vision/screening/grades/{screeningPlanId} */
-export async function getScreeningGradeList(planId: React.Key) {
+export async function getScreeningGradeList(planId: React.Key, params?: API.ObjectType) {
   return request<API.RequestResult>(`/school/vision/screening/grades/${planId}`, {
     method: 'GET',
+    params,
   });
 }
 

@@ -31,6 +31,8 @@ const TableList: React.FC = () => {
     currentRow: {},
   });
 
+  const [isHasScreeningStudent, setIsHasScreeningStudent] = useState(false);
+
   const [ItemOptions, setItemOptions] = useState<
     Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
   >({ ...FormItemOptions });
@@ -158,7 +160,7 @@ const TableList: React.FC = () => {
             </span>
           }
           toolBarRender={() => [
-            screeningBizType === '1' ? (
+            screeningBizType === '1' && isHasScreeningStudent ? (
               <Button type="primary" key="add" onClick={() => setAddModalVisible(true)}>
                 新增筛查学生
               </Button>
@@ -171,8 +173,9 @@ const TableList: React.FC = () => {
               current: params.current,
               size: params.pageSize,
             });
+            setIsHasScreeningStudent(data?.hasScreeningStudent);
             return {
-              data: data?.records || [],
+              data: data?.pageData?.records || [],
               success: true,
               total: data?.total || 0,
             };

@@ -7,8 +7,8 @@ import {
   childSituationColumns,
   monitorColumns,
   abnormalColumns,
-  diseasesColumns1,
-  diseasesColumns2,
+  // diseasesColumns1,
+  // diseasesColumns2,
 } from './columns';
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';
@@ -91,7 +91,7 @@ const ScreeningResult: React.FC = () => {
     },
     { title: '视力监测预警', columns: [monitorColumns], key: 'monitor' },
     { title: '视力异常跟踪', columns: [abnormalColumns], key: 'abnormal' },
-    { title: '常见病监测', columns: [diseasesColumns1, diseasesColumns2], key: 'diseases' },
+    // { title: '常见病监测', columns: [diseasesColumns1, diseasesColumns2], key: 'diseases' },
   ];
 
   const exportOptions = {

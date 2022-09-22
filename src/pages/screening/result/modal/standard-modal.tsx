@@ -28,7 +28,7 @@ export const StandardModal: React.FC<API.ModalItemType> = (props) => {
       {...modalConfig}
     >
       {standardImg.map((item, index) => (
-        <Image key={index} width={800} src={item} />
+        <Image key={index} width={780} src={item} />
       ))}
     </Modal>
   );

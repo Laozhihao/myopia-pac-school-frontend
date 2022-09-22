@@ -3,7 +3,8 @@ import { Button, message } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { listColumns, VisionColumnsType } from './columns';
+import { listColumns } from './columns';
+import type { VisionColumnsType } from './columns';
 import { EMPTY } from '@/utils/constant';
 import { PlusOutlined } from '@ant-design/icons';
 import {

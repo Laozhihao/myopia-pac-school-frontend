@@ -38,3 +38,11 @@ export async function saveVisionStaff(data?: API.ObjectType, options?: API.Objec
     ...(options || {}),
   });
 }
+
+/** 是否超过人数配置 GET /school/staff/checkTeamCount */
+export async function checkTeamCount(options?: API.ObjectType) {
+  return request<API.RequestResult>('/school/staff/checkTeamCount', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}

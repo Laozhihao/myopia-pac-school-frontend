@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Button, message } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -8,6 +8,7 @@ import type { VisionColumnsType } from './columns';
 import { EMPTY } from '@/utils/constant';
 import { PlusOutlined } from '@ant-design/icons';
 import {
+  checkTeamCount,
   editVisionStaffStatus,
   getVisionStaffList,
   resetVisionStaffPassword,
@@ -23,6 +24,16 @@ const TableList: React.FC = () => {
     visible: false,
     currentRow: undefined,
   }); // 创建筛查计划信息
+
+  const [isExceedConfig, setIsExceedConfig] = useState(false); // 是否超过人数限制
+
+  const init = async () => {
+    const { data } = await checkTeamCount();
+    setIsExceedConfig(data);
+  };
+  useMemo(async () => {
+    init();
+  }, []);
 
   /**
    * @desc 启用/停用
@@ -69,7 +80,10 @@ const TableList: React.FC = () => {
 
   const onCancel = (refresh?: boolean) => {
     setAddModalInfo({ visible: false });
-    refresh && tableRef?.current?.reload?.();
+    if (refresh) {
+      init();
+      tableRef?.current?.reload?.();
+    }
   };
 
   const columns: ProColumns<VisionColumnsType>[] = [
@@ -105,7 +119,12 @@ const TableList: React.FC = () => {
         actionRef={tableRef}
         columnEmptyText={EMPTY}
         toolBarRender={() => [
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => onHandle()}>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => onHandle()}
+            disabled={isExceedConfig}
+          >
             创建
           </Button>,
         ]}

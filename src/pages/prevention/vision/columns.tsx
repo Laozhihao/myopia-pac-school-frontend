@@ -1,5 +1,5 @@
 import type { ProColumns } from '@ant-design/pro-table';
-import { TABLESEXOPTION, VISIONSTATUS } from '@/utils/constant';
+import { STAFFTYPE, TABLESEXOPTION, VISIONSTATUS } from '@/utils/constant';
 import { getShowIdCardText } from '@/utils/common';
 
 // 视力小队类型
@@ -28,6 +28,11 @@ export const listColumns: ProColumns<VisionColumnsType>[] = [
     title: '身份证号',
     dataIndex: 'idCard',
     renderText: (val: string) => (val ? getShowIdCardText(val) : ''),
+  },
+  {
+    title: '角色',
+    dataIndex: 'staffType',
+    valueEnum: STAFFTYPE,
   },
   {
     title: '手机号码/账号',

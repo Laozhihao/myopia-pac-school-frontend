@@ -60,6 +60,11 @@ export const VISIONSTATUS = {
   1: { text: '停用', status: 'Default' },
 };
 
+// 角色
+export const STAFFTYPE = {
+  0: '校医',
+};
+
 // 性别 （pro表格）
 export const TABLESEXOPTION = {
   0: '男',

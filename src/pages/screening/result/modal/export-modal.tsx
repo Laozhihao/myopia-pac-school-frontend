@@ -40,8 +40,8 @@ export const ExportArchivesModal: React.FC<API.ModalItemType & { exportType?: st
       gradeId,
       classId,
       schoolId,
-      planStudentId: studentIds.join(','),
-      screeningPlanId,
+      planStudentIds: studentIds.join(','),
+      planId: screeningPlanId,
       isSchoolClient: true,
       type: studentIds.length ? 5 : classId ? 4 : gradeId ? 3 : 2,
     };
@@ -51,6 +51,7 @@ export const ExportArchivesModal: React.FC<API.ModalItemType & { exportType?: st
     } else {
       message.success('操作成功，请留意站内信!');
     }
+    props?.onCancel(false);
   };
 
   /**
@@ -86,7 +87,7 @@ export const ExportArchivesModal: React.FC<API.ModalItemType & { exportType?: st
         isData: true,
       });
       setGradeList(convertData(data));
-    }
+    } else setCurrentSelectStudent('');
   }, [visible]);
 
   return (

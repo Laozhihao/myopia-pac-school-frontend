@@ -1,3 +1,4 @@
+import { doubleDefaultColConfig } from '@/utils/config-constant';
 import { MYOPIAWARNOPTION } from '@/utils/constant';
 import { STUDENTSELECTOPTIONS } from '@/utils/form-constant';
 
@@ -8,6 +9,7 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
       selectInitial: 'name',
       value: 'inputKey',
       valueEnum: STUDENTSELECTOPTIONS,
+      col: doubleDefaultColConfig,
     },
     {
       label: '年级班级',

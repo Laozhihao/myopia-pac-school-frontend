@@ -187,7 +187,7 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
   };
 
   return (
-    <Row gutter={props.gutter ?? 40}>
+    <Row gutter={props.gutter ?? 20}>
       <div className={styles.item}>
         {formlist.map((item) => (
           <Col key={item.value} {...(item?.col ?? defaultColConfig)}>

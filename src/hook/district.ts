@@ -1,5 +1,5 @@
 import { getDistrict, getNation } from '@/api/common';
-import { setStorageInfo, getCascader, CASCADER } from '@/hook/storage';
+// import { setStorageInfo, getCascader, CASCADER } from '@/hook/storage';
 
 /**
  * @desc 给级联options child的添加第一个节点：全部
@@ -25,11 +25,13 @@ export const dealCascaderOptions = (options: any, key = defaultKey) => {
  * @desc 获取地区级联
  */
 export const getCascaderOption = async () => {
-  if (!getCascader()) {
-    const region = await getDistrict();
-    setStorageInfo(CASCADER, region, null);
-  }
-  return getCascader() || [];
+  const region = await getDistrict();
+  return region;
+  // if (!getCascader()) {
+  //   const region = await getDistrict();
+  //   setStorageInfo(CASCADER, region, null);
+  // }
+  // return getCascader() || [];
 };
 
 /**

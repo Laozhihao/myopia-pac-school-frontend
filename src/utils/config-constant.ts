@@ -7,14 +7,14 @@ export const defaultColConfig = {
   xs: 24,
 };
 
-export const doubleDefaultColConfig = {
-  xxl: 10,
-  xl: 14,
-  lg: 24,
-  md: 24,
-  sm: 24,
-  xs: 24,
-};
+// export const doubleDefaultColConfig = {
+//   xxl: 7,
+//   xl: 14,
+//   lg: 24,
+//   md: 24,
+//   sm: 24,
+//   xs: 24,
+// };
 
 // 弹窗的默认Col
 export const dialogColConfig = {

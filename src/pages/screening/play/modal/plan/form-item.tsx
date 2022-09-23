@@ -58,7 +58,7 @@ export const FormItemOptions = (
           span: 24,
         },
         fieldProps: {
-          maxLength: 30,
+          maxLength: 25,
         },
         rules: defaultRulesConfig('输入筛查标题'),
       },

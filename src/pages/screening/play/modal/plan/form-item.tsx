@@ -89,7 +89,7 @@ export const FormItemOptions = (
         col: {
           span: 24,
         },
-        slot: total ? (
+        slot: allTotal ? (
           <>
             <Form.Item
               label="筛查学生"
@@ -106,7 +106,7 @@ export const FormItemOptions = (
               </Checkbox.Group>
             </Form.Item>
             <div className={styles.total_part}>合计{total}人</div>
-            {!allTotal ? (
+            {!total ? (
               <div className={styles.tip}>
                 <p className="secondary_text">
                   暂无学生数据，请前去学生管理中批量导入或新增学生

@@ -1,4 +1,4 @@
-import { Modal, Select, Radio, Button, Cascader, Form, Row, Col, Image, Upload } from 'antd';
+import { Modal, Select, Radio, Button, Cascader, Form, Row, Col, Image, Upload, Space } from 'antd';
 import { useRequest, useModel } from 'umi';
 import { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
@@ -332,11 +332,13 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                 buttonStyle="solid"
                 onChange={onPrintTypeChange}
               >
-                {printTypeArr.map((item: any) => (
-                  <Radio.Button value={item.type} key={item.type}>
-                    {item.text}
-                  </Radio.Button>
-                ))}
+                <Space size={10}>
+                  {printTypeArr.map((item: any) => (
+                    <Radio.Button value={item.type} key={item.type}>
+                      {item.text}
+                    </Radio.Button>
+                  ))}
+                </Space>
               </Radio.Group>
             </Form.Item>
             <Form.Item label="筛查学校" name="schoolName" required>

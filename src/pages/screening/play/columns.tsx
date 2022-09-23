@@ -20,7 +20,7 @@ export const listColumns: (show: (dom: any) => void) => ProColumns[] = (show) =>
     },
   },
   {
-    title: '发布/通知日期',
+    title: '筛查时间段',
     dataIndex: 'startTime',
     renderText: (val: any, record) =>
       `${val ? moment(val).format(DATE) : EMPTY} 至 ${
@@ -75,7 +75,7 @@ export const listColumns: (show: (dom: any) => void) => ProColumns[] = (show) =>
     },
   },
   {
-    title: '通知日期',
+    title: '发布/通知日期',
     dataIndex: 'releaseTime',
     valueType: 'date',
   },

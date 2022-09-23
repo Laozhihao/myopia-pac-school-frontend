@@ -124,7 +124,10 @@ const DynamicForm: React.FC<API.PropsType> = (props) => {
         label={showLabel ? label : ''}
         placeholder={`请选择${label}`}
         name={value}
-        fieldProps={fieldProps}
+        fieldProps={{
+          getPopupContainer,
+          ...fieldProps,
+        }}
         rules={rules}
         required={required}
         valueEnum={valueEnum}

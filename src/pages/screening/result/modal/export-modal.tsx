@@ -25,11 +25,10 @@ export const ExportArchivesModal: React.FC<API.ModalItemType & { exportType?: st
   const { currentUser } = initialState!;
   const schoolId = currentUser?.orgId;
 
-  const { orgName } = currentUser!;
-
   const [gradeList, setGradeList] = useState<any[]>([]);
   const [studentList, setStudentList] = useState([]);
   const [selectStudentIds, setSelectStudentIds] = useState<SelectValue[]>([]); // 当前已选的筛查学生
+  const [currentSelectStudent, setCurrentSelectStudent] = useState(''); // 当前所选的年级班级信息
 
   /**
    * @desc 确认导出
@@ -57,7 +56,8 @@ export const ExportArchivesModal: React.FC<API.ModalItemType & { exportType?: st
   /**
    * @desc 年级班级修改
    */
-  const onGradeChange = async (e: any) => {
+  const onGradeChange = async (e: any, selectedOptions: any[]) => {
+    setCurrentSelectStudent(selectedOptions.map((item) => item.name).join(' '));
     const initValue = modalRef?.current?.getFieldsValue();
     modalRef?.current?.setFieldsValue({ ...initValue, studentIds: [] });
     const [gradeId, classId] = e || [];
@@ -106,12 +106,12 @@ export const ExportArchivesModal: React.FC<API.ModalItemType & { exportType?: st
     >
       <div style={{ width: '80%' }}>
         <Form.Item label="筛查学校">
-          <Select defaultValue={orgName} disabled />
+          <Select defaultValue={currentUser?.orgName} disabled />
         </Form.Item>
         <Form.Item label="选择年级/班级" name="gradeIds">
           <Cascader
             options={gradeList}
-            fieldNames={{ label: 'name', value: 'id', children: 'child' }}
+            fieldNames={{ label: 'name', value: 'id', children: 'classes' }}
             onChange={onGradeChange}
             changeOnSelect
             placeholder="请选择年级班级"
@@ -140,7 +140,11 @@ export const ExportArchivesModal: React.FC<API.ModalItemType & { exportType?: st
           </Select>
         </Form.Item>
         <Form.Item label="导出内容">
-          所选择<span style={{ color: '#3c6cfe' }}>{orgName}</span>的学生
+          所选择
+          <span style={{ color: '#3c6cfe' }}>
+            {currentUser?.orgName} {currentSelectStudent}
+          </span>
+          的学生
           {exportType === 'archives' ? '档案卡' : '监测表'}详情
         </Form.Item>
       </div>

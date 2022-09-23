@@ -193,8 +193,8 @@ const ScreeningResult: React.FC = () => {
   const onExportArchives = () => {
     setArchivesModalInfo({
       visible: true,
-      title: ActiveKey === '8' ? '导出档案卡' : '导出监测卡',
-      exportType: ActiveKey === '8' ? 'archives' : 'monitor',
+      title: !schoolDetail?.screeningType ? '导出档案卡' : '导出监测卡',
+      exportType: !schoolDetail?.screeningType ? 'archives' : 'monitor',
     });
   };
 
@@ -261,7 +261,7 @@ const ScreeningResult: React.FC = () => {
                     筛查数据
                   </Button>
                   <Button type="primary" onClick={() => onExportArchives()} ghost>
-                    {ActiveKey === '8' ? '档案卡' : '监测表'}
+                    {!schoolDetail?.screeningType ? '档案卡' : '监测表'}
                   </Button>
                   <Button type="primary" onClick={() => showNoticeReport()} ghost>
                     结果通知书
@@ -284,10 +284,7 @@ const ScreeningResult: React.FC = () => {
                         <span className={styles.subTitle}>{activeItem.subTitle}</span>
                       </p>
                       {activeItem.columns.map(
-                        (
-                          eleItem: ProColumns<any, 'text'>[] | undefined,
-                          eleIndex: React.Key | null | undefined,
-                        ) => (
+                        (eleItem: ProColumns<any, 'text'>[] | undefined, eleIndex: number) => (
                           <ProTable
                             columns={eleItem}
                             rowKey="id"

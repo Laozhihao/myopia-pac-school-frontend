@@ -49,7 +49,7 @@ export const InputGroup: React.FC<InputGroupType> = (props) => {
         fieldProps={{
           onChange,
           allowClear: false,
-          style: { width: props.selectWidth ?? 140 },
+          style: { width: props.selectWidth ?? 120 },
           ...fieldProps,
         }}
         options={selectOption}

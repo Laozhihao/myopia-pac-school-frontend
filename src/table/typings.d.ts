@@ -49,6 +49,8 @@ declare namespace API {
 
   // 档案管理列表
   type FileListItem = {
+    planStudentId?: React.Key;
+    planId?: React.Key;
     templateId: string | number;
     resultId: string | number;
     screeningTitle?: string;

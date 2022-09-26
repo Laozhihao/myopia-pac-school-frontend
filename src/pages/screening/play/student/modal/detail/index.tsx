@@ -5,6 +5,7 @@ import { modalConfig } from '@/hook/ant-config';
 import { inspectType } from './columns';
 import styles from './index.less';
 import { GLASSESTYPE } from '@/utils/constant';
+import { isNotEmpty } from '@vistel/vistel-utils/lib/tool';
 
 // currentRow 类型
 type DetailModalDetailType = {
@@ -47,7 +48,8 @@ export const DetailModal: React.FC<API.ModalItemType> = (props) => {
                 {item.title}
                 {item.dataIndex === 'visionData' && (
                   <span className={styles.glasses_tip}>
-                    {detailDataSource?.glassesType && GLASSESTYPE[detailDataSource?.glassesType]}
+                    {isNotEmpty(detailDataSource?.glassesType) &&
+                      GLASSESTYPE[detailDataSource?.glassesType!]}
                   </span>
                 )}
               </p>

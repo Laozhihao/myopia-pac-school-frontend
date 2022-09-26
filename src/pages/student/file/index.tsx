@@ -5,7 +5,7 @@ import ProTable from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';
 import { listColumns } from './columns';
 import { history, useRequest } from 'umi';
-import { Tabs, Card, message, Tooltip, Button } from 'antd';
+import { Tabs, Card, message } from 'antd';
 import { editStudentInfo } from '@/api/student';
 import DynamicForm from '@/components/DynamicForm';
 import LazyCascader from '@/pages/components/lazy-cascader';
@@ -16,8 +16,10 @@ import type { ProFormInstance } from '@ant-design/pro-form';
 import { getStudentDetail, getStudentScreen } from '@/api/student';
 import { getCascaderOption } from '@/hook/district';
 import { getschoolGrade } from '@/api/school';
-import { DetailModal } from './detail-modal';
+import { DetailModal } from '@/pages/screening/play/student/modal/detail';
 import { EMPTY } from '@/utils/constant';
+import DynamicButtonGroup from '@/components/DynamicButtonGroup';
+import SwitchableButton from '@/components/SwitchableButton';
 
 const { TabPane } = Tabs;
 export type FileCardPropsParams = {
@@ -38,8 +40,8 @@ const FileList: React.FC = () => {
 
   const [areaOption, setAreaOption] = useState<any[]>();
   const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
-  // 查看详情弹窗
-  const [detail, setDetail] = useState<API.ModalDataType>({
+
+  const [detailInfo, setDetailInfo] = useState<API.ModalDataType>({
     visible: false,
     title: '查看详情',
     currentRow: {},
@@ -55,7 +57,14 @@ const FileList: React.FC = () => {
    * @desc 查看详情
    */
   const onDetail = (record: API.FileListItem) => {
-    setDetail((value) => ({ ...value, visible: true, currentRow: record }));
+    setDetailInfo((s) => ({
+      ...s,
+      visible: true,
+      currentRow: {
+        screeningPlanStudentId: record?.planStudentId,
+        screeningPlanId: record?.planId,
+      },
+    }));
   };
 
   /**
@@ -116,20 +125,20 @@ const FileList: React.FC = () => {
       width: 200,
       render: (_, record) => {
         return [
-          <a key="print" onClick={() => onMonitor(record)}>
-            打印档案卡
-          </a>,
-          record?.hasScreening ? (
-            <Button type="link" onClick={() => onDetail(record)} key="detail">
+          <DynamicButtonGroup key="operator">
+            <SwitchableButton key="print" icon="icon-Printer" onClick={() => onMonitor(record)}>
+              打印档案卡
+            </SwitchableButton>
+            <SwitchableButton
+              key="detail"
+              icon="icon-a-Group1000006854"
+              disabled={!record?.hasScreening}
+              tooltip={!record?.hasScreening ? '当前没有筛查数据' : ''}
+              onClick={() => onDetail(record)}
+            >
               查看详情
-            </Button>
-          ) : (
-            <Tooltip title="当前没有筛查数据">
-              <Button type="text" disabled key="unDetail">
-                查看详情
-              </Button>
-            </Tooltip>
-          ),
+            </SwitchableButton>
+          </DynamicButtonGroup>,
         ];
       },
     },
@@ -290,10 +299,8 @@ const FileList: React.FC = () => {
         </Tabs>
       </Card>
       <DetailModal
-        {...detail}
-        onCancel={() => {
-          setDetail((value) => ({ ...value, visible: false }));
-        }}
+        {...detailInfo}
+        onCancel={() => setDetailInfo((s) => ({ ...s, visible: false, currentRow: {} }))}
       />
     </PageContainer>
   );

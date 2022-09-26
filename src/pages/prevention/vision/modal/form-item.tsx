@@ -1,6 +1,7 @@
 import { defaultRulesConfig } from '@/utils/common';
 import { dialogColConfig } from '@/utils/config-constant';
 import { isPhoneNum86, isIdCard } from '@vistel/vistel-utils/lib/validator';
+import styles from '@/styles/overwrite.less';
 
 export const FormItemOptions: Pick<API.PropsType, 'filterList'> = {
   filterList: [
@@ -20,6 +21,11 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList'> = {
       value: 'idCard',
       ...dialogColConfig,
       required: true,
+      fieldProps: {
+        type: navigator.userAgent.indexOf('AppleWebKit') > -1 ? 'text' : 'password',
+        autoComplete: 'new-password',
+        className: styles.input_security,
+      },
       rules: [
         {
           validator(_: any, value: any) {

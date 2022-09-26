@@ -73,6 +73,7 @@ export const TABLESEXOPTION = {
 
 // 未做检查说明
 export const INSPECTIONINSTRUCTIONS = {
+  0: '无',
   1: '请假',
   2: '转学',
   3: '其他',

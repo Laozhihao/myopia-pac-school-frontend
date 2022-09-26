@@ -145,13 +145,15 @@ const TableList: React.FC = () => {
                     筛查学生列表
                   </SwitchableButton>,
 
-                  <SwitchableButton
-                    key="add_time"
-                    icon="icon-a-Group1000006856"
-                    onClick={() => onAddSreenTime(record)}
-                  >
-                    新增筛查时间
-                  </SwitchableButton>,
+                  record?.screeningBizType ? (
+                    <SwitchableButton
+                      key="add_time"
+                      icon="icon-a-Group1000006856"
+                      onClick={() => onAddSreenTime(record)}
+                    >
+                      新增筛查时间
+                    </SwitchableButton>
+                  ) : null,
                   <SwitchableButton
                     key="print"
                     onClick={() => {

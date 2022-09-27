@@ -177,7 +177,7 @@ const TableList: React.FC = () => {
             return {
               data: data?.pageData?.records || [],
               success: true,
-              total: data?.total || 0,
+              total: data?.pageData?.total || 0,
             };
           }}
           columns={columns}

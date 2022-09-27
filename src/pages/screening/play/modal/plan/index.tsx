@@ -6,7 +6,8 @@ import { useMemo, useRef, useState } from 'react';
 import { modalConfig } from '@/hook/ant-config';
 import { FormItemOptions } from './form-item';
 import { getScreeningStudent, editScreeningStudent } from '@/api/screen/plan';
-import { message } from 'antd';
+import { message, Form } from 'antd';
+import { MyEditor } from '@/components/wangeditor';
 
 export const PlanModal: React.FC<API.ModalItemType> = (props) => {
   const modalRef = useRef<ProFormInstance>();
@@ -14,6 +15,7 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
     allList: [],
     selectList: [],
   });
+  const [contentValue, setContentValue] = useState('');
 
   const { title, visible, currentRow } = props;
 
@@ -33,6 +35,7 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
           ? data?.selectList.map((item: API.GradeInfoType) => item.gradeId)
           : data?.allList?.map((item: API.GradeInfoType) => item.gradeId),
       });
+      currentRow && setContentValue(currentRow?.content);
     }
   }, [visible]);
 
@@ -42,6 +45,7 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
   const onConfirm = async (value: any) => {
     const { time = [] } = value;
     const [startTime, endTime] = time;
+    console.log(contentValue, 'contentValue');
     await editScreeningStudent(
       deleteRedundantData(
         {
@@ -49,6 +53,7 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
           screeningType: 0,
           startTime,
           endTime,
+          content: contentValue,
           id: currentRow ? currentRow?.planId : undefined,
         },
         ['time'],
@@ -62,7 +67,7 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
     <ModalForm
       title={title}
       formRef={modalRef}
-      width={750}
+      width={800}
       visible={visible}
       onFinish={onConfirm}
       layout="horizontal"
@@ -80,7 +85,11 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
           currentRow,
         )}
         isNeedBtn={false}
-      />
+      >
+        <Form.Item label="筛查内容">
+          <MyEditor value={contentValue} onChange={(e) => setContentValue(e)} ></MyEditor>
+        </Form.Item>
+      </DynamicForm>
     </ModalForm>
   );
 };

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import type { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import moment from 'moment';
 import { history } from 'umi';
+import { MyEditor } from '@/components/wangeditor';
 
 type StudentOptionType = {
   studentNum?: number;
@@ -127,16 +128,7 @@ export const FormItemOptions = (
             </p>
           </Form.Item>
         ),
-      },
-      {
-        label: '筛查内容',
-        type: 'textArea',
-        value: 'content',
-        showLabel: true,
-        col: {
-          span: 24,
-        },
-      },
+      }
     ],
   };
 };

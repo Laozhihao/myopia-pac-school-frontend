@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { Button, message } from 'antd';
+import { Button, message, Tooltip } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -119,14 +119,16 @@ const TableList: React.FC = () => {
         actionRef={tableRef}
         columnEmptyText={EMPTY}
         toolBarRender={() => [
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => onHandle()}
-            disabled={isExceedConfig}
-          >
-            创建
-          </Button>,
+          <Tooltip title={ isExceedConfig ? '人员数量已超过限制，如需增加请联系管理员' : '' }>
+              <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => onHandle()}
+              disabled={isExceedConfig}
+            >
+              创建
+            </Button>
+          </Tooltip>
         ]}
         request={async (params) => {
           const { data } = await getVisionStaffList({

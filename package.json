@@ -54,6 +54,8 @@
     "@ant-design/pro-table": "^2.30.8",
     "@umijs/route-utils": "^1.0.36",
     "@vistel/vistel-utils": "^1.0.36",
+    "@wangeditor/editor": "^5.1.20",
+    "@wangeditor/editor-for-react": "^1.0.5",
     "antd": "4.17.0",
     "classnames": "^2.2.6",
     "jsonwebtoken": "^8.5.1",
@@ -64,7 +66,8 @@
     "react-dom": "^17.0.0",
     "react-helmet-async": "^1.0.4",
     "umi": "^3.5.0",
-    "umi-serve": "^1.9.10"
+    "umi-serve": "^1.9.10",
+    "wangeditor": "4.7.15"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^2.0.2",

@@ -6,7 +6,7 @@ import { useMemo, useRef, useState } from 'react';
 import { modalConfig } from '@/hook/ant-config';
 import { FormItemOptions } from './form-item';
 import { getScreeningStudent, editScreeningStudent } from '@/api/screen/plan';
-import { message, Form } from 'antd';
+import { message, Form, Col } from 'antd';
 import { MyEditor } from '@/components/wangeditor';
 
 export const PlanModal: React.FC<API.ModalItemType> = (props) => {
@@ -86,9 +86,11 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
         )}
         isNeedBtn={false}
       >
-        <Form.Item label="筛查内容">
-          <MyEditor value={contentValue} onChange={(e) => setContentValue(e)} ></MyEditor>
-        </Form.Item>
+        <Col span={24}>
+          <Form.Item label="筛查内容">
+            <MyEditor value={contentValue} onChange={(e) => setContentValue(e)}></MyEditor>
+          </Form.Item>
+        </Col>
       </DynamicForm>
     </ModalForm>
   );

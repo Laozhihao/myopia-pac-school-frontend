@@ -1,85 +1,58 @@
-import '@wangeditor/editor/dist/css/style.css' // 引入 css
+import WangEditor from 'wangeditor';
+import { useEffect, useState } from 'react';
+import { uploadImg } from '@/api/common';
+import { Spin } from 'antd';
 
-import React, { useState, useEffect } from 'react'
-import { Editor, Toolbar } from '@wangeditor/editor-for-react'
-import { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor'
+export const MyEditor = (props: { value: any; onChange?: (e: any) => void }) => {
+  const [loading, setLoading] = useState(false);
 
-export const MyEditor = (props: { value: any, onChange?: (e: any) => void }) => {
-    // editor 实例
-    const [editor, setEditor] = useState<IDomEditor | null>(null)   // TS 语法
-    // const [editor, setEditor] = useState(null)                   // JS 语法
+  const { value } = props;
 
-    const { value } = props;
+  useEffect(() => {
+    let instance = new WangEditor('#div1') as any;
+    // 目前需要的配置
+    instance.config.menus = ['head', 'bold', 'fontSize', 'indent', 'list', 'justify', 'image'];
+    instance.config.placeholder = '';
+    // 一次最多上传1个图片
+    instance.config.uploadImgMaxLength = 1;
 
-    // 编辑器内容
-    const [html, setHtml] = useState('');
+    /**
+     * @desc 自定义上传方法
+     */
+    instance.config.customUploadImg = async (
+      resultFiles: File[],
+      insertImgFn: (url: string) => void,
+    ) => {
+      const formData = new FormData();
+      // resultFiles 是 input 中选中的文件列表
+      resultFiles.forEach((file) => {
+        formData.append('file', file);
+      });
+      setLoading(true);
+      const { data } = await uploadImg(formData);
+      insertImgFn(data?.url);
+      setLoading(false);
+    };
 
-    useEffect(() => {
-      setHtml(value);
-    }, [value])
+    Object.assign(instance.config, {
+      onchange() {
+        // instance?.txt?.html(instance?.txt?.html?.());
+        props?.onChange?.(instance?.txt?.html?.());
+      },
+    });
+    instance.create();
+    // 重新设置编辑器内容
+    instance.txt.html(value);
 
-    // 工具栏配置
-    const toolbarConfig: Partial<IToolbarConfig> = { }  // TS 语法
+    return () => {
+      instance.destroy();
+      instance = null;
+    };
+  }, []);
 
-    console.log(editor?.getAllMenuKeys(), '222');
-    
-  //   toolbarConfig.toolbarKeys = [
-  //     // 菜单 key
-  //     'headerSelect',
-  
-  //     // 分割线
-  //     '|',
-  
-  //     // 菜单 key
-  //     'bold', 'fontSize', 'indent', 'bulletedList', 'numberedList', 'justifyLeft', 'justifyRight', 'justifyCenter', 'justifyJustify', 'insertImage', 'uploadImage', 'fullScreen',
-  
-  //     // 菜单组，包含多个菜单
-  //     {
-  //         key: 'group-image', // 必填，要以 group 开头
-  //         title: '更多样式', // 必填
-  //         iconSvg: '<svg>....</svg>', // 可选
-          menuKeys: ['insertImage', 'uploadImage'] // 下级菜单 key ，必填
-  //     },
-  //     // 继续配置其他菜单...
-  // ]            // JS 语法
-
-    // 编辑器配置
-    const editorConfig: Partial<IEditorConfig> = {    // TS 语法
-    // const editorConfig = {                         // JS 语法
-        placeholder: '请输入内容...',
-    }
-
-    // 及时销毁 editor ，重要！
-    useEffect(() => {
-        return () => {
-            if (editor == null) return
-            editor?.destroy()
-            setEditor(null)
-        }
-    }, [editor])
-    const editorOnchange = (editor: { getHtml: () => React.SetStateAction<string> }) => {
-      setHtml(editor.getHtml())
-      props?.onChange?.(editor.getHtml());
-    }
-
-    return (
-        <>
-            <div style={{ border: '1px solid #ccc', zIndex: 100}}>
-              <Toolbar
-                  editor={editor}
-                  defaultConfig={toolbarConfig}
-                  mode="default"
-                  style={{ borderBottom: '1px solid #ccc' }}
-              />
-              <Editor
-                defaultConfig={editorConfig}
-                value={html}
-                onCreated={setEditor}
-                onChange={editorOnchange}
-                mode="default"
-                style={{ height: '500px', overflowY: 'hidden' }}
-              />
-            </div>
-        </>
-    )
-}
+  return (
+    <Spin spinning={loading}>
+      <div id="div1" key="staticEditor"></div>
+    </Spin>
+  );
+};

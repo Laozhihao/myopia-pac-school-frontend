@@ -10,6 +10,14 @@ export async function login(body: FormData, options?: Record<string, any>) {
   });
 }
 
+export async function uploadImg(data: FormData, options?: Record<string, any>) {
+  return request<API.RequestResult>('/management/common/richTextFileUpload', {
+    method: 'POST',
+    data,
+    ...(options || {}),
+  });
+}
+
 /** 退出登录 POST /auth/exit */
 export async function outLogin() {
   return request<API.RequestResult>('/auth/exit', {

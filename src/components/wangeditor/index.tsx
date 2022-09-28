@@ -1,25 +1,27 @@
 import WangEditor from 'wangeditor';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { uploadImg } from '@/api/common';
 import { Spin } from 'antd';
 
 export const MyEditor = (props: { value: any; onChange?: (e: any) => void }) => {
   const [loading, setLoading] = useState(false);
-
-  const { value } = props;
+  const [instance, setInstance] = useState<WangEditor | null>(null);
 
   useEffect(() => {
-    let instance = new WangEditor('#div1') as any;
+    // const instance = new WangEditor('#div1')
+    // setInstance(instance);
+    const ins = new WangEditor('#div1');
+    setInstance(ins);
     // 目前需要的配置
-    instance.config.menus = ['head', 'bold', 'fontSize', 'indent', 'list', 'justify', 'image'];
-    instance.config.placeholder = '';
+    ins.config.menus = ['head', 'bold', 'fontSize', 'indent', 'list', 'justify', 'image'];
+    ins.config.placeholder = '';
     // 一次最多上传1个图片
-    instance.config.uploadImgMaxLength = 1;
+    ins.config.uploadImgMaxLength = 1;
 
     /**
      * @desc 自定义上传方法
      */
-    instance.config.customUploadImg = async (
+    ins.config.customUploadImg = async (
       resultFiles: File[],
       insertImgFn: (url: string) => void,
     ) => {
@@ -34,21 +36,22 @@ export const MyEditor = (props: { value: any; onChange?: (e: any) => void }) => 
       setLoading(false);
     };
 
-    Object.assign(instance.config, {
+    Object.assign(ins.config, {
       onchange() {
-        // instance?.txt?.html(instance?.txt?.html?.());
         props?.onChange?.(instance?.txt?.html?.());
       },
     });
-    instance.create();
-    // 重新设置编辑器内容
-    instance.txt.html(value);
+    ins.create();
 
     return () => {
-      instance.destroy();
-      instance = null;
+      ins.destroy();
     };
   }, []);
+
+  useMemo(() => {
+    // 重新设置编辑器内容
+    instance?.txt?.html(props?.value);
+  }, [props?.value]);
 
   return (
     <Spin spinning={loading}>

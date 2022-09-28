@@ -119,8 +119,8 @@ const TableList: React.FC = () => {
         actionRef={tableRef}
         columnEmptyText={EMPTY}
         toolBarRender={() => [
-          <Tooltip title={ isExceedConfig ? '人员数量已超过限制，如需增加请联系管理员' : '' }>
-              <Button
+          <Tooltip title={isExceedConfig ? '人员数量已超过限制，如需增加请联系管理员' : ''}>
+            <Button
               type="primary"
               icon={<PlusOutlined />}
               onClick={() => onHandle()}
@@ -128,7 +128,7 @@ const TableList: React.FC = () => {
             >
               创建
             </Button>
-          </Tooltip>
+          </Tooltip>,
         ]}
         request={async (params) => {
           const { data } = await getVisionStaffList({

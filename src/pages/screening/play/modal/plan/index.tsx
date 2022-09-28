@@ -35,7 +35,7 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
           ? data?.selectList.map((item: API.GradeInfoType) => item.gradeId)
           : data?.allList?.map((item: API.GradeInfoType) => item.gradeId),
       });
-      currentRow && setContentValue(currentRow?.content);
+      setContentValue(currentRow ? currentRow?.content : '');
     }
   }, [visible]);
 
@@ -45,7 +45,6 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
   const onConfirm = async (value: any) => {
     const { time = [] } = value;
     const [startTime, endTime] = time;
-    console.log(contentValue, 'contentValue');
     await editScreeningStudent(
       deleteRedundantData(
         {

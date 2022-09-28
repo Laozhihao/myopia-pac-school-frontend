@@ -1,0 +1,20 @@
+.info {
+  margin-bottom: 10px;
+  padding: 24px 27px;
+  background: @gray-3;
+
+  &_grade {
+    margin-top: 15px;
+  }
+}
+.checkbox_item {
+  :global {
+    .ant-checkbox-wrapper + .ant-checkbox-wrapper {
+      margin-left: 0 !important;
+    }
+
+    .ant-checkbox-wrapper {
+      margin-right: 20px;
+    }
+  }
+}

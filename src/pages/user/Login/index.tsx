@@ -162,6 +162,7 @@ const Login: React.FC = () => {
                 fieldProps={{
                   size: 'large',
                   prefix: <LockOutlined className={styles.prefixIcon} />,
+                  autoComplete: 'new-password',
                 }}
                 placeholder="请输入密码"
                 rules={[

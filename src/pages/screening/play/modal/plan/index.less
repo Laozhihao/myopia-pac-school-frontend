@@ -1,0 +1,39 @@
+.tip {
+  margin: 0 0 12px 120px;
+}
+.grade_text {
+  margin-left: 8px;
+  cursor: pointer;
+  &:extend(.blue_text);
+}
+.total_part {
+  margin: 0 0 12px 120px;
+  padding: 11px 13px;
+  background: @gray-3;
+  &:extend(.primary_text);
+}
+
+.screen_item {
+  :global {
+    .ant-form-item {
+      margin-bottom: 5px !important;
+    }
+  }
+}
+.red_tip {
+  margin: 0 0 12px 120px;
+  color: @red;
+  font-size: 12px;
+}
+
+.checkbox_item {
+  :global {
+    .ant-checkbox-wrapper + .ant-checkbox-wrapper {
+      margin-left: 0 !important;
+    }
+
+    .ant-checkbox-wrapper {
+      margin-right: 20px;
+    }
+  }
+}

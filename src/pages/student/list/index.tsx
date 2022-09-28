@@ -1,11 +1,12 @@
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, message } from 'antd';
-import { Link } from 'umi';
-import React, { useState, useRef, useMemo, createContext } from 'react';
+import { Button, message, Card } from 'antd';
+import React, { useState, useRef, useMemo } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProFormInstance } from '@ant-design/pro-form';
+import ProForm from '@ant-design/pro-form';
+import DynamicForm from '@/components/DynamicForm';
 import ProTable from '@ant-design/pro-table';
-import type { ProColumns } from '@ant-design/pro-table';
+import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { AddModal } from './add-modal';
 import { OperationModal } from './operation-modal';
 import { listColumns } from './columns';
@@ -13,8 +14,12 @@ import { deleteTableRow } from '@/hook/table';
 import { getschoolGrade } from '@/api/school';
 import { getStudentList, deleteStudentInfo } from '@/api/student';
 import { EMPTY } from '@/utils/constant';
-
-export const TableListCtx = createContext<{ ref?: any }>({});
+import SwitchableButton from '@/components/SwitchableButton';
+import { FormItemOptions } from './form-item';
+import DynamicButtonGroup from '@/components/DynamicButtonGroup';
+import { convertData } from '@/utils/common';
+import { TableListCtx } from '@/hook/ant-config';
+import { history } from 'umi';
 
 const TableList: React.FC = () => {
   const [searchForm, setSearchForm] = useState({}); // 搜索表单项
@@ -24,6 +29,11 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<API.StudentListItem>(); // 当前行数据
   const [gradeOption, setGradeOption] = useState<API.ObjectType[]>([]);
   const ref = useRef<ProFormInstance>();
+  const tableRef = useRef<ActionType>();
+
+  const [ItemOptions, setItemOptions] = useState<
+    Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
+  >({ ...FormItemOptions });
 
   /**
    * @desc 获取年级班级
@@ -31,6 +41,10 @@ const TableList: React.FC = () => {
   useMemo(async () => {
     const { data = [] } = await getschoolGrade();
     setGradeOption(data);
+    setItemOptions((s) => ({
+      ...s,
+      listTypeInfo: { ...s.listTypeInfo, gradeOptions: convertData(data) },
+    }));
   }, []);
 
   /**
@@ -47,7 +61,7 @@ const TableList: React.FC = () => {
   const onReset = () => {
     setSearchForm({});
     ref?.current?.resetFields();
-    ref?.current?.submit();
+    tableRef?.current?.reloadAndRest?.();
   };
 
   /**
@@ -62,7 +76,7 @@ const TableList: React.FC = () => {
       [formVal?.select]: formVal?.input,
       visionLabel: formVal?.visionLabel,
     });
-    ref?.current?.submit();
+    tableRef?.current?.reloadAndRest?.();
   };
 
   /**
@@ -77,6 +91,13 @@ const TableList: React.FC = () => {
   };
 
   /**
+   * @desc 跳转档案管理
+   */
+  const onJumpArchives = (record: API.StudentListItem) => {
+    history.push(`/student/file?id=${record.id}&studentId=${record?.studentId}`);
+  };
+
+  /**
    * @desc 导入导出弹窗
    */
   const showModal = (key: React.SetStateAction<string>) => {
@@ -85,26 +106,32 @@ const TableList: React.FC = () => {
   };
 
   const columns: ProColumns<API.StudentListItem>[] = [
-    ...listColumns(gradeOption, onSearch),
+    ...listColumns,
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <a
-          key="edit"
-          onClick={() => {
-            onAdd(record);
-          }}
-        >
-          编辑
-        </a>,
-        <a key="delete" onClick={() => onDelete(record)}>
-          删除
-        </a>,
-        <Link key="manage" to={`/student/file?id=${record.id}&studentId=${record?.studentId}`}>
-          档案管理
-        </Link>,
+        <DynamicButtonGroup key="operator">
+          <Button
+            type="link"
+            onClick={() => {
+              onAdd(record);
+            }}
+          >
+            编辑
+          </Button>
+          <Button type="link" onClick={() => onDelete(record)}>
+            删除
+          </Button>
+          <SwitchableButton
+            key="manage"
+            icon="icon-a-Group120"
+            onClick={() => onJumpArchives(record)}
+          >
+            档案管理
+          </SwitchableButton>
+        </DynamicButtonGroup>,
       ],
     },
   ];
@@ -116,25 +143,19 @@ const TableList: React.FC = () => {
           ref,
         }}
       >
+        <Card className="pro-form-card">
+          <ProForm layout="horizontal" formRef={ref} submitter={false}>
+            <DynamicForm {...ItemOptions} onSearch={onSearch} onReset={onReset} />
+          </ProForm>
+        </Card>
         <ProTable<API.StudentListItem, API.PageParams>
           rowKey="id"
           pagination={{ pageSize: 10 }}
           options={false}
-          formRef={ref}
+          actionRef={tableRef}
           form={{ span: 8, labelWidth: 120 }}
           columnEmptyText={EMPTY}
-          search={{
-            collapseRender: false,
-            collapsed: false,
-            optionRender: () => [
-              <Button key="reset" onClick={onReset}>
-                重 置
-              </Button>,
-              <Button key="search" type="primary" onClick={onSearch}>
-                搜 索
-              </Button>,
-            ],
-          }}
+          search={false}
           scroll={{
             x: '100vw',
           }}

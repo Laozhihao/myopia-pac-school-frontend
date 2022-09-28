@@ -1,10 +1,19 @@
 import { request } from 'umi';
+import { getCorrectPath } from '@/utils/common';
 
 /** 登录 POST /auth/login */
 export async function login(body: FormData, options?: Record<string, any>) {
   return request<API.RequestToken>('/auth/login', {
     method: 'POST',
     data: body,
+    ...(options || {}),
+  });
+}
+
+export async function uploadImg(data: FormData, options?: Record<string, any>) {
+  return request<API.RequestResult>('/management/common/richTextFileUpload', {
+    method: 'POST',
+    data,
     ...(options || {}),
   });
 }
@@ -26,15 +35,16 @@ export async function getUserInfo(userId: number, options?: Record<string, any>)
 
 /** 地区 GET data/district.json */
 export async function getDistrict(options?: Record<string, any>) {
-  return request<any[]>('/data/district.json', {
+  return request<any[]>(getCorrectPath('data/district.json'), {
     method: 'GET',
+    prefix: '',
     ...(options || {}),
   });
 }
 
-/** 民族 GET /management/student/nation */
+/** 民族 GET /school/student/nation */
 export async function getNation(options?: Record<string, any>) {
-  return request<any[]>('/management/student/nation', {
+  return request<any[]>('/school/student/nation', {
     method: 'GET',
     ...(options || {}),
   });
@@ -55,7 +65,7 @@ export async function unreadCount() {
   });
 }
 
-/** 上传图片 GET /management/notice/unreadCount */
+/** 上传图片 GET /management/common/fileUpload */
 export async function uploadFile(data: FormData) {
   return request<API.RequestResult>('/management/common/fileUpload', {
     method: 'POST',

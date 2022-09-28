@@ -1,4 +1,4 @@
-import { Modal, Select, Radio, Button, Cascader, Form, Row, Col, Image, Upload } from 'antd';
+import { Modal, Select, Radio, Button, Cascader, Form, Row, Col, Image, Upload, Space } from 'antd';
 import { useRequest, useModel } from 'umi';
 import { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
@@ -16,7 +16,9 @@ import {
   getScreeningQrcode,
   updateScreeningNoticeConfig,
   getScreeningPlanstudents,
-} from '@/api/screen';
+} from '@/api/screen/plan';
+import type { OptionType } from 'antd/lib/select';
+import type { RadioChangeEvent } from 'antd';
 
 export const AddModal: React.FC<API.ModalItemType> = (props) => {
   // 获取当前学校名称
@@ -133,13 +135,14 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     { type: 2, text: 'vs666专属筛查二维码' },
     { type: 3, text: '虚拟二维码' },
   ];
-  const [printTypeArr, setPrintTypeArr] = useState<Object[]>(defaultPrintTypeArr);
+  const [printTypeArr, setPrintTypeArr] = useState<API.ObjectType[]>(defaultPrintTypeArr);
 
   useEffect(() => {
     setImgUrl(props?.currentRow?.qrCodeFileUrl);
     // 处理二维码配置权限，告知书默认显示
     const confitArr = [
       0,
+      2,
       ...(props?.currentRow?.qrCodeConfig?.split(',')?.map((i: string) => +i) || []),
     ];
     const dynamicPrintTypeArr = defaultPrintTypeArr.filter((item) => confitArr.includes(item.type));
@@ -191,8 +194,8 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   // 用fetches管理并发请求的多个loading 就无须声明多个loading变量 (二维码请求)
   const { run } = useRequest(getScreeningQrcode, {
     manual: true,
-    fetchKey: (params) => params.type,
-    onSuccess: (result) => {
+    fetchKey: (params: { type: any }) => params.type,
+    onSuccess: (result: any) => {
       result && openPdf(result);
       setLoading(false);
       onCancel();
@@ -245,13 +248,15 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     wrapperCol: { span: 20 },
   };
 
-  const onPrintTypeChange = (e) => {
+  const onPrintTypeChange = (e: RadioChangeEvent) => {
     setPrintType(e.target.value);
   };
 
   // 搜索过滤
-  const filterOption = (inputValue: string, option) =>
-    option.props.children.indexOf(inputValue) >= 0;
+  const filterOption = (
+    inputValue: string,
+    option: OptionType & { props: { children: string[] } },
+  ) => option.props.children.indexOf(inputValue) >= 0;
 
   // 学生变化
   const studentChange = async (value: any[]) => {
@@ -327,11 +332,13 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
                 buttonStyle="solid"
                 onChange={onPrintTypeChange}
               >
-                {printTypeArr.map((item: any) => (
-                  <Radio.Button value={item.type} key={item.type}>
-                    {item.text}
-                  </Radio.Button>
-                ))}
+                <Space size={10}>
+                  {printTypeArr.map((item: any) => (
+                    <Radio.Button value={item.type} key={item.type}>
+                      {item.text}
+                    </Radio.Button>
+                  ))}
+                </Space>
               </Radio.Group>
             </Form.Item>
             <Form.Item label="筛查学校" name="schoolName" required>

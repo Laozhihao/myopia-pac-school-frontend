@@ -8,7 +8,7 @@ import { modalConfig } from '@/hook/ant-config';
 import { NextStep } from './components/next-step';
 import styles from './index.less';
 import type { FormInstance } from '@ant-design/pro-form';
-import { setReportInfo, asyncGeneratorPDF, syncGeneratorPDF } from '@/api/screen';
+import { setReportInfo, asyncGeneratorPDF, syncGeneratorPDF } from '@/api/screen/plan';
 
 export type IdsType = {
   schoolName: string;

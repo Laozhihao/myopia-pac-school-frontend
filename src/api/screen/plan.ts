@@ -9,9 +9,10 @@ export async function getScreeningList(params: API.ObjectType) {
 }
 
 /** 筛查结果统计分析 GET /school/vision/screening */
-export async function getScreeningResult(schoolStatisticId: React.Key) {
-  return request<API.RequestResult>(`/school/vision/screening/${schoolStatisticId}`, {
+export async function getScreeningResult(screeningPlanId: React.Key, params: API.ObjectType) {
+  return request<API.RequestResult>(`/school/vision/screening/${screeningPlanId}`, {
     method: 'GET',
+    params,
   });
 }
 
@@ -24,9 +25,10 @@ export async function getScreeningWarn(params: API.ObjectType) {
 }
 
 /** 学生年级 GET /school/vision/screening/grades/{screeningPlanId} */
-export async function getScreeningGradeList(planId: React.Key) {
+export async function getScreeningGradeList(planId: React.Key, params?: API.ObjectType) {
   return request<API.RequestResult>(`/school/vision/screening/grades/${planId}`, {
     method: 'GET',
+    params,
   });
 }
 
@@ -108,13 +110,6 @@ export async function setReportInfo(data: API.ObjectType, id: React.Key) {
   });
 }
 
-/** 获取年级 GET /school/vision/screening/grades/{screeningPlanId}  */
-export async function getGrades(id: React.Key) {
-  return request<API.RequestResult>(`/school/vision/screening/grades/${id}`, {
-    method: 'GET',
-  });
-}
-
 /** 获取学生 GET /school/vision/screening/screeningNoticeResult/list */
 export async function screeningNoticeResult(params: API.ObjectType) {
   return request<API.RequestResult>('/school/vision/screening/screeningNoticeResult/list', {
@@ -165,5 +160,43 @@ export async function getScreeningQrcode(params: API.ObjectType) {
   return request<API.RequestResult>('/school/management/screeningOrg/qrcode', {
     method: 'GET',
     params,
+  });
+}
+
+/** 获取筛查学生 GET /school/student/screeningStudent */
+export async function getScreeningStudent(params?: API.ObjectType) {
+  return request<API.RequestResult>('/school/student/screeningStudent', {
+    method: 'GET',
+    params,
+  });
+}
+
+/** 创建/编辑筛查计划 GET /school/vision/screening/save */
+export async function editScreeningStudent(data?: API.ObjectType) {
+  return request<API.RequestResult>('/school/vision/screening/save', {
+    method: 'POST',
+    data,
+  });
+}
+
+/** 删除筛查计划 DELETE /school/vision/screening/delete/{screeningPlanId} */
+export async function deleteScreeningPlan(screeningPlanId: React.Key) {
+  return request<API.RequestResult>(`/school/vision/screening/delete/${screeningPlanId}`, {
+    method: 'DELETE',
+  });
+}
+
+/** 发布筛查计划 PUT /school/vision/screening/release/{screeningPlanId} */
+export async function releaseScreeningPlan(screeningPlanId: React.Key) {
+  return request<API.RequestResult>(`/school/vision/screening/release/${screeningPlanId}`, {
+    method: 'PUT',
+  });
+}
+
+/** 新增筛查时间 POST /school/vision/screening/increased/screeningTime */
+export async function increasedScreeningTime(data?: API.ObjectType) {
+  return request<API.RequestResult>('/school/vision/screening/increased/screeningTime', {
+    method: 'POST',
+    data,
   });
 }

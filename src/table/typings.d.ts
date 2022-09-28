@@ -26,8 +26,31 @@ declare namespace API {
     passport?: string; // 护照
   } & MyopiaType;
 
+  // 筛查学生列表
+  type ScreeningStudentListItem = {
+    id?: React.Key;
+    studentId?: React.Key;
+    planStudentId?: React.Key;
+    screeningCode?: string;
+    sno?: string;
+    name?: string;
+    gender?: string;
+    gradeName?: string;
+    className?: string;
+    glassesTypeDes?: string; // 戴镜情况
+    nakedVision?: string; // 裸眼视力（右/左）
+    correctedVision?: string; // 矫正视力（右/左）
+    sph?: string; // 球镜（右/左）
+    cyl?: string; // 柱镜（右/左）
+    axial?: string; // 轴位（右/左）
+    state?: React.Key; // 未做检查原因
+    dataIntegrity?: string; // 数据完整性
+  };
+
   // 档案管理列表
   type FileListItem = {
+    planStudentId?: React.Key;
+    planId?: React.Key;
     templateId: string | number;
     resultId: string | number;
     screeningTitle?: string;
@@ -60,7 +83,7 @@ declare namespace API {
     notificationConfig?: Record<string, any>;
     qrCodeFileUrl?: string; // 图片url
     schoolStatisticId?: string;
-    planId?: string;
+    planId?: React.Key;
     schoolId?: string;
     title?: string;
     startTime?: string;
@@ -71,6 +94,8 @@ declare namespace API {
     screeningOrgName?: string; // 筛查机构名称
     content?: string; // 内容
     releaseTime?: string; // 通知日期
+    status?: string; // 状态
+    hasScreeningResults?: boolean; // 是否有筛查结果
   };
 
   // 筛查结果列表

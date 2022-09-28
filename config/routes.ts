@@ -21,10 +21,41 @@ export default [
     name: '视力筛查',
     icon: 'eye',
     path: '/screening',
-    hideChildrenInMenu: true,
     routes: [
-      { path: '/screening', component: './screening/play' },
-      { path: '/screening/result', component: './screening/result', name: '筛查结果' },
+      {
+        path: '/screening/play',
+        component: './screening/play',
+        name: '筛查计划',
+      },
+      {
+        name: '筛查学生列表',
+        path: '/screening/play/student',
+        component: './screening/play/student',
+        hideInMenu: true,
+      },
+      {
+        path: '/screening/play/result',
+        component: './screening/result',
+        name: '筛查结果',
+        hideInMenu: true,
+      },
+    ],
+  },
+  {
+    name: '防控中心',
+    icon: 'project',
+    path: '/prevention',
+    routes: [
+      // {
+      //   name: '眼健康中心',
+      //   path: '/prevention/eye-health',
+      //   component: './prevention/eye-health',
+      // },
+      {
+        name: '视力小队',
+        path: '/prevention/vision',
+        component: './prevention/vision',
+      },
     ],
   },
   { name: '消息中心', icon: 'comment', path: '/info-center', component: './infoCenter' },

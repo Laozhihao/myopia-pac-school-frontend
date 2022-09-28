@@ -5,6 +5,7 @@ import { CloudUploadOutlined } from '@ant-design/icons';
 import { ExportModal } from '@/pages/components/export-modal';
 import React, { useState } from 'react';
 import type { FormInstance } from 'antd/es/form';
+import { getCorrectPath } from '@/utils/common';
 import { exportStudent, importStudent } from '@/api/student';
 import { useModel } from 'umi';
 import { getPopupContainer, modalConfig } from '@/hook/ant-config';
@@ -99,7 +100,7 @@ export const OperationModal: React.FC<
         模板：
         <span
           className={styles.load_font}
-          onClick={() => window.open(`${location.origin}${location.pathname}excel/导入学生表.xlsx`)}
+          onClick={() => window.open(getCorrectPath('excel/导入学生表.xlsx'))}
         >
           学生数据表模板.xls，点击下载
         </span>

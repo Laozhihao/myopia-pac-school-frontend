@@ -1,5 +1,5 @@
 import { EMPTY } from '@/utils/constant';
-
+import type { Rule } from 'antd/lib/form';
 /**
  * @desc 数据转成form data格式
  * @param params 需要转的对象
@@ -89,14 +89,13 @@ export const symbolHandle = (val: any, digit: number, unit?: string) =>
  * @desc 级联数据转换 number 类型的id 转换成string
  * @param {string} option - option 列表
  * @param {string} children - option 子集名称
+ * @param {string} isNeedHandlClasses 是否需要处理班级
  */
-export const convertData = (option?: any[], children = 'child') => {
+export const convertData = (option?: any[], children = 'child', isNeedHandlClasses = false) => {
   if (!option || !option.length) return [];
   option?.forEach((item: any) => {
     item.id = item.id.toString();
-    if (item[children]) {
-      convertData(item.children);
-    }
+    isNeedHandlClasses && item[children] && convertData(item[children]); // 处理班级id
   });
   return option;
 };
@@ -123,4 +122,60 @@ export function getShowIdCardText(idCard: string | undefined) {
  */
 export function getShowPassportText(passport: string | undefined) {
   return passport && `${passport.substr(0, 2)}***********${passport.substr(-1)}`;
+}
+
+/**
+ * @desc 删除多余字段
+ * @param data 源数据
+ * @param arr 需要删除的字段组合 默认删除select input 值
+ */
+export const deleteRedundantData = (data: API.ObjectType, arr: string[] = ['select', 'input']) => {
+  arr?.forEach((item) => {
+    delete data[item];
+  });
+  return data;
+};
+
+/**
+ * @desc select option 处理成数组格式（可传数组或者对象）
+ * @param list  源数组
+ * @param fieldNames  组件库 select 不支持fieldNames 所以传一个对象自行处理
+ */
+
+export const getOptions = (
+  list: API.ObjectType | any[],
+  fieldNames?: API.FieldNamesType | undefined,
+) =>
+  Array.isArray(list)
+    ? fieldNames
+      ? list.map((item) => ({ label: item?.[fieldNames.label], value: item?.[fieldNames.value] }))
+      : list
+    : Object.keys(list).map((ele) => ({ label: list[ele], value: ele }));
+
+export const defaultRulesConfig = (label: string): Rule[] => {
+  return [
+    {
+      required: true,
+      message: `请${label}`,
+    },
+  ];
+};
+
+/** @desc 获取真实的域名地址
+ * @param {string} path 路径
+ */
+export function getCorrectPath(path: string) {
+  // 本地是一个 / ，线上包含二级域名 /school/
+  return `${location.pathname}${path}`;
+}
+
+/**
+ * @desc 值大于0，默认需要增加一个+号
+ * @param {number} num - 数据
+ * @param {number} digit - 保留几位小数
+ * @param {string} prefix - + 加号
+ */
+export function getCorrectNum(num: any, digit = 2, prefix = '+') {
+  const val = Number(num);
+  return `${val >= 0 ? prefix : ''}${getFixedNum(val, digit)}`;
 }

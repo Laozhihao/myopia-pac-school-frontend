@@ -1,0 +1,35 @@
+.btnW {
+  display: inline-block;
+}
+
+.scrrenDefault {
+  display: inline-block;
+}
+.scrren1600 {
+  display: none;
+}
+.scrrenDefault,
+.scrren1600 {
+  .ant-btn-text:not(:disabled) {
+    color: var(--iconColor) !important;
+    &:hover,
+    &:focus,
+    &:active {
+      color: var(--iconColor) !important;
+    }
+  }
+}
+
+@media screen and (max-width: 1600px) {
+  .scrrenDefault {
+    display: none;
+  }
+  .scrren1600 {
+    display: inline-block;
+  }
+}
+
+.innerBtn,
+.innerBtn:hover {
+  color: #3c6cfe;
+}

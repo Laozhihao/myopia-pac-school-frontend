@@ -1,19 +1,29 @@
-.notice_tab {
-  margin: 0 20px;
-}
+.modular {
+  .title {
+    padding: 10px 0;
+    color: @orange;
+    font-size: 14px;
 
-.table_title {
-  padding: 10px 25px;
-  font-size: 16px;
+    &:nth-child(n + 2) {
+      margin-top: 40px;
+    }
+  }
+
+  :global {
+    .ant-card-body {
+      padding: 0 !important;
+    }
+  }
+
+  .table {
+    margin-bottom: 25px;
+  }
 }
 
 .subTitle {
   margin-left: 10px;
   color: gray;
   font-size: 13px;
-}
-.table {
-  margin-bottom: 65px;
 }
 
 .title {
@@ -26,7 +36,20 @@
 }
 .btn {
   position: absolute;
+  top: 18px;
   right: 50px;
   display: flex;
   justify-content: end;
+}
+.judge_standard {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  width: 200px;
+  color: #096dd9;
+  cursor: pointer;
+}
+
+.result_info {
+  flex: 1;
 }

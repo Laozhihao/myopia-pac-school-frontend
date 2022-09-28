@@ -1,17 +1,13 @@
 import WangEditor from 'wangeditor';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { uploadImg } from '@/api/common';
 import { Spin } from 'antd';
 
 export const MyEditor = (props: { value: any; onChange?: (e: any) => void }) => {
   const [loading, setLoading] = useState(false);
-  const [instance, setInstance] = useState<WangEditor | null>(null);
 
   useEffect(() => {
-    // const instance = new WangEditor('#div1')
-    // setInstance(instance);
-    const ins = new WangEditor('#div1');
-    setInstance(ins);
+    let ins = new WangEditor('#div1') as any;
     // 目前需要的配置
     ins.config.menus = ['head', 'bold', 'fontSize', 'indent', 'list', 'justify', 'image'];
     ins.config.placeholder = '';
@@ -38,20 +34,17 @@ export const MyEditor = (props: { value: any; onChange?: (e: any) => void }) => 
 
     Object.assign(ins.config, {
       onchange() {
-        props?.onChange?.(instance?.txt?.html?.());
+        props?.onChange?.(ins?.txt?.html?.());
       },
     });
     ins.create();
+    ins?.txt?.html(props?.value);
 
     return () => {
       ins.destroy();
+      ins = null;
     };
   }, []);
-
-  useMemo(() => {
-    // 重新设置编辑器内容
-    instance?.txt?.html(props?.value);
-  }, [props?.value]);
 
   return (
     <Spin spinning={loading}>

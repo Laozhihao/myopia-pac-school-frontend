@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { uploadImg } from '@/api/common';
 import { Spin } from 'antd';
 
-export const MyEditor = (props: { value: any; onChange?: (e: any) => void }) => {
+export default function MyEditor(props: { value: any; onChange?: (e: any) => void }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -51,4 +51,4 @@ export const MyEditor = (props: { value: any; onChange?: (e: any) => void }) => 
       <div id="div1" key="staticEditor"></div>
     </Spin>
   );
-};
+}

@@ -1,5 +1,6 @@
 import { ModalForm } from '@ant-design/pro-form';
 import DynamicForm from '@/components/DynamicForm';
+import MyEditor from '@/components/Wangeditor';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { deleteRedundantData } from '@/utils/common';
 import { useMemo, useRef, useState } from 'react';
@@ -7,7 +8,6 @@ import { modalConfig } from '@/hook/ant-config';
 import { FormItemOptions } from './form-item';
 import { getScreeningStudent, editScreeningStudent } from '@/api/screen/plan';
 import { message, Form, Col, Button } from 'antd';
-import { MyEditor } from '@/components/Wangeditor';
 
 export const PlanModal: React.FC<API.ModalItemType> = (props) => {
   const modalRef = useRef<ProFormInstance>();

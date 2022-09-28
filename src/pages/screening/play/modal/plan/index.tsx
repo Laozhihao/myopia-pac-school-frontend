@@ -8,6 +8,8 @@ import { modalConfig } from '@/hook/ant-config';
 import { FormItemOptions } from './form-item';
 import { getScreeningStudent, editScreeningStudent } from '@/api/screen/plan';
 import { message, Form, Col, Button } from 'antd';
+import moment from 'moment';
+import { DATE } from '@/utils/constant';
 
 export const PlanModal: React.FC<API.ModalItemType> = (props) => {
   const modalRef = useRef<ProFormInstance>();
@@ -51,8 +53,8 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
           {
             ...value,
             screeningType: 0,
-            startTime,
-            endTime,
+            startTime: moment(startTime).format(DATE),
+            endTime: moment(endTime).format(DATE),
             content: contentValue,
             id: currentRow ? currentRow?.planId : undefined,
           },

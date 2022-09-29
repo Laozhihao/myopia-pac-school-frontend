@@ -23,6 +23,11 @@ export default [
     path: '/screening',
     routes: [
       {
+        path: '/screening/notice',
+        component: './screening/notice',
+        name: '筛查通知',
+      },
+      {
         path: '/screening/play',
         component: './screening/play',
         name: '筛查计划',

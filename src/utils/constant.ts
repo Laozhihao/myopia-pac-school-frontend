@@ -14,6 +14,12 @@ export const BINDOPTIONS = {
   1: '已绑定',
 };
 
+// 创建状态
+export const CREATESTATUS = {
+  2: { text: '已创建', status: 'success' },
+  3: { text: '未创建', status: 'Default' },
+};
+
 // 视力预警
 export const MYOPIAWARNOPTION = {
   0: { text: '0级预警', color: 'green' },

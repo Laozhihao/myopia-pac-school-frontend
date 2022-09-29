@@ -3,7 +3,23 @@ import { formatLength } from '@/utils/common';
 import { DATE, EMPTY, CREATESTATUS } from '@/utils/constant';
 import moment from 'moment';
 
-export const listColumns: (show: (dom: any) => void) => ProColumns[] = (show) => [
+// 筛查通知列表
+export type ScreenNoticeListType = {
+  canCreatePlan?: boolean;
+  title?: string;
+  startTime?: string;
+  endTime?: string;
+  status?: React.Key;
+  acceptTime?: string;
+  noticeDeptName?: string;
+  content?: string;
+  srcScreeningNoticeId?: React.Key;
+  screeningTaskId?: React.Key;
+};
+
+export const listColumns: (show: (dom: any) => void) => ProColumns<ScreenNoticeListType>[] = (
+  show,
+) => [
   {
     title: '筛查标题',
     dataIndex: 'title',

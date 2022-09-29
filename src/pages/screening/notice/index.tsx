@@ -7,14 +7,24 @@ import ProTable from '@ant-design/pro-table';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import styles from './index.less';
 import { listColumns } from './columns';
+import type { ScreenNoticeListType } from './columns';
 import { escape2Html } from '@/utils/common';
 import { EMPTY } from '@/utils/constant';
 import { modalConfig } from '@/hook/ant-config';
-import { getScreeningList } from '@/api/screen/plan';
+import { getScreeningNoticeList } from '@/api/screen/notice';
 import { history } from 'umi';
+import { PlanModal } from '../play/modal/plan';
 
 const TableList: React.FC = () => {
   const [textModalVisible, setTextModalVisible] = useState(false); // 筛查内容visible
+
+  const [planModalData, setPlanModalData] = useState<
+    API.ModalDataType & { param?: API.ObjectType }
+  >({
+    visible: false,
+    title: '创建筛查计划',
+    param: {}, // 参数信息
+  }); // 创建筛查计划信息
 
   const [textHtml, setTextHtml] = useState('');
   const tableRef = useRef<ActionType>();
@@ -34,21 +44,39 @@ const TableList: React.FC = () => {
     history.push('/screening/play');
   };
 
-  const columns: ProColumns[] = [
+  /**
+   * @desc 创建筛查计划
+   */
+  const onCreatePlan = (record?: ScreenNoticeListType) => {
+    setPlanModalData((s) => ({
+      ...s,
+      visible: true,
+      param: {
+        screeningNoticeId: record?.srcScreeningNoticeId,
+        screeningTaskId: record?.screeningTaskId,
+      },
+    }));
+  };
+
+  const columns: ProColumns<ScreenNoticeListType>[] = [
     ...listColumns(onShow),
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: () => {
+      render: (_, record) => {
         return [
           <DynamicButtonGroup key="operator">
-            <SwitchableButton key="detail" icon="icon-Team" onClick={onRouterPlan}>
-              查看筛查计划
-            </SwitchableButton>
-            <SwitchableButton key="create" icon="icon-Team">
-              创建筛查计划
-            </SwitchableButton>
+            {record?.status === 2 ? (
+              <SwitchableButton key="detail" icon="icon-Team" onClick={onRouterPlan}>
+                查看筛查计划
+              </SwitchableButton>
+            ) : null}
+            {record?.canCreatePlan ? (
+              <SwitchableButton key="create" icon="icon-Team" onClick={() => onCreatePlan(record)}>
+                创建筛查计划
+              </SwitchableButton>
+            ) : null}
           </DynamicButtonGroup>,
         ];
       },
@@ -57,15 +85,15 @@ const TableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<API.PageParams>
-        rowKey="planId"
+      <ProTable<API.PageParams, ScreenNoticeListType>
+        rowKey="id"
         search={false}
         pagination={{ pageSize: 10 }}
         options={false}
         actionRef={tableRef}
         columnEmptyText={EMPTY}
         request={async (params) => {
-          const datas = await getScreeningList({
+          const datas = await getScreeningNoticeList({
             current: params.current,
             size: params.pageSize,
           });
@@ -98,6 +126,10 @@ const TableList: React.FC = () => {
       >
         <div dangerouslySetInnerHTML={{ __html: textHtml }} className={styles.content} />
       </Modal>
+      <PlanModal
+        {...planModalData}
+        onCancel={() => setPlanModalData((s: API.ModalDataType) => ({ ...s, visible: false }))}
+      />
     </PageContainer>
   );
 };

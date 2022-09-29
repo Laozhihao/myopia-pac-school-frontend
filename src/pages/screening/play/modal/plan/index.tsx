@@ -11,7 +11,7 @@ import { message, Form, Col, Button } from 'antd';
 import moment from 'moment';
 import { DATE } from '@/utils/constant';
 
-export const PlanModal: React.FC<API.ModalItemType> = (props) => {
+export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }> = (props) => {
   const modalRef = useRef<ProFormInstance>();
   const [screeningStudentInfo, setScreeningStudentInfo] = useState<API.ObjectType>({
     allList: [],
@@ -19,7 +19,7 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
   });
   const [contentValue, setContentValue] = useState('');
 
-  const { title, visible, currentRow } = props;
+  const { title, visible, currentRow, param = {} } = props;
 
   /**
    * @desc 获取筛查学生年级班级
@@ -41,6 +41,7 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
       });
     }
   }, [visible]);
+
   /**
    * @desc 新增/编辑
    */
@@ -52,11 +53,12 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
         deleteRedundantData(
           {
             ...value,
+            ...param,
             screeningType: 0,
             startTime: moment(startTime).format(DATE),
             endTime: moment(endTime).format(DATE),
             content: contentValue,
-            id: currentRow ? currentRow?.planId : undefined,
+            id: currentRow ? currentRow?.planId : undefined, // 编辑时需要
           },
           ['time'],
         ),

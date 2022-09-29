@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Modal, Button, Card, message } from 'antd';
 import DynamicButtonGroup from '@/components/DynamicButtonGroup';
 import SwitchableButton from '@/components/SwitchableButton';
-// import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import ProForm from '@ant-design/pro-form';
@@ -218,11 +218,11 @@ const TableList: React.FC = () => {
           options={false}
           actionRef={tableRef}
           columnEmptyText={EMPTY}
-          // toolBarRender={() => [
-          //   <Button type="primary" icon={<PlusOutlined />} onClick={() => onHandle()}>
-          //     创建
-          //   </Button>,
-          // ]}
+          toolBarRender={() => [
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => onHandle()}>
+              创建
+            </Button>,
+          ]}
           request={async (params) => {
             const datas = await getScreeningList({
               ...searchForm,

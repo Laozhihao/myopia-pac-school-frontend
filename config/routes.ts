@@ -41,23 +41,23 @@ export default [
       },
     ],
   },
-  // {
-  //   name: '防控中心',
-  //   icon: 'project',
-  //   path: '/prevention',
-  //   routes: [
-  //     // {
-  //     //   name: '眼健康中心',
-  //     //   path: '/prevention/eye-health',
-  //     //   component: './prevention/eye-health',
-  //     // },
-  //     {
-  //       name: '视力小队',
-  //       path: '/prevention/vision',
-  //       component: './prevention/vision',
-  //     },
-  //   ],
-  // },
+  {
+    name: '防控中心',
+    icon: 'project',
+    path: '/prevention',
+    routes: [
+      // {
+      //   name: '眼健康中心',
+      //   path: '/prevention/eye-health',
+      //   component: './prevention/eye-health',
+      // },
+      {
+        name: '视力小队',
+        path: '/prevention/vision',
+        component: './prevention/vision',
+      },
+    ],
+  },
   { name: '消息中心', icon: 'comment', path: '/info-center', component: './infoCenter' },
   {
     name: '学校管理',

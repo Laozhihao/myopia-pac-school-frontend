@@ -16,8 +16,8 @@ export const BINDOPTIONS = {
 
 // 创建状态
 export const CREATESTATUS = {
-  2: { text: '已创建', status: 'success' },
-  3: { text: '未创建', status: 'Default' },
+  3: { text: '已创建', status: 'success' },
+  2: { text: '未创建', status: 'Default' },
 };
 
 // 视力预警

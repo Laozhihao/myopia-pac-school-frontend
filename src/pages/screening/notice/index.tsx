@@ -85,7 +85,7 @@ const TableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<API.PageParams, ScreenNoticeListType>
+      <ProTable<ScreenNoticeListType, API.PageParams>
         rowKey="id"
         search={false}
         pagination={{ pageSize: 10 }}

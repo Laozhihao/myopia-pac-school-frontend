@@ -12,19 +12,19 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
     {
       label: '公众号在线档案',
       type: 'select',
-      value: 'screeningType',
+      value: 'isBindMp',
       valueEnum: BINDOPTIONS,
     },
     {
       label: '专业医疗机构复查',
       type: 'select',
-      value: 'screeningType1',
+      value: 'isHavaReport',
       valueEnum: INSTITUTIONALREVIEWOPTION,
     },
     {
       label: '年级班级',
       type: 'cascader',
-      value: 'gradeName',
+      value: 'gradeIds',
       list: 'gradeOptions',
       fieldNames: { label: 'name', value: 'id', children: 'child' },
     },
@@ -32,7 +32,7 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
     {
       label: '预警级别',
       type: 'select',
-      value: 'screeningType33',
+      value: 'visionLabel',
       valueEnum: MYOPIAWARNOPTION,
     },
   ],

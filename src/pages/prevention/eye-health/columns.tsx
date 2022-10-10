@@ -2,6 +2,7 @@ import { CheckCircleOutlined } from '@ant-design/icons';
 import type { ProColumns } from '@ant-design/pro-table';
 import { Space, Tag } from 'antd';
 import styles from './index.less';
+import IconFont from '@/components/IconFont';
 
 export type PreventionEyeHealthType = {
   schoolStudentId?: React.Key;
@@ -78,6 +79,7 @@ export const listColumns = (
               className={styles.proposal}
               onClick={() => (record?.seatSuggest ? onShowProposal?.(record) : null)}
             >
+              <IconFont type="icon-a-Group1000005898" style={{ marginRight: 5 }} />
               课桌椅座位建议
             </p>
           </Space>

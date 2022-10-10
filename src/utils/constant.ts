@@ -22,11 +22,11 @@ export const CREATESTATUS = {
 
 // 视力预警
 export const MYOPIAWARNOPTION = {
-  0: { text: '0级预警', color: 'green' },
-  4: { text: '0级预警 远视储备不足', color: 'lime' },
-  1: { text: '1级预警', color: 'orange' },
-  2: { text: '2级预警', color: 'magenta' },
-  3: { text: '3级预警', color: 'red' },
+  0: { text: '0级预警', color: '#6F7CFE' },
+  4: { text: '0级预警 远视储备不足', color: '#6BCB77' },
+  1: { text: '1级预警', color: '#FDB827' },
+  2: { text: '2级预警', color: '#EE8254' },
+  3: { text: '3级预警', color: '#D8345F' },
 };
 
 // 视力预警 下拉

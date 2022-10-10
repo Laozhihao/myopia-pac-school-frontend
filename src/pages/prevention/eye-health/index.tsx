@@ -121,6 +121,7 @@ const TableList: React.FC = () => {
         <ProTable<PreventionEyeHealthType, API.PageParams>
           rowKey="schoolStudentId"
           search={false}
+          bordered={false}
           pagination={{ pageSize: 10 }}
           options={false}
           actionRef={tableRef}
@@ -176,10 +177,12 @@ const TableList: React.FC = () => {
           <p>身高： {proposalInfo?.currentRow?.height}</p>
           <p>课桌： {proposalInfo?.currentRow?.desk}</p>
           <p>课椅： {proposalInfo?.currentRow?.chair} </p>
-          <p>
-            <Badge status="success" />
-            座位与黑板相距5-6米{' '}
-          </p>
+          {proposalInfo?.currentRow?.haveBlackboardDistance ? (
+            <p>
+              <Badge status="success" />
+              座位与黑板相距5-6米{' '}
+            </p>
+          ) : null}
         </Space>
       </Modal>
     </PageContainer>

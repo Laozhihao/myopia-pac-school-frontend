@@ -67,13 +67,17 @@ const TableList: React.FC = () => {
       render: (_, record) => {
         return [
           <DynamicButtonGroup key="operator">
-            {record?.status === 2 ? (
-              <SwitchableButton key="detail" icon="icon-Team" onClick={onRouterPlan}>
+            {record?.status === 3 ? (
+              <SwitchableButton key="detail" icon="icon-a-Group1000006857" onClick={onRouterPlan}>
                 查看筛查计划
               </SwitchableButton>
             ) : null}
             {record?.canCreatePlan ? (
-              <SwitchableButton key="create" icon="icon-Team" onClick={() => onCreatePlan(record)}>
+              <SwitchableButton
+                key="create"
+                icon="icon-a-Group1000006858"
+                onClick={() => onCreatePlan(record)}
+              >
                 创建筛查计划
               </SwitchableButton>
             ) : null}

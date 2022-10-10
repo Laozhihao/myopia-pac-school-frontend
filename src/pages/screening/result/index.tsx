@@ -198,9 +198,9 @@ const ScreeningResult: React.FC = () => {
     });
   };
 
-  // const onWarning = () => {
-  //   history.push('/prevention/eye-health');
-  // };
+  const onWarning = () => {
+    history.push('/prevention/eye-health');
+  };
 
   const showNoticeReport = () => {
     const user = initialState?.currentUser;
@@ -251,20 +251,20 @@ const ScreeningResult: React.FC = () => {
             <TabPane tab={item.label} key={item.key}>
               <div className={styles.btn}>
                 <Space>
-                  {/* <Button type="primary" ghost onClick={onWarning}>
+                  <Button type="primary" ghost onClick={onWarning}>
                     预警跟踪
-                  </Button> */}
+                  </Button>
+                  <Button type="primary" onClick={() => showNoticeReport()} ghost>
+                    结果通知书
+                  </Button>
+                  <Button type="primary" onClick={() => onExportArchives()} ghost>
+                    {!schoolDetail?.screeningType ? '档案卡' : '监测表'}
+                  </Button>
                   <Button type="primary" onClick={() => onExport(0)} ghost>
                     筛查报告
                   </Button>
                   <Button type="primary" onClick={() => onExport(1)} ghost>
                     筛查数据
-                  </Button>
-                  <Button type="primary" onClick={() => onExportArchives()} ghost>
-                    {!schoolDetail?.screeningType ? '档案卡' : '监测表'}
-                  </Button>
-                  <Button type="primary" onClick={() => showNoticeReport()} ghost>
-                    结果通知书
                   </Button>
                 </Space>
               </div>

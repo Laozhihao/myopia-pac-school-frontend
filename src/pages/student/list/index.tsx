@@ -129,7 +129,7 @@ const TableList: React.FC = () => {
             icon="icon-a-Group120"
             onClick={() => onJumpArchives(record)}
           >
-            档案管理
+            学生档案
           </SwitchableButton>
         </DynamicButtonGroup>,
       ],

@@ -19,6 +19,7 @@ export type PreventionEyeHealthType = {
   isHavaReport?: boolean;
   seatSuggest?: boolean; // 座位建议
   height?: string;
+  lowVision?: string;
 };
 
 export const listColumns = (
@@ -41,6 +42,7 @@ export const listColumns = (
     {
       title: '视力情况',
       dataIndex: 'wearingGlasses',
+      renderText: (val, record) => `${val} ${record?.lowVision}`
     },
     {
       title: '屈光情况',

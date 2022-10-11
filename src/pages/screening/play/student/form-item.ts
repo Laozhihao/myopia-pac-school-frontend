@@ -1,4 +1,4 @@
-import { SCREENINGSTUDENTOPTIONS } from '@/utils/form-constant';
+import { STUDENTSELECTOPTIONS } from '@/utils/form-constant';
 
 export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'> = {
   filterList: [
@@ -6,7 +6,7 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
       type: 'inputGroup',
       selectInitial: 'name',
       value: 'inputKey',
-      valueEnum: SCREENINGSTUDENTOPTIONS,
+      valueEnum: STUDENTSELECTOPTIONS,
     },
     {
       label: '年级班级',

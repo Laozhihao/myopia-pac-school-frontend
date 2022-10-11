@@ -7,7 +7,7 @@ import { useEffect, useRef } from 'react';
 import { modalConfig } from '@/hook/ant-config';
 import { saveVisionStaff } from '@/api/prevention/vision';
 
-export const AddModal: React.FC<API.ModalItemType> = (props) => {
+export const AddModal: React.FC<API.ModalItemType & { cb?: (data: any, isReset?: boolean) => void }> = (props) => {
   const modalRef = useRef<ProFormInstance>();
 
   const { title, visible, currentRow } = props;
@@ -20,9 +20,10 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
    * @desc 新增/编辑
    */
   const onConfirm = async (value: any) => {
-    await saveVisionStaff({ ...value, id: currentRow ? currentRow?.id : undefined });
+    const { data } = await saveVisionStaff({ ...value, id: currentRow ? currentRow?.id : undefined });
     message.success(currentRow ? '编辑成功' : '新增成功');
     props.onCancel(true);
+    !currentRow && props?.cb?.(data, false);
   };
 
   return (

@@ -16,3 +16,11 @@ export async function getExportEyeHealthData(options?: API.ObjectType) {
     ...(options || {}),
   });
 }
+
+/** 获取有筛查数据的班级年级 GET /school/prevention/getAllGradeList  */
+export async function getAllGradeList(options?: API.ObjectType) {
+  return request<API.RequestResult>('/school/prevention/getAllGradeList', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}

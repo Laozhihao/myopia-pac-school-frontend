@@ -14,14 +14,8 @@ export const SCREENSELECTOPTIONS = {
 export const STUDENTSELECTOPTIONS = {
   sno: '学号',
   name: '姓名',
-  idCardOrPassportLike: '身份证/护照号',
 };
 
-// 筛查学生列表
-export const SCREENINGSTUDENTOPTIONS = {
-  sno: '学号',
-  name: '姓名',
-};
 
 // 筛查类型
 export const SCREENTYPEOPTIONS = {
@@ -45,14 +39,8 @@ export const SITUATIONOPTION = [
   { label: '6岁', value: 12 },
 ];
 
-// 眼健康中心
-export const EYEHEALTHYOPTION = {
-  sno: '学号',
-  name: '姓名',
-};
-
 // 机构复查
-export const INSTITUTIONALREVIEWOPTION = {
-  1: '已就诊',
-  2: '未就诊',
-};
+export const INSTITUTIONALREVIEWOPTION = [
+  { label: '已就诊', value: true },
+  { label: '未就诊', value: false }
+];

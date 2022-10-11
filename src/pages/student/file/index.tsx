@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import type { ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
+import styles from './index.less';
 import type { ProColumns } from '@ant-design/pro-table';
-import { listColumns } from './columns';
+// import { listColumns } from './columns';
 import { history, useRequest } from 'umi';
-import { Tabs, Card, message } from 'antd';
+import { Tabs, Card, message, Pagination, Spin, Space, Row, Tag, Table } from 'antd';
 import { editStudentInfo } from '@/api/student';
 import DynamicForm from '@/components/DynamicForm';
 import LazyCascader from '@/pages/components/lazy-cascader';
@@ -40,6 +39,10 @@ const FileList: React.FC = () => {
 
   const [areaOption, setAreaOption] = useState<any[]>();
   const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
+  const [defaultCurrent, setDefaultCurrent] = useState(1); // 当前页
+  const [total, setTotal] = useState(0); // 总页数
+  const [loading, setLoading] = useState(false);
+  const [screeningRecord, setScreeningRecord] = useState([]);
 
   const [detailInfo, setDetailInfo] = useState<API.ModalDataType>({
     visible: false,
@@ -50,7 +53,6 @@ const FileList: React.FC = () => {
   const [studentForm, setStudentForm] = useState<API.PropsType>(
     studentFormOptions(undefined, 2, formRef),
   );
-  const actionRef = useRef<ActionType>();
   const { query: { id, studentId } = {} } = history.location; // id studentId
 
   /**
@@ -66,6 +68,17 @@ const FileList: React.FC = () => {
       },
     }));
   };
+
+  // const onCurrentScreeningRecord = async (current: number, size: number) => {
+  //   const parm = {
+  //     studentId,
+  //     current,
+  //     size,
+  //   }
+
+  //   const { data } = await getStudentScreen(parm);
+  //   console.log(data, '1231');
+  // }
 
   /**
    * @desc 新开报告
@@ -117,7 +130,7 @@ const FileList: React.FC = () => {
   };
 
   const columns: ProColumns<API.FileListItem>[] = [
-    ...listColumns,
+    // ...listColumns,
     {
       title: '操作',
       dataIndex: 'option',
@@ -127,7 +140,7 @@ const FileList: React.FC = () => {
         return [
           <DynamicButtonGroup key="operator">
             <SwitchableButton key="print" icon="icon-Printer" onClick={() => onMonitor(record)}>
-              打印档案卡
+              档案卡
             </SwitchableButton>
             <SwitchableButton
               key="detail"
@@ -264,7 +277,24 @@ const FileList: React.FC = () => {
             </ProForm>
           </TabPane>
           <TabPane tab="筛查记录" key="2">
-            <ProTable<API.FileListItem, API.PageParams>
+          <Spin spinning={loading}>
+            <div>
+              <p className={styles.title}>筛查日期</p>
+              <Row>
+                <Space size={12}>
+                  <Tag color="error" className={styles.vision_tag}>视力筛查</Tag>
+                  <Tag color="warning">初筛</Tag>
+                  <span>筛查编号</span>
+                  <span>筛查标题</span>
+                  <span>筛查机构</span>
+                </Space>
+              </Row>
+            </div>
+          </Spin>
+          <Table columns={columns} dataSource={[]} pagination={false} className={styles.table}></Table>
+
+          <Pagination defaultCurrent={defaultCurrent} total={total} style={{textAlign: 'right'}} />
+            {/* <ProTable<API.FileListItem, API.PageParams>
               actionRef={actionRef}
               rowKey="resultId"
               search={false}
@@ -294,7 +324,7 @@ const FileList: React.FC = () => {
                 };
               }}
               columns={columns}
-            />
+            /> */}
           </TabPane>
         </Tabs>
       </Card>

@@ -58,6 +58,11 @@ const TableList: React.FC = () => {
     }));
   };
 
+  const onPlanCancel = (fresh?: boolean) => {
+    setPlanModalData((s: API.ModalDataType) => ({ ...s, visible: false }))
+    fresh && tableRef?.current?.reload?.();
+  }
+
   const columns: ProColumns<ScreenNoticeListType>[] = [
     ...listColumns(onShow),
     {
@@ -132,7 +137,8 @@ const TableList: React.FC = () => {
       </Modal>
       <PlanModal
         {...planModalData}
-        onCancel={() => setPlanModalData((s: API.ModalDataType) => ({ ...s, visible: false }))}
+        // onCancel={() => setPlanModalData((s: API.ModalDataType) => ({ ...s, visible: false }))}
+        onCancel={onPlanCancel}
       />
     </PageContainer>
   );

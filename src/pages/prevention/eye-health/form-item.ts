@@ -1,4 +1,4 @@
-import { EYEHEALTHYOPTION, INSTITUTIONALREVIEWOPTION } from '@/utils/form-constant';
+import { STUDENTSELECTOPTIONS, INSTITUTIONALREVIEWOPTION } from '@/utils/form-constant';
 import { BINDOPTIONS, MYOPIAWARNOPTION } from '@/utils/constant';
 
 export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'> = {
@@ -7,7 +7,7 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
       type: 'inputGroup',
       selectInitial: 'sno',
       value: 'inputKey',
-      valueEnum: EYEHEALTHYOPTION,
+      valueEnum: STUDENTSELECTOPTIONS,
     },
     {
       label: '公众号在线档案',
@@ -18,8 +18,8 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
     {
       label: '专业医疗机构复查',
       type: 'select',
-      value: 'isHavaReport',
-      valueEnum: INSTITUTIONALREVIEWOPTION,
+      value: 'isHaveReport',
+      list: 'isHaveReportList'
     },
     {
       label: '年级班级',
@@ -39,5 +39,6 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
 
   listTypeInfo: {
     gradeOptions: [], // 年级班级
+    isHaveReportList: INSTITUTIONALREVIEWOPTION
   },
 };

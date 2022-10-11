@@ -15,8 +15,7 @@ import { EMPTY } from '@/utils/constant';
 import { FormItemOptions } from './form-item';
 import { TableListCtx } from '@/hook/ant-config';
 import { ExportModal } from '@/pages/components/export-modal';
-import { getExportEyeHealthData, getPreventionEyeHealthList } from '@/api/prevention/eye-health';
-import { getsGradeAll } from '@/api/school';
+import { getAllGradeList, getExportEyeHealthData, getPreventionEyeHealthList } from '@/api/prevention/eye-health';
 import { history } from 'umi';
 
 const TableList: React.FC = () => {
@@ -32,8 +31,8 @@ const TableList: React.FC = () => {
   const ref = useRef<ProFormInstance>();
 
   useMemo(async () => {
-    const { data = [] } = await getsGradeAll();
-    setItemOptions((s) => ({ ...s, listTypeInfo: { gradeOptions: convertData(data) } }));
+    const { data = [] } = await getAllGradeList();
+    setItemOptions((s) => ({ ...s, listTypeInfo: { ...s.listTypeInfo, gradeOptions: convertData(data) } }));
   }, []);
 
   /**
@@ -174,7 +173,7 @@ const TableList: React.FC = () => {
         centered={true}
       >
         <Space direction="vertical" size={12}>
-          <p>身高： {proposalInfo?.currentRow?.height}</p>
+          <p>身高： {proposalInfo?.currentRow?.height} cm</p>
           <p>课桌： {proposalInfo?.currentRow?.desk}</p>
           <p>课椅： {proposalInfo?.currentRow?.chair} </p>
           {proposalInfo?.currentRow?.haveBlackboardDistance ? (

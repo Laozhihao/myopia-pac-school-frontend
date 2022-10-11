@@ -9,6 +9,14 @@ export async function getStudentList(params: API.ObjectType, options?: API.Objec
   });
 }
 
+/** 学生搜素条件 GET /school/student/selectValue */
+export async function getStudentFormItemList(options?: API.ObjectType) {
+  return request<API.RequestResult>('/school/student/selectValue', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
 /** 新增/编辑学生 POST /school/student */
 export async function editStudentInfo(data: API.ObjectType) {
   return request<API.RequestResult>('/school/student', {

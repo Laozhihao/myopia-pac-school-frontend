@@ -19,11 +19,12 @@ import { AddModal } from './modal/add-modal';
 const TableList: React.FC = () => {
   const tableRef = useRef<ActionType>();
 
-  const [addModalInfo, setAddModalInfo] = useState<API.ModalDataType>({
+  const [addModalInfo, setAddModalInfo] = useState<API.ModalDataType & { cb?: (data: any, isReset?: boolean) => void }>({
     title: '',
     visible: false,
     currentRow: undefined,
-  }); // 创建筛查计划信息
+    cb: () => {}
+  }); // 创建信息
 
   const [isExceedConfig, setIsExceedConfig] = useState(false); // 是否超过人数限制
 
@@ -45,36 +46,46 @@ const TableList: React.FC = () => {
     tableRef?.current?.reload?.();
   };
 
+
   /**
-   * @desc 启用/停用
+   * @desc 账号密码弹窗
+   */
+  const passwordContentNotification = (data: any[], isReset = true) => {
+    const schoolIndex = data.findIndex((item: { systemCode: number }) => item.systemCode === 2);
+    const screenIndex = data.findIndex((item: { systemCode: number }) => item.systemCode === 3);
+    notificationHook({
+      message: isReset ? '重置密码成功！' : '操作成功！',
+      description: (
+        <>
+          <p style={{ marginTop: 10 }}>学校管理后台</p>
+          <p>{`账号：${data?.[schoolIndex]?.username}，密码：${data?.[schoolIndex]?.password}`}</p>
+          <p style={{ marginTop: 10 }}>筛查APP</p>
+          <p>{`账号：${data?.[screenIndex]?.username}，密码：${data?.[screenIndex]?.password}`}</p>
+        </>
+      ),
+      duration: 15,
+    });
+  }
+
+  /**
+   * @desc 重置密码
    */
   const onReset = (record: VisionColumnsType) => {
     resetPwdHook({ id: record?.id }, resetVisionStaffPassword, false, (data = []) => {
-      const schoolIndex = data.findIndex((item: { systemCode: number }) => item.systemCode === 2);
-      const screenIndex = data.findIndex((item: { systemCode: number }) => item.systemCode === 3);
-      notificationHook({
-        message: '重置密码成功！',
-        description: (
-          <>
-            <p style={{ marginTop: 10 }}>学校管理后台</p>
-            <p>{`账号：${data?.[schoolIndex]?.username}，密码：${data?.[schoolIndex]?.password}`}</p>
-            <p style={{ marginTop: 10 }}>筛查APP</p>
-            <p>{`账号：${data?.[screenIndex]?.username}，密码：${data?.[screenIndex]?.password}`}</p>
-          </>
-        ),
-        duration: 15,
-      });
+      passwordContentNotification(data);
     });
   };
 
+
   /**
-   * @desc 启用/停用
+   * @desc 创建/ 编辑
    */
   const onHandle = (row?: VisionColumnsType) => {
     setAddModalInfo({
       visible: true,
       title: row ? '编辑视力小队' : '创建视力小队',
       currentRow: row,
+      cb: (data: any[], flag) => passwordContentNotification(data, flag), // 创建回调
     });
   };
 

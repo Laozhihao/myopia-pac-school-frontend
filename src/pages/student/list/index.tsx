@@ -12,7 +12,7 @@ import { OperationModal } from './operation-modal';
 import { listColumns } from './columns';
 import { deleteTableRow } from '@/hook/table';
 import { getschoolGrade } from '@/api/school';
-import { getStudentList, deleteStudentInfo } from '@/api/student';
+import { getStudentList, deleteStudentInfo, getStudentFormItemList } from '@/api/student';
 import { EMPTY } from '@/utils/constant';
 import SwitchableButton from '@/components/SwitchableButton';
 import { FormItemOptions } from './form-item';
@@ -39,11 +39,13 @@ const TableList: React.FC = () => {
    * @desc 获取年级班级
    */
   useMemo(async () => {
-    const { data = [] } = await getschoolGrade();
-    setGradeOption(data);
+    const [gradeList] = await Promise.all([getschoolGrade()]);
+    const { data: gradeListOption } = gradeList;
+
+    setGradeOption(gradeListOption);
     setItemOptions((s) => ({
       ...s,
-      listTypeInfo: { ...s.listTypeInfo, gradeOptions: convertData(data) },
+      listTypeInfo: { ...s.listTypeInfo, gradeOptions: convertData(gradeListOption) },
     }));
   }, []);
 

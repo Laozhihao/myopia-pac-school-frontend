@@ -19,7 +19,7 @@ export function toFormData(params: Record<string, any>): FormData {
  * @desc 截取字符长度
  */
 
-export const formatLength = (val: string, length = 15) =>
+export const formatLength = (val?: string, length = 15) =>
   val && val.length > length ? `${val.substr(0, length)}...` : val;
 
 /**

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import styles from './index.less';
 import type { ProColumns } from '@ant-design/pro-table';
+import moment from 'moment';
 // import { listColumns } from './columns';
 import { history, useRequest } from 'umi';
 import { Tabs, Card, message, Pagination, Spin, Space, Row, Tag, Table } from 'antd';
@@ -16,9 +17,11 @@ import { getStudentDetail, getStudentScreen } from '@/api/student';
 import { getCascaderOption } from '@/hook/district';
 import { getschoolGrade } from '@/api/school';
 import { DetailModal } from '@/pages/screening/play/student/modal/detail';
-import { EMPTY } from '@/utils/constant';
+import { DATE, EMPTY } from '@/utils/constant';
 import DynamicButtonGroup from '@/components/DynamicButtonGroup';
 import SwitchableButton from '@/components/SwitchableButton';
+import { formatLength } from '@/utils/common';
+import type { ScreeningStudentRecordType } from './columns';
 
 const { TabPane } = Tabs;
 export type FileCardPropsParams = {
@@ -39,8 +42,7 @@ const FileList: React.FC = () => {
 
   const [areaOption, setAreaOption] = useState<any[]>();
   const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
-  const [defaultCurrent, setDefaultCurrent] = useState(1); // 当前页
-  const [total, setTotal] = useState(0); // 总页数
+  const [allTotal, setAllTotal] = useState(0); // 总页数
   const [loading, setLoading] = useState(false);
   const [screeningRecord, setScreeningRecord] = useState([]);
 
@@ -69,16 +71,24 @@ const FileList: React.FC = () => {
     }));
   };
 
-  // const onCurrentScreeningRecord = async (current: number, size: number) => {
-  //   const parm = {
-  //     studentId,
-  //     current,
-  //     size,
-  //   }
 
-  //   const { data } = await getStudentScreen(parm);
-  //   console.log(data, '1231');
-  // }
+  /**
+   * @desc 分页查询
+   */
+  const onCurrentScreeningRecord = async (current: number, size: number) => {
+    setLoading(true);
+    const parm = {
+      studentId,
+      current,
+      size,
+    }
+    const { data } = await getStudentScreen(studentId as string, parm);
+    setScreeningRecord(data?.records);
+    console.log(data);
+    setAllTotal(data?.total)
+    setLoading(false);
+  }
+
 
   /**
    * @desc 新开报告
@@ -129,14 +139,14 @@ const FileList: React.FC = () => {
     showReport(parmUrl);
   };
 
-  const columns: ProColumns<API.FileListItem>[] = [
+  const columns = [
     // ...listColumns,
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
       width: 200,
-      render: (_, record) => {
+      render: (_: any, record: API.FileListItem) => {
         return [
           <DynamicButtonGroup key="operator">
             <SwitchableButton key="print" icon="icon-Printer" onClick={() => onMonitor(record)}>
@@ -234,6 +244,10 @@ const FileList: React.FC = () => {
     !value.length && formRef?.current?.setFieldsValue({ address: '' });
   };
 
+  const onTabClick = (key: string) => {
+    key === '2' && onCurrentScreeningRecord(1, 10)
+  }
+
   return (
     <PageContainer>
       <Card>
@@ -241,6 +255,7 @@ const FileList: React.FC = () => {
           defaultActiveKey={
             history?.location?.query?.tabKey ? history?.location?.query?.tabKey.toString() : '1'
           }
+          onTabClick={onTabClick}
         >
           <TabPane tab="基本资料" key="1" forceRender={true}>
             <ProForm
@@ -278,54 +293,29 @@ const FileList: React.FC = () => {
           </TabPane>
           <TabPane tab="筛查记录" key="2">
           <Spin spinning={loading}>
-            <div>
-              <p className={styles.title}>筛查日期</p>
-              <Row>
-                <Space size={12}>
-                  <Tag color="error" className={styles.vision_tag}>视力筛查</Tag>
-                  <Tag color="warning">初筛</Tag>
-                  <span>筛查编号</span>
-                  <span>筛查标题</span>
-                  <span>筛查机构</span>
-                </Space>
-              </Row>
-            </div>
+            {
+              screeningRecord?.map((item: ScreeningStudentRecordType) => (
+                <React.Fragment key={item?.resultId}>
+                  <div>
+                    <p className={styles.title}>筛查日期：{moment(item?.screeningDate).format(DATE)}</p>
+                  <Row>
+                    <Space size={12}>
+                      <Tag color="error" className={styles.vision_tag}>视力筛查</Tag>
+                      <Tag color="warning">{ item.isDoubleScreen ? '复测' : '初筛' }</Tag>
+                      <span>筛查编号：{item?.screeningCode}</span>
+                      <span>筛查标题：{formatLength(item?.screeningTitle)}</span>
+                      <span>筛查机构：{formatLength(item?.screeningOrgName)}</span>
+                    </Space>
+                  </Row>
+                  </div>
+                  <Table columns={columns} dataSource={[]} pagination={false} className={styles.table}  rowKey="resultId" ></Table>
+                </React.Fragment>
+              ))
+            }
+            <Pagination defaultCurrent={1} total={allTotal} style={{textAlign: 'right'}} />
           </Spin>
-          <Table columns={columns} dataSource={[]} pagination={false} className={styles.table}></Table>
-
-          <Pagination defaultCurrent={defaultCurrent} total={total} style={{textAlign: 'right'}} />
-            {/* <ProTable<API.FileListItem, API.PageParams>
-              actionRef={actionRef}
-              rowKey="resultId"
-              search={false}
-              pagination={{ pageSize: 10 }}
-              options={false}
-              columnEmptyText={EMPTY}
-              scroll={{
-                x: 'max-content',
-              }}
-              columnsStateMap={{
-                screeningDate: {
-                  fixed: 'left',
-                },
-                option: {
-                  fixed: 'right',
-                },
-              }}
-              request={async () => {
-                const datas = studentId ? await getStudentScreen(studentId as string) : undefined;
-                return {
-                  data:
-                    datas?.data.records.filter(
-                      (item: API.ObjectType) => !item.screenType && item,
-                    ) || [],
-                  success: true,
-                  total: datas?.data.total || 0,
-                };
-              }}
-              columns={columns}
-            /> */}
           </TabPane>
+          
         </Tabs>
       </Card>
       <DetailModal

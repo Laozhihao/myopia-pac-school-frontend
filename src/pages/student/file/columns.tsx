@@ -1,5 +1,15 @@
 import { EMPTY } from '@/utils/constant';
 
+
+export type ScreeningStudentRecordType = {
+  resultId?: number;
+  screeningDate?: React.Key;
+  screeningCode?: string;
+  isDoubleScreen?: boolean;
+  screeningTitle?: string;
+  screeningOrgName?: string
+}
+
 // 列合并
 export const onCell = (_: any, index: number) => {
   return index === 2 ? { rowSpan: 2 } : {}
@@ -99,7 +109,7 @@ export const ScreeningRecordColumns = (data: { details?: any; isDoubleScreen?: a
   if (screeningType === 0) {
     return isDoubleScreen ? [...basicColumns(data?.details?.vision)] : [...basicColumns(data?.details?.vision), ...otherDiseasesColumns, ...heightAndWeightColumns];
   }
-  // 常见病
+  // 常见病 
   return isDoubleScreen ? [...basicColumns(data?.details?.vision), ...heightAndWeightColumns] : [...basicColumns(data?.details?.vision), ...otherDiseasesColumns, ...commonDiseasesColumns, ...heightAndWeightColumns];
 };
 

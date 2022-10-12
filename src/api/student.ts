@@ -40,9 +40,10 @@ export async function getStudentDetail(id: React.Key) {
 }
 
 /** 筛查记录 /school/student */
-export async function getStudentScreen(id: React.Key) {
+export async function getStudentScreen(id: React.Key, params?: API.ObjectType) {
   return request<API.RequestResult>(`/school/student/screening/list/${id}`, {
     method: 'GET',
+    params,
   });
 }
 

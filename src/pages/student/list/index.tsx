@@ -17,7 +17,7 @@ import { EMPTY } from '@/utils/constant';
 import SwitchableButton from '@/components/SwitchableButton';
 import { FormItemOptions } from './form-item';
 import DynamicButtonGroup from '@/components/DynamicButtonGroup';
-import { convertData } from '@/utils/common';
+import { convertData, deleteRedundantData } from '@/utils/common';
 import { TableListCtx } from '@/hook/ant-config';
 import { history } from 'umi';
 
@@ -39,13 +39,14 @@ const TableList: React.FC = () => {
    * @desc 获取年级班级
    */
   useMemo(async () => {
-    const [gradeList] = await Promise.all([getschoolGrade()]);
+    const [gradeList, formItemList] = await Promise.all([getschoolGrade(), getStudentFormItemList()]);
     const { data: gradeListOption } = gradeList;
+    const { data: {glassesTypeList, refractionTypeList, visionTypeList, yearList } } = formItemList;
 
     setGradeOption(gradeListOption);
     setItemOptions((s) => ({
       ...s,
-      listTypeInfo: { ...s.listTypeInfo, gradeOptions: convertData(gradeListOption) },
+      listTypeInfo: { gradeOptions: convertData(gradeListOption), glassesTypeList, refractionTypeList, visionTypeList, yearList },
     }));
   }, []);
 
@@ -72,12 +73,12 @@ const TableList: React.FC = () => {
   const onSearch = () => {
     const formVal = ref?.current?.getFieldsFormatValue?.();
     const [gradeId, classId] = formVal?.gradeName || [];
-    setSearchForm({
+    setSearchForm(deleteRedundantData({
+      ...formVal,
       gradeId,
       classId,
       [formVal?.select]: formVal?.input,
-      visionLabel: formVal?.visionLabel,
-    });
+    }, ['select', 'input', 'gradeName']));
     tableRef?.current?.reloadAndRest?.();
   };
 

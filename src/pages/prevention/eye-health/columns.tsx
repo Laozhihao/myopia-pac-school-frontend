@@ -42,7 +42,7 @@ export const listColumns = (
     {
       title: '视力情况',
       dataIndex: 'wearingGlasses',
-      renderText: (val, record) => `${val} ${record?.lowVision}`
+      renderText: (val, record) => `${val} ${record?.lowVision}`,
     },
     {
       title: '屈光情况',

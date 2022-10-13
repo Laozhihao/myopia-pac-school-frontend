@@ -1,9 +1,7 @@
 import type { ProColumns } from '@ant-design/pro-table';
 import { EMPTY, MYOPIAWARNOPTION, TABLESEXOPTION } from '@/utils/constant';
 import { visionColumn } from '@/utils/columns';
-// import { getShowIdCardText, getShowPassportText } from '@/utils/common';
 import { Badge } from 'antd';
-import { history } from 'umi';
 
 export const listColumns: ProColumns<API.StudentListItem>[] = [
   {

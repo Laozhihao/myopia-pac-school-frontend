@@ -106,6 +106,8 @@ const TableList: React.FC = () => {
           <SwitchableButton
             key="detail"
             icon="icon-a-Group1000006854"
+            disabled={!record?.hasScreening}
+            tooltip={!record?.hasScreening ? '当前没有筛查数据' : ''}
             onClick={() => onDetail(record)}
           >
             筛查详情

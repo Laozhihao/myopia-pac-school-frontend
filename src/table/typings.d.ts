@@ -45,6 +45,7 @@ declare namespace API {
     axial?: string; // 轴位（右/左）
     state?: React.Key; // 未做检查原因
     dataIntegrity?: string; // 数据完整性
+    hasScreening?: boolean;
   };
 
   // 档案管理列表

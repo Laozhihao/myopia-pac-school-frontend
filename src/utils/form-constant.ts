@@ -16,7 +16,6 @@ export const STUDENTSELECTOPTIONS = {
   name: '姓名',
 };
 
-
 // 筛查类型
 export const SCREENTYPEOPTIONS = {
   1: '自主筛查',
@@ -42,5 +41,39 @@ export const SITUATIONOPTION = [
 // 机构复查
 export const INSTITUTIONALREVIEWOPTION = [
   { label: '已就诊', value: true },
-  { label: '未就诊', value: false }
+  { label: '未就诊', value: false },
 ];
+
+export const spineOption = [
+  { label: '胸段侧弯', key: 'chest' },
+  { label: '腰部侧弯', key: 'waist' },
+  { label: '胸腰段侧弯', key: 'chestWaist' },
+  {
+    label: '前后弯曲',
+    key: 'entirety',
+  },
+];
+export const spineLevel = {
+  1: 'I',
+  2: 'II',
+  3: 'III',
+};
+export const spineType = {
+  1: '无侧弯',
+  2: '左低右高',
+  3: '右低左高',
+};
+
+// 前后弯曲
+export const entiretySpineType = {
+  1: '无前后弯曲异常',
+  2: '平背',
+  3: '前凸异常',
+  4: '后凸异常',
+};
+
+// 隐私项
+export const privacyOption = {
+  0: '首次遗精',
+  1: '首次月经',
+};

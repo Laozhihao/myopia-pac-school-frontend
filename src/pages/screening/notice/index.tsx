@@ -59,9 +59,9 @@ const TableList: React.FC = () => {
   };
 
   const onPlanCancel = (fresh?: boolean) => {
-    setPlanModalData((s: API.ModalDataType) => ({ ...s, visible: false }))
+    setPlanModalData((s: API.ModalDataType) => ({ ...s, visible: false }));
     fresh && tableRef?.current?.reload?.();
-  }
+  };
 
   const columns: ProColumns<ScreenNoticeListType>[] = [
     ...listColumns(onShow),

@@ -21,6 +21,7 @@ export const DetailModal: React.FC<API.ModalItemType> = (props) => {
 
   useMemo(async () => {
     if (visible) {
+      setLoading(true);
       const { screeningPlanStudentId, screeningPlanId } = currentRow as DetailModalDetailType;
       const { data } = await getScreeningStudentDetailList({
         screeningPlanStudentId,
@@ -53,17 +54,21 @@ export const DetailModal: React.FC<API.ModalItemType> = (props) => {
                   </span>
                 )}
               </p>
-              <Table
-                dataSource={
-                  Array.isArray(detailDataSource[item.dataIndex])
-                    ? detailDataSource[item.dataIndex]
-                    : [detailDataSource[item.dataIndex]]
-                }
-                rowKey="eyeType"
-                columns={item.columns}
-                scroll={{ x: 'max-content' }}
-                pagination={false}
-              />
+              {item?.columns?.map((eleItem: any, eleIndex: number) => (
+                <Table
+                  key={eleIndex}
+                  dataSource={
+                    Array.isArray(detailDataSource[item.dataIndex])
+                      ? detailDataSource[item.dataIndex]
+                      : [detailDataSource[item.dataIndex]]
+                  }
+                  rowKey="eyeType"
+                  columns={eleItem}
+                  scroll={{ x: 'max-content' }}
+                  pagination={false}
+                  style={{ marginTop: 15 }}
+                />
+              ))}
             </div>
           ) : null,
         )}

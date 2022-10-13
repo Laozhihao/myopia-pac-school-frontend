@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import styles from './index.less';
-import type { ProColumns } from '@ant-design/pro-table';
 import moment from 'moment';
-// import { listColumns } from './columns';
+import { ScreeningRecordColumns } from './columns';
 import { history, useRequest } from 'umi';
-import { Tabs, Card, message, Pagination, Spin, Space, Row, Tag, Table } from 'antd';
+import { Tabs, Card, message, Pagination, Spin, Space, Row, Tag, Table, Col, Button } from 'antd';
 import { editStudentInfo } from '@/api/student';
 import DynamicForm from '@/components/DynamicForm';
 import LazyCascader from '@/pages/components/lazy-cascader';
@@ -17,9 +16,7 @@ import { getStudentDetail, getStudentScreen } from '@/api/student';
 import { getCascaderOption } from '@/hook/district';
 import { getschoolGrade } from '@/api/school';
 import { DetailModal } from '@/pages/screening/play/student/modal/detail';
-import { DATE, EMPTY } from '@/utils/constant';
-import DynamicButtonGroup from '@/components/DynamicButtonGroup';
-import SwitchableButton from '@/components/SwitchableButton';
+import { DATE } from '@/utils/constant';
 import { formatLength } from '@/utils/common';
 import type { ScreeningStudentRecordType } from './columns';
 
@@ -42,7 +39,14 @@ const FileList: React.FC = () => {
 
   const [areaOption, setAreaOption] = useState<any[]>();
   const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
-  const [allTotal, setAllTotal] = useState(0); // 总页数
+  const [allTotal, setAllTotal] = useState(1); // 总页数
+  const [pageInfo, setPageInfo] = useState<{ current?: number; pageSize?: number }>({
+    current: 1,
+    pageSize: 10,
+  }); // 页数和条数
+  const [activeKey, setActiveKey] = useState(
+    history?.location?.query?.tabKey ? history?.location?.query?.tabKey.toString() : '1',
+  );
   const [loading, setLoading] = useState(false);
   const [screeningRecord, setScreeningRecord] = useState([]);
 
@@ -60,7 +64,7 @@ const FileList: React.FC = () => {
   /**
    * @desc 查看详情
    */
-  const onDetail = (record: API.FileListItem) => {
+  const onDetail = (record: ScreeningStudentRecordType) => {
     setDetailInfo((s) => ({
       ...s,
       visible: true,
@@ -71,7 +75,6 @@ const FileList: React.FC = () => {
     }));
   };
 
-
   /**
    * @desc 分页查询
    */
@@ -81,14 +84,12 @@ const FileList: React.FC = () => {
       studentId,
       current,
       size,
-    }
+    };
     const { data } = await getStudentScreen(studentId as string, parm);
     setScreeningRecord(data?.records);
-    console.log(data);
-    setAllTotal(data?.total)
+    setAllTotal(data?.total);
     setLoading(false);
-  }
-
+  };
 
   /**
    * @desc 新开报告
@@ -139,34 +140,6 @@ const FileList: React.FC = () => {
     showReport(parmUrl);
   };
 
-  const columns = [
-    // ...listColumns,
-    {
-      title: '操作',
-      dataIndex: 'option',
-      valueType: 'option',
-      width: 200,
-      render: (_: any, record: API.FileListItem) => {
-        return [
-          <DynamicButtonGroup key="operator">
-            <SwitchableButton key="print" icon="icon-Printer" onClick={() => onMonitor(record)}>
-              档案卡
-            </SwitchableButton>
-            <SwitchableButton
-              key="detail"
-              icon="icon-a-Group1000006854"
-              disabled={!record?.hasScreening}
-              tooltip={!record?.hasScreening ? '当前没有筛查数据' : ''}
-              onClick={() => onDetail(record)}
-            >
-              查看详情
-            </SwitchableButton>
-          </DynamicButtonGroup>,
-        ];
-      },
-    },
-  ];
-
   /**
    * @desc 初始化数据
    */
@@ -204,8 +177,10 @@ const FileList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    id && run(id as string);
-  }, []);
+    if (activeKey === '1') {
+      id && run(id as string);
+    } else onCurrentScreeningRecord(1, 10);
+  }, [activeKey]);
 
   /**
    * @desc 更改基本资料
@@ -244,19 +219,22 @@ const FileList: React.FC = () => {
     !value.length && formRef?.current?.setFieldsValue({ address: '' });
   };
 
-  const onTabClick = (key: string) => {
-    key === '2' && onCurrentScreeningRecord(1, 10)
-  }
+  /**
+   * @desc 分页器修改
+   */
+  const onPageChange = (page: number, size: number) => {
+    const { pageSize } = pageInfo;
+    setPageInfo({
+      current: pageSize === size ? page : 1,
+      pageSize: size,
+    });
+    onCurrentScreeningRecord(pageSize === size ? page : 1, size);
+  };
 
   return (
     <PageContainer>
       <Card>
-        <Tabs
-          defaultActiveKey={
-            history?.location?.query?.tabKey ? history?.location?.query?.tabKey.toString() : '1'
-          }
-          onTabClick={onTabClick}
-        >
+        <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
           <TabPane tab="基本资料" key="1" forceRender={true}>
             <ProForm
               formRef={formRef}
@@ -292,30 +270,75 @@ const FileList: React.FC = () => {
             </ProForm>
           </TabPane>
           <TabPane tab="筛查记录" key="2">
-          <Spin spinning={loading}>
-            {
-              screeningRecord?.map((item: ScreeningStudentRecordType) => (
-                <React.Fragment key={item?.resultId}>
-                  <div>
-                    <p className={styles.title}>筛查日期：{moment(item?.screeningDate).format(DATE)}</p>
-                  <Row>
-                    <Space size={12}>
-                      <Tag color="error" className={styles.vision_tag}>视力筛查</Tag>
-                      <Tag color="warning">{ item.isDoubleScreen ? '复测' : '初筛' }</Tag>
-                      <span>筛查编号：{item?.screeningCode}</span>
-                      <span>筛查标题：{formatLength(item?.screeningTitle)}</span>
-                      <span>筛查机构：{formatLength(item?.screeningOrgName)}</span>
-                    </Space>
-                  </Row>
-                  </div>
-                  <Table columns={columns} dataSource={[]} pagination={false} className={styles.table}  rowKey="resultId" ></Table>
-                </React.Fragment>
-              ))
-            }
-            <Pagination defaultCurrent={1} total={allTotal} style={{textAlign: 'right'}} />
-          </Spin>
+            <Spin spinning={loading}>
+              {screeningRecord?.length ? (
+                <>
+                  {screeningRecord?.map((item: ScreeningStudentRecordType) => (
+                    <React.Fragment key={item?.resultId}>
+                      <div>
+                        <p className={styles.title}>
+                          筛查日期：{moment(item?.screeningDate).format(DATE)}
+                        </p>
+                        <Row justify="space-between">
+                          <Col>
+                            <Space size={12}>
+                              <Tag color="error" className={styles.vision_tag}>
+                                {item?.screeningType ? '常见病筛查' : '视力筛查'}
+                              </Tag>
+                              <Tag color="warning">{item.isDoubleScreen ? '复测' : '初筛'}</Tag>
+                              <span>筛查编号：{item?.screeningCode}</span>
+                              <span>筛查标题：{formatLength(item?.screeningTitle)}</span>
+                              <span>筛查机构：{formatLength(item?.screeningOrgName)}</span>
+                            </Space>
+                          </Col>
+                          <Col>
+                            <Space>
+                              <Button
+                                key="print"
+                                className={styles.btn}
+                                onClick={() => onMonitor(item)}
+                              >
+                                档案卡
+                              </Button>
+                              {!item?.hasScreening ? (
+                                <Button
+                                  key="detail"
+                                  className={styles.btn}
+                                  onClick={() => onDetail(item)}
+                                >
+                                  查看详情
+                                </Button>
+                              ) : null}
+                            </Space>
+                          </Col>
+                        </Row>
+                      </div>
+                      <Table
+                        columns={ScreeningRecordColumns(item)}
+                        dataSource={item?.details?.vision}
+                        pagination={false}
+                        className={styles.table}
+                        rowKey="lateriality"
+                        scroll={{
+                          x: '100vw',
+                        }}
+                      ></Table>
+                    </React.Fragment>
+                  ))}
+                  <Pagination
+                    current={pageInfo?.current}
+                    pageSize={pageInfo?.pageSize}
+                    total={allTotal}
+                    style={{ textAlign: 'right' }}
+                    showTotal={(total, range) => `第 ${range[0]}-${range[1]} 条/总共 ${total} 条`}
+                    onChange={onPageChange}
+                  />
+                </>
+              ) : (
+                <span>暂无数据</span>
+              )}
+            </Spin>
           </TabPane>
-          
         </Tabs>
       </Card>
       <DetailModal

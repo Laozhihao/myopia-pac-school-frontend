@@ -15,7 +15,11 @@ import { EMPTY } from '@/utils/constant';
 import { FormItemOptions } from './form-item';
 import { TableListCtx } from '@/hook/ant-config';
 import { ExportModal } from '@/pages/components/export-modal';
-import { getAllGradeList, getExportEyeHealthData, getPreventionEyeHealthList } from '@/api/prevention/eye-health';
+import {
+  getAllGradeList,
+  getExportEyeHealthData,
+  getPreventionEyeHealthList,
+} from '@/api/prevention/eye-health';
 import { history } from 'umi';
 
 const TableList: React.FC = () => {
@@ -32,7 +36,10 @@ const TableList: React.FC = () => {
 
   useMemo(async () => {
     const { data = [] } = await getAllGradeList();
-    setItemOptions((s) => ({ ...s, listTypeInfo: { ...s.listTypeInfo, gradeOptions: convertData(data) } }));
+    setItemOptions((s) => ({
+      ...s,
+      listTypeInfo: { ...s.listTypeInfo, gradeOptions: convertData(data) },
+    }));
   }, []);
 
   /**

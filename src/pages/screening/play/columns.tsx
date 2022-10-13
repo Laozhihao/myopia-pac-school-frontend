@@ -18,7 +18,16 @@ export const listColumns: (show: (dom: any) => void) => ProColumns[] = (show) =>
     title: '筛查标题',
     dataIndex: 'title',
     render: (_, record) => {
-      return <p title={record?.title} className={styles.center} style={{'visibility': record.srcScreeningNoticeId !== 0 ? 'visible' : 'hidden'}}><IconFont type="icon-icon-quyu-16" style={{ fontSize: 30 }}/>{record?.title ? formatLength(record?.title) : EMPTY}</p>;
+      return (
+        <p
+          title={record?.title}
+          className={styles.center}
+          style={{ visibility: record.srcScreeningNoticeId !== 0 ? 'visible' : 'hidden' }}
+        >
+          <IconFont type="icon-icon-quyu-16" style={{ fontSize: 30 }} />
+          {record?.title ? formatLength(record?.title) : EMPTY}
+        </p>
+      );
     },
   },
   {

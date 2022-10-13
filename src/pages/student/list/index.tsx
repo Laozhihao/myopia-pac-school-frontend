@@ -39,14 +39,25 @@ const TableList: React.FC = () => {
    * @desc 获取年级班级
    */
   useMemo(async () => {
-    const [gradeList, formItemList] = await Promise.all([getschoolGrade(), getStudentFormItemList()]);
+    const [gradeList, formItemList] = await Promise.all([
+      getschoolGrade(),
+      getStudentFormItemList(),
+    ]);
     const { data: gradeListOption } = gradeList;
-    const { data: {glassesTypeList, refractionTypeList, visionTypeList, yearList } } = formItemList;
+    const {
+      data: { glassesTypeList, refractionTypeList, visionTypeList, yearList },
+    } = formItemList;
 
     setGradeOption(gradeListOption);
     setItemOptions((s) => ({
       ...s,
-      listTypeInfo: { gradeOptions: convertData(gradeListOption), glassesTypeList, refractionTypeList, visionTypeList, yearList },
+      listTypeInfo: {
+        gradeOptions: convertData(gradeListOption),
+        glassesTypeList,
+        refractionTypeList,
+        visionTypeList,
+        yearList,
+      },
     }));
   }, []);
 
@@ -73,12 +84,17 @@ const TableList: React.FC = () => {
   const onSearch = () => {
     const formVal = ref?.current?.getFieldsFormatValue?.();
     const [gradeId, classId] = formVal?.gradeName || [];
-    setSearchForm(deleteRedundantData({
-      ...formVal,
-      gradeId,
-      classId,
-      [formVal?.select]: formVal?.input,
-    }, ['select', 'input', 'gradeName']));
+    setSearchForm(
+      deleteRedundantData(
+        {
+          ...formVal,
+          gradeId,
+          classId,
+          [formVal?.select]: formVal?.input,
+        },
+        ['select', 'input', 'gradeName'],
+      ),
+    );
     tableRef?.current?.reloadAndRest?.();
   };
 

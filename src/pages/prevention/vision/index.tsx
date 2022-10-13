@@ -19,11 +19,13 @@ import { AddModal } from './modal/add-modal';
 const TableList: React.FC = () => {
   const tableRef = useRef<ActionType>();
 
-  const [addModalInfo, setAddModalInfo] = useState<API.ModalDataType & { cb?: (data: any, isReset?: boolean) => void }>({
+  const [addModalInfo, setAddModalInfo] = useState<
+    API.ModalDataType & { cb?: (data: any, isReset?: boolean) => void }
+  >({
     title: '',
     visible: false,
     currentRow: undefined,
-    cb: () => {}
+    cb: () => {},
   }); // 创建信息
 
   const [isExceedConfig, setIsExceedConfig] = useState(false); // 是否超过人数限制
@@ -46,7 +48,6 @@ const TableList: React.FC = () => {
     tableRef?.current?.reload?.();
   };
 
-
   /**
    * @desc 账号密码弹窗
    */
@@ -65,7 +66,7 @@ const TableList: React.FC = () => {
       ),
       duration: 15,
     });
-  }
+  };
 
   /**
    * @desc 重置密码
@@ -75,7 +76,6 @@ const TableList: React.FC = () => {
       passwordContentNotification(data);
     });
   };
-
 
   /**
    * @desc 创建/ 编辑

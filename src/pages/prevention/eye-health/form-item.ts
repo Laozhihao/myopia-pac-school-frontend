@@ -19,7 +19,7 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
       label: '专业医疗机构复查',
       type: 'select',
       value: 'isHaveReport',
-      list: 'isHaveReportList'
+      list: 'isHaveReportList',
     },
     {
       label: '年级班级',
@@ -39,6 +39,6 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
 
   listTypeInfo: {
     gradeOptions: [], // 年级班级
-    isHaveReportList: INSTITUTIONALREVIEWOPTION
+    isHaveReportList: INSTITUTIONALREVIEWOPTION,
   },
 };

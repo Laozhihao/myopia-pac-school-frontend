@@ -77,3 +77,10 @@ export const privacyOption = {
   0: '首次遗精',
   1: '首次月经',
 };
+
+export const correctionOption = {
+  0: '正常',
+  1: '未矫',
+  2: '欠矫',
+  3: '足娇',
+};

@@ -19,12 +19,14 @@ export const listColumns: (show: (dom: any) => void) => ProColumns[] = (show) =>
     dataIndex: 'title',
     render: (_, record) => {
       return (
-        <p
-          title={record?.title}
-          className={styles.center}
-          style={{ visibility: record.srcScreeningNoticeId !== 0 ? 'visible' : 'hidden' }}
-        >
-          <IconFont type="icon-icon-quyu-16" style={{ fontSize: 30 }} />
+        <p title={record?.title} className={styles.center}>
+          <IconFont
+            type="icon-icon-quyu-16"
+            style={{
+              fontSize: 30,
+              visibility: record.srcScreeningNoticeId !== 0 ? 'visible' : 'hidden',
+            }}
+          />
           {record?.title ? formatLength(record?.title) : EMPTY}
         </p>
       );

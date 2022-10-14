@@ -59,7 +59,7 @@ const FileList: React.FC = () => {
   const [studentForm, setStudentForm] = useState<API.PropsType>(
     studentFormOptions(undefined, 2, formRef),
   );
-  const { query: { id, studentId } = {} } = history.location; // id studentId
+  const { query: { id } = {} } = history.location; // id
 
   /**
    * @desc 查看详情
@@ -81,14 +81,14 @@ const FileList: React.FC = () => {
   const onCurrentScreeningRecord = async (current: number, size: number) => {
     setLoading(true);
     const parm = {
-      studentId,
       current,
       size,
     };
-    const { data } = await getStudentScreen(studentId as string, parm);
+    const { data } = await getStudentScreen(id as string, parm).finally(() => {
+      setLoading(false);
+    });
     setScreeningRecord(data?.records);
     setAllTotal(data?.total);
-    setLoading(false);
   };
 
   /**
@@ -197,7 +197,6 @@ const FileList: React.FC = () => {
     const parm = {
       ...value,
       id,
-      studentId,
       gradeId,
       classId,
       provinceCode,

@@ -281,10 +281,16 @@ const FileList: React.FC = () => {
                         <Row justify="space-between">
                           <Col>
                             <Space size={12}>
-                              <Tag color="error" className={styles.vision_tag}>
+                              <Tag
+                                color={item?.screeningType ? 'error' : 'warning'}
+                                className={styles.vision_tag}
+                                style={{ borderColor: 'ivory' }}
+                              >
                                 {item?.screeningType ? '常见病筛查' : '视力筛查'}
                               </Tag>
-                              <Tag color="warning">{item.isDoubleScreen ? '复测' : '初筛'}</Tag>
+                              <Tag color={item.isDoubleScreen ? 'orange' : 'green'}>
+                                {item.isDoubleScreen ? '复测' : '初筛'}
+                              </Tag>
                               <span>筛查编号：{item?.screeningCode}</span>
                               <span>筛查标题：{formatLength(item?.screeningTitle)}</span>
                               <span>筛查机构：{formatLength(item?.screeningOrgName)}</span>

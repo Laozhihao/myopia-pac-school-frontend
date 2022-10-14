@@ -16,7 +16,7 @@ export type PreventionEyeHealthType = {
   warningLevel?: React.Key;
   refractiveResult?: string;
   isRecommendVisit?: boolean;
-  isHavaReport?: boolean;
+  isHaveReport?: boolean;
   seatSuggest?: boolean; // 座位建议
   height?: string;
   lowVision?: string;
@@ -65,7 +65,7 @@ export const listColumns = (
             {text ? (
               <p>
                 {text ? '专业医疗机构复查' : ''}{' '}
-                {record?.isHavaReport ? (
+                {record?.isHaveReport ? (
                   <Tag
                     icon={<CheckCircleOutlined />}
                     color="processing"

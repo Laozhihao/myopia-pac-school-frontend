@@ -54,9 +54,8 @@ export const onCell = (value: React.Key | JSX.Element, index: number) => {
 export const otherDiseasesColumns = [
   {
     title: '其他眼病',
-    dataIndex: 'otherEyeDiseases',
+    dataIndex: 'eyeDiseases',
     width: 400,
-    render: (val: string[]) => <span>{val?.length ? val.join('、') : EMPTY}</span>,
   },
 ];
 
@@ -87,7 +86,17 @@ export const basicColumns = [
   {
     title: '戴镜情况',
     dataIndex: 'glassesTypeDes',
-    render: (value: string, _row: any, index: number) => onCell(value, index),
+    render: (value: string, record: any, index: number) => {
+      const childrenText =
+        record?.glassesType === 3 ? (
+          <>
+            {value} <p>{record?.okDegreeDesc}</p>
+          </>
+        ) : (
+          value
+        );
+      return onCell(childrenText, index);
+    },
   },
   {
     title: '裸眼视力',

@@ -298,14 +298,7 @@ const FileList: React.FC = () => {
                           </Col>
                           <Col>
                             <Space>
-                              <Button
-                                key="print"
-                                className={styles.btn}
-                                onClick={() => onMonitor(item)}
-                              >
-                                档案卡
-                              </Button>
-                              {!item?.hasScreening ? (
+                              {item?.hasScreening ? (
                                 <Button
                                   key="detail"
                                   className={styles.btn}
@@ -314,6 +307,13 @@ const FileList: React.FC = () => {
                                   查看详情
                                 </Button>
                               ) : null}
+                              <Button
+                                key="print"
+                                className={styles.btn}
+                                onClick={() => onMonitor(item)}
+                              >
+                                档案卡
+                              </Button>
                             </Space>
                           </Col>
                         </Row>
@@ -325,7 +325,7 @@ const FileList: React.FC = () => {
                         className={styles.table}
                         rowKey="lateriality"
                         scroll={{
-                          x: '100vw',
+                          x: 'max-content',
                         }}
                       ></Table>
                     </React.Fragment>

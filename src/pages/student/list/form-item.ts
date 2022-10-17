@@ -26,7 +26,7 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
       label: '视力预警',
       type: 'select',
       valueEnum: MYOPIAWARNOPTION,
-      value: 'visionLabel',
+      value: 'visionLabels',
     },
     {
       label: '戴镜情况',

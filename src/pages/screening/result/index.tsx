@@ -12,7 +12,7 @@ import {
 } from './columns';
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';
-import { InfoCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import { history } from 'umi';
 import { AddModal } from './add-modal';
 import { NoticeReport } from './notice-report/index';
@@ -272,15 +272,13 @@ const ScreeningResult: React.FC = () => {
                 {(ActiveKey === '8' ? childTableOptions : teenagersTableOptions).map(
                   (activeItem) => (
                     <Fragment key={activeItem.key}>
-                      <p className={styles.title}>
+                      <p
+                        className={styles.title}
+                        onClick={() =>
+                          showModal({ tabKey: activeItem.key, title: activeItem.title })
+                        }
+                      >
                         {activeItem.title}
-                        <span
-                          onClick={() =>
-                            showModal({ tabKey: activeItem.key, title: activeItem.title })
-                          }
-                        >
-                          <QuestionCircleOutlined style={{ marginLeft: 5 }} />
-                        </span>
                         <span className={styles.subTitle}>{activeItem.subTitle}</span>
                       </p>
                       {activeItem.columns.map(

@@ -150,7 +150,7 @@ const TableList: React.FC = () => {
             x: 'max-content',
           }}
           headerTitle={
-            <span style={{ color: 'rgba(0,0,0,0.45)' }}>
+            <span style={{ color: 'rgba(0,0,0,0.45)', fontSize: 14 }}>
               数据完整性：数据完整情况下才会对此学生进行视力相关统计分析，如视力低下情况、近视情况等
             </span>
           }

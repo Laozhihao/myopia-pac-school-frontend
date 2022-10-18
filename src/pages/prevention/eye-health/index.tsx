@@ -8,6 +8,7 @@ import ProForm from '@ant-design/pro-form';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import DynamicForm from '@/components/DynamicForm';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import styles from './index.less';
 import { listColumns } from './columns';
 import type { PreventionEyeHealthType } from './columns';
 import { convertData, deleteRedundantData } from '@/utils/common';
@@ -21,10 +22,13 @@ import {
   getPreventionEyeHealthList,
 } from '@/api/prevention/eye-health';
 import { history } from 'umi';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { StandardModal } from '@/pages/screening/result/modal/standard-modal';
 
 const TableList: React.FC = () => {
   const [searchForm, setSearchForm] = useState({}); // 搜索表单项
   const [exportVisible, setExportVisible] = useState(false); // 导出弹窗
+  const [standardModalVisible, setStandardModalVisible] = useState(false); // 判断标准
   const [proposalInfo, setProposalInfo] = useState<API.ModalDataType>({
     visible: false,
     currentRow: {},
@@ -90,6 +94,13 @@ const TableList: React.FC = () => {
     history.push(`/student/file?id=${record.schoolStudentId}&studentId=${record?.studentId}`);
   };
 
+  /**
+   * @desc 判断标准
+   */
+  const onShowStandard = () => {
+    setStandardModalVisible(true);
+  };
+
   const columns: ProColumns<PreventionEyeHealthType>[] = [
     ...listColumns(showProposal),
     {
@@ -134,9 +145,15 @@ const TableList: React.FC = () => {
           actionRef={tableRef}
           columnEmptyText={EMPTY}
           headerTitle={
-            <span style={{ color: 'rgba(0,0,0,0.45)' }}>
-              视力预警为0-3级预警的学生才会进入眼健康中心进行防控干预等
-            </span>
+            <>
+              <span style={{ color: 'rgba(0,0,0,0.45)', fontSize: 14 }}>
+                视力预警为0-3级预警的学生才会进入眼健康中心进行防控干预等
+              </span>
+              <span className={styles.judge_standard} onClick={onShowStandard}>
+                <InfoCircleOutlined style={{ color: '#096DD9', fontSize: 16 }} />
+                判断标准
+              </span>
+            </>
           }
           toolBarRender={() => [
             <Button type="primary" onClick={() => setExportVisible(true)}>
@@ -189,6 +206,10 @@ const TableList: React.FC = () => {
           ) : null}
         </Space>
       </Modal>
+      <StandardModal
+        visible={standardModalVisible}
+        onCancel={() => setStandardModalVisible(false)}
+      ></StandardModal>
     </PageContainer>
   );
 };

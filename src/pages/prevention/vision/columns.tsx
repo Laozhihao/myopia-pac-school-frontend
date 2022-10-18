@@ -18,6 +18,7 @@ export const listColumns: ProColumns<VisionColumnsType>[] = [
   {
     title: '姓名',
     dataIndex: 'staffName',
+    fixed: 'left',
   },
   {
     title: '性别',

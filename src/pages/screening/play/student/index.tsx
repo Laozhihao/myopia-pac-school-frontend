@@ -101,6 +101,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      fixed: 'right',
       render: (_, record) => [
         <DynamicButtonGroup key="operator">
           <SwitchableButton
@@ -147,14 +148,6 @@ const TableList: React.FC = () => {
           search={false}
           scroll={{
             x: '100vw',
-          }}
-          columnsStateMap={{
-            sno: {
-              fixed: 'left',
-            },
-            option: {
-              fixed: 'right',
-            },
           }}
           headerTitle={
             <span style={{ color: 'rgba(0,0,0,0.45)' }}>

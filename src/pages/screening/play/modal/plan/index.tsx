@@ -48,7 +48,6 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
       deleteRedundantData(
         {
           ...value,
-          ...param,
           screeningType: 0,
           startTime,
           endTime,
@@ -56,6 +55,7 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
           id: currentRow ? currentRow?.planId : undefined, // 编辑时需要
           screeningNoticeId: currentRow ? currentRow?.srcScreeningNoticeId : undefined, // 编辑时需要
           screeningTaskId: currentRow ? currentRow?.screeningTaskId : undefined, // 编辑时需要
+          ...param,
         },
         ['time'],
       ),

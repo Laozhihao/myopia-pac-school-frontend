@@ -130,6 +130,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      fixed: 'right',
       width: 130,
       render: (_, record) => [
         <DynamicButtonGroup key="operator">
@@ -176,17 +177,7 @@ const TableList: React.FC = () => {
           form={{ span: 8, labelWidth: 120 }}
           columnEmptyText={EMPTY}
           search={false}
-          scroll={{
-            x: '100vw',
-          }}
-          columnsStateMap={{
-            sno: {
-              fixed: 'left',
-            },
-            option: {
-              fixed: 'right',
-            },
-          }}
+          scroll={{ x: '100vw' }}
           toolBarRender={() => [
             <Button
               type="primary"

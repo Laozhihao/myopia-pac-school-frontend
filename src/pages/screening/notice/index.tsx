@@ -69,6 +69,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      fixed: 'right',
       width: 150,
       render: (_, record) => {
         return [
@@ -116,14 +117,6 @@ const TableList: React.FC = () => {
         columns={columns}
         scroll={{
           x: '100vw',
-        }}
-        columnsStateMap={{
-          title: {
-            fixed: 'left',
-          },
-          option: {
-            fixed: 'right',
-          },
         }}
       />
       <Modal

@@ -23,6 +23,7 @@ export const listColumns: (show: (dom: any) => void) => ProColumns<ScreenNoticeL
   {
     title: '筛查标题',
     dataIndex: 'title',
+    fixed: 'left',
     render: (_, record) => {
       return <p title={record?.title}>{record?.title ? formatLength(record?.title) : EMPTY}</p>;
     },

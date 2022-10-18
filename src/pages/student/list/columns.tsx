@@ -7,6 +7,7 @@ export const listColumns: ProColumns<API.StudentListItem>[] = [
   {
     title: '学号',
     dataIndex: 'sno',
+    fixed: 'left',
   },
   {
     title: '学年',

@@ -103,6 +103,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      fixed: 'right',
       width: 200,
       render: (_, record) => {
         return [
@@ -156,14 +157,6 @@ const TableList: React.FC = () => {
         columns={columns}
         scroll={{
           x: '100vw',
-        }}
-        columnsStateMap={{
-          staffName: {
-            fixed: 'left',
-          },
-          option: {
-            fixed: 'right',
-          },
         }}
       />
       <AddModal {...addModalInfo} onCancel={(refresh) => onCancel(refresh)} />

@@ -29,6 +29,7 @@ export const listColumns = (
     {
       title: '学籍号',
       dataIndex: 'sno',
+      fixed: 'left',
     },
     {
       title: '姓名',

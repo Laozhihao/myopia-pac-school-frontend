@@ -177,7 +177,7 @@ const TableList: React.FC = () => {
           form={{ span: 8, labelWidth: 120 }}
           columnEmptyText={EMPTY}
           search={false}
-          scroll={{ x: '100vw' }}
+          scroll={{ x: 'max-content' }}
           toolBarRender={() => [
             <Button
               type="primary"

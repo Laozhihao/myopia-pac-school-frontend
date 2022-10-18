@@ -147,7 +147,7 @@ const TableList: React.FC = () => {
           columnEmptyText={EMPTY}
           search={false}
           scroll={{
-            x: '100vw',
+            x: 'max-content',
           }}
           headerTitle={
             <span style={{ color: 'rgba(0,0,0,0.45)' }}>

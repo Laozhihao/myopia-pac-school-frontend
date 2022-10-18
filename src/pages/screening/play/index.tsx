@@ -238,7 +238,7 @@ const TableList: React.FC = () => {
           }}
           columns={columns}
           scroll={{
-            x: '100vw',
+            x: 'max-content',
           }}
         />
       </TableListCtx.Provider>

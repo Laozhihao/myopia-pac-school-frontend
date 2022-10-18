@@ -104,7 +104,6 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       fixed: 'right',
-      width: 200,
       render: (_, record) => {
         return [
           <Button key="student" type="link" onClick={() => onHandle(record)}>

@@ -63,7 +63,6 @@ const GradeManage: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       fixed: 'right',
-      width: 300,
       render: (_, record, index) => [
         !record?.gradeId ? (
           <a key="add" onClick={() => onAddClass(record, index)}>

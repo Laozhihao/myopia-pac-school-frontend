@@ -70,7 +70,6 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       fixed: 'right',
-      width: 150,
       render: (_, record) => {
         return [
           <DynamicButtonGroup key="operator">

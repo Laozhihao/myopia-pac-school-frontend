@@ -133,6 +133,11 @@ const TableList: React.FC = () => {
           options={false}
           actionRef={tableRef}
           columnEmptyText={EMPTY}
+          headerTitle={
+            <span style={{ color: 'rgba(0,0,0,0.45)' }}>
+              视力预警为0-3级预警的学生才会进入眼健康中心进行防控干预等
+            </span>
+          }
           toolBarRender={() => [
             <Button type="primary" onClick={() => setExportVisible(true)}>
               导出

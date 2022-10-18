@@ -95,6 +95,7 @@ const TableList: React.FC = () => {
     {
       title: '操作',
       dataIndex: 'option',
+      width: 130,
       valueType: 'option',
       render: (_, record) => {
         return [

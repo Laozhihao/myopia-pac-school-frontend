@@ -25,6 +25,7 @@ export const OperationModal: React.FC<
 
   const [exportType, setExportType] = useState(1); // 导出类型
   const [fileList, setFileList] = useState<any[]>([]); // 导入file
+  const [loading, setLoading] = useState(false); // 确认按钮loading
 
   // 导入
   const loadProps = {
@@ -53,6 +54,7 @@ export const OperationModal: React.FC<
   };
 
   const onComfirm = () => {
+    setLoading(true);
     const formData = new FormData();
     switch (typeKey) {
       // 导入
@@ -64,10 +66,14 @@ export const OperationModal: React.FC<
         fileList.forEach((file) => {
           formData.append('file', file);
         });
-        importStudent(formData).then(() => {
-          message.success('导入成功');
-          props.onCancel(true);
-        });
+        importStudent(formData)
+          .then(() => {
+            message.success('导入成功');
+            props.onCancel(true);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
         break;
 
       // 导出
@@ -91,6 +97,7 @@ export const OperationModal: React.FC<
       visible={props.visible}
       onOk={onComfirm}
       destroyOnClose
+      confirmLoading={loading}
       onCancel={() => props.onCancel()}
       {...modalConfig}
     >

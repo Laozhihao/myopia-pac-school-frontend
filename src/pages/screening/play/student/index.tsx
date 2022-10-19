@@ -18,6 +18,9 @@ import { getschoolGrade } from '@/api/school';
 import { getScreeningStudentList } from '@/api/screen/student';
 import { history } from 'umi';
 import { DetailModal } from './modal/detail/index';
+import { StandardModal } from '../../result/modal/standard-modal';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import styles from './index.less';
 
 const TableList: React.FC = () => {
   const [searchForm, setSearchForm] = useState({}); // 搜索表单项
@@ -32,6 +35,7 @@ const TableList: React.FC = () => {
   });
 
   const [isHasScreeningStudent, setIsHasScreeningStudent] = useState(false);
+  const [standardModalVisible, setStandardModalVisible] = useState(false); // 判断标准
 
   const [ItemOptions, setItemOptions] = useState<
     Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
@@ -95,6 +99,13 @@ const TableList: React.FC = () => {
     history.push(`/student/file?id=${record.id}&studentId=${record?.studentId}`);
   };
 
+  /**
+   * @desc 判断标准
+   */
+  const onShowStandard = () => {
+    setStandardModalVisible(true);
+  };
+
   const columns: ProColumns<API.ScreeningStudentListItem>[] = [
     ...listColumns,
     {
@@ -150,9 +161,16 @@ const TableList: React.FC = () => {
             x: 'max-content',
           }}
           headerTitle={
-            <span style={{ color: 'rgba(0,0,0,0.45)', fontSize: 14 }}>
-              数据完整性：数据完整情况下才会对此学生进行视力相关统计分析，如视力低下情况、近视情况等
-            </span>
+            <p style={{ fontSize: 14 }}>
+              <span style={{ color: 'rgba(0,0,0,0.45)' }}>
+                数据完整性：数据完整情况下才会对此学生进行视力相关统计分析，如视力低下情况、近视情况等
+              </span>
+
+              <span className={styles.judge_standard} onClick={onShowStandard}>
+                <InfoCircleOutlined style={{ color: '#096DD9' }} />
+                判断标准
+              </span>
+            </p>
           }
           toolBarRender={() => [
             screeningBizType === '1' && isHasScreeningStudent ? (
@@ -183,6 +201,10 @@ const TableList: React.FC = () => {
         {...detailInfo}
         onCancel={() => setDetailInfo((s) => ({ ...s, visible: false, currentRow: {} }))}
       />
+      <StandardModal
+        visible={standardModalVisible}
+        onCancel={() => setStandardModalVisible(false)}
+      ></StandardModal>
     </PageContainer>
   );
 };

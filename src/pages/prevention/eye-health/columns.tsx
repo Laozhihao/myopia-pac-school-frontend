@@ -63,15 +63,11 @@ export const listColumns = (
       render: (text, record) => {
         return (
           <Space direction="vertical">
-            {text ? (
+            {text || record?.isHaveReport ? (
               <p>
-                {text ? '专业医疗机构复查' : ''}{' '}
+                {text ? <span className={styles.mgr15}>专业医疗机构复查</span> : null}
                 {record?.isHaveReport ? (
-                  <Tag
-                    icon={<CheckCircleOutlined />}
-                    color="processing"
-                    className={styles.sign_tag}
-                  >
+                  <Tag icon={<CheckCircleOutlined />} color="processing">
                     已就诊
                   </Tag>
                 ) : null}

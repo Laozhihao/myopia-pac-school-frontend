@@ -1,6 +1,6 @@
 import { CheckCircleOutlined } from '@ant-design/icons';
 import type { ProColumns } from '@ant-design/pro-table';
-import { Space, Tag } from 'antd';
+import { Tag } from 'antd';
 import styles from './index.less';
 import IconFont from '@/components/IconFont';
 
@@ -43,7 +43,7 @@ export const listColumns = (
     {
       title: '视力情况',
       dataIndex: 'wearingGlasses',
-      renderText: (val, record) => `${val} ${record?.lowVision}`,
+      renderText: (val, record) => `${val ?? ''} ${record?.lowVision ?? ''}`,
     },
     {
       title: '屈光情况',
@@ -62,26 +62,24 @@ export const listColumns = (
       dataIndex: 'isRecommendVisit',
       render: (text, record) => {
         return (
-          <Space direction="vertical">
-            {text || record?.isHaveReport ? (
-              <p>
-                {text ? <span className={styles.mgr15}>专业医疗机构复查</span> : null}
-                {record?.isHaveReport ? (
-                  <Tag icon={<CheckCircleOutlined />} color="processing">
-                    已就诊
-                  </Tag>
-                ) : null}
+          <div className={styles.flex}>
+            <div>
+              {text ? <p>专业医疗机构复查</p> : null}
+              <p
+                style={{ color: record?.height ? '#096DD9' : 'rgba(0,0,0,0.25)' }}
+                className={styles.proposal}
+                onClick={() => (record?.seatSuggest ? onShowProposal?.(record) : null)}
+              >
+                <IconFont type="icon-a-Group1000005898" style={{ marginRight: 5 }} />
+                课桌椅座位建议
               </p>
+            </div>
+            {record?.isHaveReport ? (
+              <Tag icon={<CheckCircleOutlined />} className={styles.tag} color="processing">
+                已就诊
+              </Tag>
             ) : null}
-            <p
-              style={{ color: record?.height ? '#096DD9' : 'rgba(0,0,0,0.25)' }}
-              className={styles.proposal}
-              onClick={() => (record?.seatSuggest ? onShowProposal?.(record) : null)}
-            >
-              <IconFont type="icon-a-Group1000005898" style={{ marginRight: 5 }} />
-              课桌椅座位建议
-            </p>
-          </Space>
+          </div>
         );
       },
     },

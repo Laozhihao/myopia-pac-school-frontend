@@ -1,23 +1,21 @@
 import type { ProColumns } from '@ant-design/pro-table';
-import { EMPTY, MYOPIAWARNOPTION, TABLESEXOPTION } from '@/utils/constant';
-import { visionColumn } from '@/utils/columns';
-import { getShowIdCardText, getShowPassportText } from '@/utils/common';
-import { Button, Badge } from 'antd';
-import { history } from 'umi';
+import { EMPTY, MYOPIAWARNOPTION } from '@/utils/constant';
+import { Badge } from 'antd';
+import { correctionOption } from '@/utils/form-constant';
 
 export const listColumns: ProColumns<API.StudentListItem>[] = [
   {
     title: '学号',
     dataIndex: 'sno',
+    fixed: 'left',
+  },
+  {
+    title: '学年',
+    dataIndex: 'yearStr',
   },
   {
     title: '姓名',
     dataIndex: 'name',
-  },
-  {
-    title: '性别',
-    dataIndex: 'gender',
-    valueEnum: TABLESEXOPTION,
   },
   {
     title: '年级-班级',
@@ -25,12 +23,18 @@ export const listColumns: ProColumns<API.StudentListItem>[] = [
     renderText: (val: string, record) => `${val}-${record?.className}`,
   },
   {
-    title: '身份证号/护照号',
-    dataIndex: 'idCard',
-    renderText: (val: string, record) =>
-      val ? getShowIdCardText(val) : getShowPassportText(record?.passport),
+    title: '视力情况',
+    dataIndex: 'vision',
   },
-  ...visionColumn,
+  {
+    title: '屈光情况',
+    dataIndex: 'refraction',
+  },
+  {
+    title: '近视矫正',
+    dataIndex: 'correction',
+    valueEnum: correctionOption,
+  },
   {
     title: '视力预警',
     dataIndex: 'visionLabel',
@@ -41,28 +45,5 @@ export const listColumns: ProColumns<API.StudentListItem>[] = [
       ) : (
         EMPTY
       ),
-  },
-  {
-    title: '筛查次数',
-    dataIndex: 'screeningCount',
-    renderText: (val: number, record) => (
-      <Button
-        type="link"
-        onClick={() =>
-          history.push(`student/file?id=${record?.id}&studentId=${record?.studentId}&tabKey=2`)
-        }
-      >
-        {val || 0}
-      </Button>
-    ),
-  },
-  {
-    title: '最新筛查日期',
-    dataIndex: 'lastScreeningTime',
-    valueType: 'date',
-  },
-  {
-    title: '医院就诊',
-    dataIndex: 'numOfVisits',
   },
 ];

@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import type { ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import type { ProColumns } from '@ant-design/pro-table';
-import { listColumns } from './columns';
+import styles from './index.less';
+import moment from 'moment';
+import { ScreeningRecordColumns } from './columns';
 import { history, useRequest } from 'umi';
-import { Tabs, Card, message } from 'antd';
+import { Tabs, Card, message, Pagination, Spin, Space, Row, Tag, Table, Col, Button } from 'antd';
 import { editStudentInfo } from '@/api/student';
 import DynamicForm from '@/components/DynamicForm';
 import LazyCascader from '@/pages/components/lazy-cascader';
@@ -17,9 +16,9 @@ import { getStudentDetail, getStudentScreen } from '@/api/student';
 import { getCascaderOption } from '@/hook/district';
 import { getschoolGrade } from '@/api/school';
 import { DetailModal } from '@/pages/screening/play/student/modal/detail';
-import { EMPTY } from '@/utils/constant';
-import DynamicButtonGroup from '@/components/DynamicButtonGroup';
-import SwitchableButton from '@/components/SwitchableButton';
+import { DATE } from '@/utils/constant';
+import { formatLength } from '@/utils/common';
+import type { ScreeningStudentRecordType } from './columns';
 
 const { TabPane } = Tabs;
 export type FileCardPropsParams = {
@@ -40,6 +39,16 @@ const FileList: React.FC = () => {
 
   const [areaOption, setAreaOption] = useState<any[]>();
   const [addressFlag, setAddressFlag] = useState(true); // 详细地址标志位
+  const [allTotal, setAllTotal] = useState(1); // 总页数
+  const [pageInfo, setPageInfo] = useState<{ current?: number; pageSize?: number }>({
+    current: 1,
+    pageSize: 10,
+  }); // 页数和条数
+  const [activeKey, setActiveKey] = useState(
+    history?.location?.query?.tabKey ? history?.location?.query?.tabKey.toString() : '1',
+  );
+  const [loading, setLoading] = useState(false);
+  const [screeningRecord, setScreeningRecord] = useState([]);
 
   const [detailInfo, setDetailInfo] = useState<API.ModalDataType>({
     visible: false,
@@ -50,13 +59,12 @@ const FileList: React.FC = () => {
   const [studentForm, setStudentForm] = useState<API.PropsType>(
     studentFormOptions(undefined, 2, formRef),
   );
-  const actionRef = useRef<ActionType>();
-  const { query: { id, studentId } = {} } = history.location; // id studentId
+  const { query: { id } = {} } = history.location; // id
 
   /**
    * @desc 查看详情
    */
-  const onDetail = (record: API.FileListItem) => {
+  const onDetail = (record: ScreeningStudentRecordType) => {
     setDetailInfo((s) => ({
       ...s,
       visible: true,
@@ -65,6 +73,22 @@ const FileList: React.FC = () => {
         screeningPlanId: record?.planId,
       },
     }));
+  };
+
+  /**
+   * @desc 分页查询
+   */
+  const onCurrentScreeningRecord = async (current: number, size: number) => {
+    setLoading(true);
+    const parm = {
+      current,
+      size,
+    };
+    const { data } = await getStudentScreen(id as string, parm).finally(() => {
+      setLoading(false);
+    });
+    setScreeningRecord(data?.records);
+    setAllTotal(data?.total);
   };
 
   /**
@@ -116,34 +140,6 @@ const FileList: React.FC = () => {
     showReport(parmUrl);
   };
 
-  const columns: ProColumns<API.FileListItem>[] = [
-    ...listColumns,
-    {
-      title: '操作',
-      dataIndex: 'option',
-      valueType: 'option',
-      width: 200,
-      render: (_, record) => {
-        return [
-          <DynamicButtonGroup key="operator">
-            <SwitchableButton key="print" icon="icon-Printer" onClick={() => onMonitor(record)}>
-              打印档案卡
-            </SwitchableButton>
-            <SwitchableButton
-              key="detail"
-              icon="icon-a-Group1000006854"
-              disabled={!record?.hasScreening}
-              tooltip={!record?.hasScreening ? '当前没有筛查数据' : ''}
-              onClick={() => onDetail(record)}
-            >
-              查看详情
-            </SwitchableButton>
-          </DynamicButtonGroup>,
-        ];
-      },
-    },
-  ];
-
   /**
    * @desc 初始化数据
    */
@@ -181,8 +177,10 @@ const FileList: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    id && run(id as string);
-  }, []);
+    if (activeKey === '1') {
+      id && run(id as string);
+    } else onCurrentScreeningRecord(1, 10);
+  }, [activeKey]);
 
   /**
    * @desc 更改基本资料
@@ -199,7 +197,6 @@ const FileList: React.FC = () => {
     const parm = {
       ...value,
       id,
-      studentId,
       gradeId,
       classId,
       provinceCode,
@@ -221,14 +218,22 @@ const FileList: React.FC = () => {
     !value.length && formRef?.current?.setFieldsValue({ address: '' });
   };
 
+  /**
+   * @desc 分页器修改
+   */
+  const onPageChange = (page: number, size: number) => {
+    const { pageSize } = pageInfo;
+    setPageInfo({
+      current: pageSize === size ? page : 1,
+      pageSize: size,
+    });
+    onCurrentScreeningRecord(pageSize === size ? page : 1, size);
+  };
+
   return (
     <PageContainer>
       <Card>
-        <Tabs
-          defaultActiveKey={
-            history?.location?.query?.tabKey ? history?.location?.query?.tabKey.toString() : '1'
-          }
-        >
+        <Tabs activeKey={activeKey} onTabClick={(key) => setActiveKey(key)}>
           <TabPane tab="基本资料" key="1" forceRender={true}>
             <ProForm
               formRef={formRef}
@@ -264,37 +269,82 @@ const FileList: React.FC = () => {
             </ProForm>
           </TabPane>
           <TabPane tab="筛查记录" key="2">
-            <ProTable<API.FileListItem, API.PageParams>
-              actionRef={actionRef}
-              rowKey="resultId"
-              search={false}
-              pagination={{ pageSize: 10 }}
-              options={false}
-              columnEmptyText={EMPTY}
-              scroll={{
-                x: 'max-content',
-              }}
-              columnsStateMap={{
-                screeningDate: {
-                  fixed: 'left',
-                },
-                option: {
-                  fixed: 'right',
-                },
-              }}
-              request={async () => {
-                const datas = studentId ? await getStudentScreen(studentId as string) : undefined;
-                return {
-                  data:
-                    datas?.data.records.filter(
-                      (item: API.ObjectType) => !item.screenType && item,
-                    ) || [],
-                  success: true,
-                  total: datas?.data.total || 0,
-                };
-              }}
-              columns={columns}
-            />
+            <Spin spinning={loading}>
+              {screeningRecord?.length ? (
+                <>
+                  {screeningRecord?.map((item: ScreeningStudentRecordType) => (
+                    <React.Fragment key={item?.resultId}>
+                      <div>
+                        <p className={styles.title}>
+                          筛查日期：{moment(item?.screeningDate).format(DATE)}
+                        </p>
+                        <Row justify="space-between">
+                          <Col>
+                            <Space size={12}>
+                              <Tag
+                                color={item?.screeningType ? 'error' : 'warning'}
+                                className={styles.vision_tag}
+                                style={{ borderColor: 'ivory' }}
+                              >
+                                {item?.screeningType ? '常见病筛查' : '视力筛查'}
+                              </Tag>
+                              <Tag color={item.isDoubleScreen ? 'orange' : 'green'}>
+                                {item.isDoubleScreen ? '复测' : '初筛'}
+                              </Tag>
+                              <span>筛查编号：{item?.screeningCode}</span>
+                              <span>筛查标题：{formatLength(item?.screeningTitle)}</span>
+                              <span>筛查机构：{formatLength(item?.screeningOrgName)}</span>
+                            </Space>
+                          </Col>
+                          <Col>
+                            <Space>
+                              {item?.hasScreening ? (
+                                <Button
+                                  key="detail"
+                                  type="primary"
+                                  ghost
+                                  onClick={() => onDetail(item)}
+                                >
+                                  查看详情
+                                </Button>
+                              ) : null}
+                              <Button
+                                key="print"
+                                type="primary"
+                                ghost
+                                onClick={() => onMonitor(item)}
+                              >
+                                档案卡
+                              </Button>
+                            </Space>
+                          </Col>
+                        </Row>
+                      </div>
+                      <Table
+                        columns={ScreeningRecordColumns(item)}
+                        dataSource={item?.details?.vision}
+                        pagination={false}
+                        className={styles.table}
+                        rowKey="lateriality"
+                        scroll={{
+                          x: 'max-content',
+                        }}
+                      ></Table>
+                    </React.Fragment>
+                  ))}
+                  <Pagination
+                    current={pageInfo?.current}
+                    pageSize={pageInfo?.pageSize}
+                    total={allTotal}
+                    style={{ textAlign: 'right' }}
+                    showTotal={(total, range) => `第 ${range[0]}-${range[1]} 条/总共 ${total} 条`}
+                    onChange={onPageChange}
+                  />
+                </>
+              ) : (
+                <span>暂无数据</span>
+              )}
+            </Spin>
           </TabPane>
         </Tabs>
       </Card>

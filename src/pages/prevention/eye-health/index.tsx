@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { Button, Card } from 'antd';
+import React, { useState, useRef, useMemo } from 'react';
+import { Badge, Button, Card, message, Modal, Space } from 'antd';
 import DynamicButtonGroup from '@/components/DynamicButtonGroup';
 import SwitchableButton from '@/components/SwitchableButton';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -9,26 +9,52 @@ import type { ProFormInstance } from '@ant-design/pro-form';
 import DynamicForm from '@/components/DynamicForm';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { listColumns } from './columns';
-import { deleteRedundantData } from '@/utils/common';
+import type { PreventionEyeHealthType } from './columns';
+import { convertData, deleteRedundantData } from '@/utils/common';
 import { EMPTY } from '@/utils/constant';
-import { getScreeningList } from '@/api/screen/plan';
 import { FormItemOptions } from './form-item';
 import { TableListCtx } from '@/hook/ant-config';
 import { ExportModal } from '@/pages/components/export-modal';
+import {
+  getAllGradeList,
+  getExportEyeHealthData,
+  getPreventionEyeHealthList,
+} from '@/api/prevention/eye-health';
+import { history } from 'umi';
 
 const TableList: React.FC = () => {
   const [searchForm, setSearchForm] = useState({}); // 搜索表单项
-  const [exportVisible, setExportVisible] = useState(false);
+  const [exportVisible, setExportVisible] = useState(false); // 导出弹窗判断标准
+  const [proposalInfo, setProposalInfo] = useState<API.ModalDataType>({
+    visible: false,
+    currentRow: {},
+  }); // 课座椅弹窗
+  const [ItemOptions, setItemOptions] = useState(FormItemOptions);
 
   const tableRef = useRef<ActionType>();
   const ref = useRef<ProFormInstance>();
+
+  useMemo(async () => {
+    const { data = [] } = await getAllGradeList();
+    setItemOptions((s) => ({
+      ...s,
+      listTypeInfo: { ...s.listTypeInfo, gradeOptions: convertData(data) },
+    }));
+  }, []);
 
   /**
    * @desc 搜索
    */
   const onSearch = () => {
     const formVal = ref?.current?.getFieldsFormatValue?.();
-    setSearchForm(deleteRedundantData({ ...formVal, [formVal?.select]: formVal?.input }));
+    const [gradeId, classId] = formVal?.gradeIds || [];
+    setSearchForm(
+      deleteRedundantData({ ...formVal, [formVal?.select]: formVal?.input, gradeId, classId }, [
+        'select',
+        'input',
+        'gradeIds',
+      ]),
+    );
     tableRef?.current?.reloadAndRest?.();
   };
 
@@ -41,21 +67,44 @@ const TableList: React.FC = () => {
     tableRef?.current?.reloadAndRest?.();
   };
 
-  const onExport = () => {
+  /**
+   * @desc 导出
+   */
+  const onExport = async () => {
     setExportVisible(false);
-    // todo 导出
+    await getExportEyeHealthData();
+    message.success('操作成功，请留意站内信!');
   };
 
-  const columns: ProColumns<API.ScreenListItem>[] = [
-    ...listColumns,
+  /**
+   * @desc 课座椅建议
+   */
+  const showProposal = (record: PreventionEyeHealthType) => {
+    setProposalInfo({ visible: true, currentRow: record });
+  };
+
+  /**
+   * @desc 学生档案
+   */
+  const onJumpArchives = (record: PreventionEyeHealthType) => {
+    history.push(`/student/file?id=${record.schoolStudentId}&studentId=${record?.studentId}`);
+  };
+
+  const columns: ProColumns<PreventionEyeHealthType>[] = [
+    ...listColumns(showProposal),
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: () => {
+      fixed: 'right',
+      render: (_, record) => {
         return [
           <DynamicButtonGroup key="operator">
-            <SwitchableButton key="student" icon="icon-a-Group120">
+            <SwitchableButton
+              key="student"
+              icon="icon-Frame-1"
+              onClick={() => onJumpArchives(record)}
+            >
               学生档案
             </SwitchableButton>
           </DynamicButtonGroup>,
@@ -73,44 +122,42 @@ const TableList: React.FC = () => {
       >
         <Card className="pro-form-card">
           <ProForm layout="horizontal" formRef={ref} submitter={false}>
-            <DynamicForm {...FormItemOptions} onSearch={onSearch} onReset={onReset} />
+            <DynamicForm {...ItemOptions} onSearch={onSearch} onReset={onReset} />
           </ProForm>
         </Card>
-        <ProTable<API.ScreenListItem, API.PageParams>
-          rowKey="planId"
+        <ProTable<PreventionEyeHealthType, API.PageParams>
+          rowKey="schoolStudentId"
           search={false}
+          bordered={false}
           pagination={{ pageSize: 10 }}
           options={false}
           actionRef={tableRef}
           columnEmptyText={EMPTY}
+          headerTitle={
+            <span style={{ color: 'rgba(0,0,0,0.45)', fontSize: 14 }}>
+              视力预警为0-3级预警的学生才会进入眼健康中心进行防控干预等
+            </span>
+          }
           toolBarRender={() => [
             <Button type="primary" onClick={() => setExportVisible(true)}>
               导出
             </Button>,
           ]}
           request={async (params) => {
-            const datas = await getScreeningList({
+            const { data = {} } = await getPreventionEyeHealthList({
               ...searchForm,
               current: params.current,
               size: params.pageSize,
             });
             return {
-              data: datas.data.records,
+              data: data?.records,
               success: true,
-              total: datas.data.total,
+              total: data?.total,
             };
           }}
           columns={columns}
           scroll={{
-            x: '100vw',
-          }}
-          columnsStateMap={{
-            name: {
-              fixed: 'left',
-            },
-            option: {
-              fixed: 'right',
-            },
+            x: 'max-content',
           }}
         />
       </TableListCtx.Provider>
@@ -124,6 +171,24 @@ const TableList: React.FC = () => {
       >
         <p style={{ margin: '10px 0 22px' }}>导出内容：眼健康数据中心表</p>
       </ExportModal>
+      <Modal
+        visible={proposalInfo?.visible}
+        footer={null}
+        onCancel={() => setProposalInfo({ visible: false })}
+        centered={true}
+      >
+        <Space direction="vertical" size={12}>
+          <p>身高： {proposalInfo?.currentRow?.height} cm</p>
+          <p>课桌： {proposalInfo?.currentRow?.desk}</p>
+          <p>课椅： {proposalInfo?.currentRow?.chair} </p>
+          {proposalInfo?.currentRow?.haveBlackboardDistance ? (
+            <p>
+              <Badge status="success" />
+              座位与黑板相距5-6米{' '}
+            </p>
+          ) : null}
+        </Space>
+      </Modal>
     </PageContainer>
   );
 };

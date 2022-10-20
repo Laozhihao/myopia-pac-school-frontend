@@ -214,6 +214,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       screeningPlanId: props?.currentRow?.planId,
       type,
       planStudentIds: studentIds.join(','),
+      isSchoolClient: true,
     };
     setLoading(true);
     // 告知书

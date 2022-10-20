@@ -23,6 +23,11 @@ export default [
     path: '/screening',
     routes: [
       {
+        path: '/screening/notice',
+        component: './screening/notice',
+        name: '筛查通知',
+      },
+      {
         path: '/screening/play',
         component: './screening/play',
         name: '筛查计划',
@@ -46,11 +51,11 @@ export default [
     icon: 'project',
     path: '/prevention',
     routes: [
-      // {
-      //   name: '眼健康中心',
-      //   path: '/prevention/eye-health',
-      //   component: './prevention/eye-health',
-      // },
+      {
+        name: '眼健康中心',
+        path: '/prevention/eye-health',
+        component: './prevention/eye-health',
+      },
       {
         name: '视力小队',
         path: '/prevention/vision',

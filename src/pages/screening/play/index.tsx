@@ -128,6 +128,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      fixed: 'right',
       render: (_, record) => {
         return [
           <DynamicButtonGroup key="operator">
@@ -237,15 +238,7 @@ const TableList: React.FC = () => {
           }}
           columns={columns}
           scroll={{
-            x: '100vw',
-          }}
-          columnsStateMap={{
-            name: {
-              fixed: 'left',
-            },
-            option: {
-              fixed: 'right',
-            },
+            x: 'max-content',
           }}
         />
       </TableListCtx.Provider>

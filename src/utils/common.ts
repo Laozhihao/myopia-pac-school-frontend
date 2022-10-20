@@ -1,5 +1,6 @@
 import { EMPTY } from '@/utils/constant';
 import type { Rule } from 'antd/lib/form';
+
 /**
  * @desc 数据转成form data格式
  * @param params 需要转的对象
@@ -19,7 +20,7 @@ export function toFormData(params: Record<string, any>): FormData {
  * @desc 截取字符长度
  */
 
-export const formatLength = (val: string, length = 15) =>
+export const formatLength = (val?: string, length = 15) =>
   val && val.length > length ? `${val.substr(0, length)}...` : val;
 
 /**
@@ -63,7 +64,7 @@ export function getTotalNumber(arr: any[]) {
  * @param {number} num - 数据
  * @param {number} digit - 保留几位小数
  */
-export const getFixedNum = (num: number | string, digit = 2) => Number(num).toFixed(digit);
+export const getFixedNum = (num: React.Key, digit = 2) => Number(num).toFixed(digit);
 
 /**
  * @desc 获取保留指定位数的小数点数据，默认保留两位 加上单位

@@ -5,6 +5,8 @@ import moment from 'moment';
 import { isNotEmpty } from '@vistel/vistel-utils/lib/tool';
 import { Badge } from 'antd';
 import { SCREENTYPEOPTIONS } from '@/utils/form-constant';
+import IconFont from '@/components/IconFont';
+import styles from './index.less';
 
 export const listColumns: (show: (dom: any) => void) => ProColumns[] = (show) => [
   {
@@ -16,7 +18,18 @@ export const listColumns: (show: (dom: any) => void) => ProColumns[] = (show) =>
     title: '筛查标题',
     dataIndex: 'title',
     render: (_, record) => {
-      return <p title={record?.title}>{record?.title ? formatLength(record?.title) : EMPTY}</p>;
+      return (
+        <p title={record?.title} className={styles.center}>
+          <IconFont
+            type="icon-icon-quyu-16"
+            style={{
+              fontSize: 30,
+              visibility: record.srcScreeningNoticeId !== 0 ? 'visible' : 'hidden',
+            }}
+          />
+          {record?.title ? formatLength(record?.title) : EMPTY}
+        </p>
+      );
     },
   },
   {

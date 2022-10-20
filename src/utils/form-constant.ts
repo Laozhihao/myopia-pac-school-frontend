@@ -14,13 +14,6 @@ export const SCREENSELECTOPTIONS = {
 export const STUDENTSELECTOPTIONS = {
   sno: '学号',
   name: '姓名',
-  idCardOrPassportLike: '身份证/护照号',
-};
-
-// 筛查学生列表
-export const SCREENINGSTUDENTOPTIONS = {
-  sno: '学号',
-  name: '姓名',
 };
 
 // 筛查类型
@@ -45,14 +38,49 @@ export const SITUATIONOPTION = [
   { label: '6岁', value: 12 },
 ];
 
-// 眼健康中心
-export const EYEHEALTHYOPTION = {
-  sno: '学号',
-  name: '姓名',
+// 机构复查
+export const INSTITUTIONALREVIEWOPTION = [
+  { label: '已就诊', value: true },
+  { label: '未就诊', value: false },
+];
+
+export const spineOption = [
+  { label: '胸段侧弯', key: 'chest' },
+  { label: '腰部侧弯', key: 'waist' },
+  { label: '胸腰段侧弯', key: 'chestWaist' },
+  {
+    label: '前后弯曲',
+    key: 'entirety',
+  },
+];
+export const spineLevel = {
+  1: 'I',
+  2: 'II',
+  3: 'III',
+};
+export const spineType = {
+  1: '无侧弯',
+  2: '左低右高',
+  3: '右低左高',
 };
 
-// 机构复查
-export const INSTITUTIONALREVIEWOPTION = {
-  1: '已就诊',
-  2: '未就诊',
+// 前后弯曲
+export const entiretySpineType = {
+  1: '无前后弯曲异常',
+  2: '平背',
+  3: '前凸异常',
+  4: '后凸异常',
+};
+
+// 隐私项
+export const privacyOption = {
+  0: '首次遗精',
+  1: '首次月经',
+};
+
+export const correctionOption = {
+  0: '正常',
+  1: '未矫',
+  2: '欠矫',
+  3: '足娇',
 };

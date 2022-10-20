@@ -10,7 +10,7 @@ export default {
   dev: {
     '/api': {
       target: 'https://s-myopia-pac.tulab.cn/school/api',
-      // target: 'http://192.168.2.163:8000',
+      // target: 'http://192.168.50.219:8000',
       changeOrigin: true,
       pathRewrite: {
         '^/api': '',

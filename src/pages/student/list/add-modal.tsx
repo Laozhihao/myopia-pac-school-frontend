@@ -102,6 +102,7 @@ export const AddModal: React.FC<API.ModalItemType & { option: any[] }> = (props)
       visible={props.visible}
       onFinish={onConfirm}
       layout="vertical"
+      isKeyPressSubmit={false}
       modalProps={{
         ...modalConfig,
         destroyOnClose: true,

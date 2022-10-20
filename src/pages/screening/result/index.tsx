@@ -12,7 +12,7 @@ import {
 } from './columns';
 import ProTable from '@ant-design/pro-table';
 import type { ProColumns } from '@ant-design/pro-table';
-import { InfoCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import { history } from 'umi';
 import { AddModal } from './add-modal';
 import { NoticeReport } from './notice-report/index';
@@ -198,9 +198,9 @@ const ScreeningResult: React.FC = () => {
     });
   };
 
-  // const onWarning = () => {
-  //   history.push('/prevention/eye-health');
-  // };
+  const onWarning = () => {
+    history.push('/prevention/eye-health');
+  };
 
   const showNoticeReport = () => {
     const user = initialState?.currentUser;
@@ -251,20 +251,20 @@ const ScreeningResult: React.FC = () => {
             <TabPane tab={item.label} key={item.key}>
               <div className={styles.btn}>
                 <Space>
-                  {/* <Button type="primary" ghost onClick={onWarning}>
+                  <Button type="primary" ghost onClick={onWarning}>
                     预警跟踪
-                  </Button> */}
+                  </Button>
+                  <Button type="primary" onClick={() => showNoticeReport()} ghost>
+                    结果通知书
+                  </Button>
+                  <Button type="primary" onClick={() => onExportArchives()} ghost>
+                    {!schoolDetail?.screeningType ? '档案卡' : '监测表'}
+                  </Button>
                   <Button type="primary" onClick={() => onExport(0)} ghost>
                     筛查报告
                   </Button>
                   <Button type="primary" onClick={() => onExport(1)} ghost>
                     筛查数据
-                  </Button>
-                  <Button type="primary" onClick={() => onExportArchives()} ghost>
-                    {!schoolDetail?.screeningType ? '档案卡' : '监测表'}
-                  </Button>
-                  <Button type="primary" onClick={() => showNoticeReport()} ghost>
-                    结果通知书
                   </Button>
                 </Space>
               </div>
@@ -272,15 +272,13 @@ const ScreeningResult: React.FC = () => {
                 {(ActiveKey === '8' ? childTableOptions : teenagersTableOptions).map(
                   (activeItem) => (
                     <Fragment key={activeItem.key}>
-                      <p className={styles.title}>
+                      <p
+                        className={styles.title}
+                        onClick={() =>
+                          showModal({ tabKey: activeItem.key, title: activeItem.title })
+                        }
+                      >
                         {activeItem.title}
-                        <span
-                          onClick={() =>
-                            showModal({ tabKey: activeItem.key, title: activeItem.title })
-                          }
-                        >
-                          <QuestionCircleOutlined style={{ marginLeft: 5 }} />
-                        </span>
                         <span className={styles.subTitle}>{activeItem.subTitle}</span>
                       </p>
                       {activeItem.columns.map(

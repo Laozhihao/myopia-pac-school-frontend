@@ -6,7 +6,7 @@ import type { ProColumns } from '@ant-design/pro-table';
 const defaultColumns: ProColumns<API.FileDetailItem>[] = [
   {
     title: '',
-    width: 150,
+    width: 120,
     dataIndex: 'eyeType',
     render: (text) => {
       return <span>{text ? '右眼' : '左眼'}</span>;
@@ -45,7 +45,7 @@ export const optometryColumns: ProColumns<API.FileDetailItem>[] = [
 ];
 
 // 生物测量 columns
-export const biometryColumns: ProColumns<API.FileDetailItem>[] = [
+export const biometryColumns1: ProColumns<API.FileDetailItem>[] = [
   ...defaultColumns,
   {
     title: '角膜前表面曲率K1',
@@ -63,6 +63,14 @@ export const biometryColumns: ProColumns<API.FileDetailItem>[] = [
     title: '角膜直径WTW',
     dataIndex: 'wtw',
   },
+  // {
+  //   title: '眼轴总长度AL',
+  //   dataIndex: 'al',
+  // },
+];
+// 生物测量2 columns
+export const biometryColumns2: ProColumns<API.FileDetailItem>[] = [
+  ...defaultColumns,
   {
     title: '眼轴总长度AL',
     dataIndex: 'al',
@@ -134,36 +142,36 @@ export const inspectType: API.FileDetailInspectItem[] = [
   {
     title: '视力检查',
     dataIndex: 'visionData',
-    columns: visionColumns,
+    columns: [visionColumns],
   },
   {
     title: '电脑验光',
     dataIndex: 'computerOptometryData',
-    columns: optometryColumns,
+    columns: [optometryColumns],
   },
   {
     title: '身高体重',
     dataIndex: 'heightAndWeightData',
-    columns: heightAndWeightColumns,
+    columns: [heightAndWeightColumns],
   },
   {
     title: '生物测量',
     dataIndex: 'biometricData',
-    columns: biometryColumns,
+    columns: [biometryColumns1, biometryColumns2],
   },
   {
     title: '小瞳验光',
     dataIndex: 'pupilOptometryData',
-    columns: optometryColumns,
+    columns: [optometryColumns],
   },
   {
     title: '眼压',
     dataIndex: 'eyePressureData',
-    columns: eyePressureColumns,
+    columns: [eyePressureColumns],
   },
   {
     title: '其他',
     dataIndex: 'otherData',
-    columns: othersColumns,
+    columns: [othersColumns],
   },
 ];

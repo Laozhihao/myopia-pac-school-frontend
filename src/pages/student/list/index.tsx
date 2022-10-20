@@ -1,5 +1,5 @@
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, message, Card } from 'antd';
+import { Button, Card } from 'antd';
 import React, { useState, useRef, useMemo } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProFormInstance } from '@ant-design/pro-form';
@@ -10,14 +10,14 @@ import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { AddModal } from './add-modal';
 import { OperationModal } from './operation-modal';
 import { listColumns } from './columns';
-import { deleteTableRow } from '@/hook/table';
+// import { deleteTableRow } from '@/hook/table';
 import { getschoolGrade } from '@/api/school';
-import { getStudentList, deleteStudentInfo } from '@/api/student';
+import { getStudentList, getStudentFormItemList } from '@/api/student';
 import { EMPTY } from '@/utils/constant';
 import SwitchableButton from '@/components/SwitchableButton';
 import { FormItemOptions } from './form-item';
 import DynamicButtonGroup from '@/components/DynamicButtonGroup';
-import { convertData } from '@/utils/common';
+import { convertData, deleteRedundantData } from '@/utils/common';
 import { TableListCtx } from '@/hook/ant-config';
 import { history } from 'umi';
 
@@ -39,11 +39,25 @@ const TableList: React.FC = () => {
    * @desc 获取年级班级
    */
   useMemo(async () => {
-    const { data = [] } = await getschoolGrade();
-    setGradeOption(data);
+    const [gradeList, formItemList] = await Promise.all([
+      getschoolGrade(),
+      getStudentFormItemList(),
+    ]);
+    const { data: gradeListOption } = gradeList;
+    const {
+      data: { glassesTypeList, refractionTypeList, visionTypeList, yearList },
+    } = formItemList;
+
+    setGradeOption(gradeListOption);
     setItemOptions((s) => ({
       ...s,
-      listTypeInfo: { ...s.listTypeInfo, gradeOptions: convertData(data) },
+      listTypeInfo: {
+        gradeOptions: convertData(gradeListOption),
+        glassesTypeList,
+        refractionTypeList,
+        visionTypeList,
+        yearList,
+      },
     }));
   }, []);
 
@@ -70,31 +84,36 @@ const TableList: React.FC = () => {
   const onSearch = () => {
     const formVal = ref?.current?.getFieldsFormatValue?.();
     const [gradeId, classId] = formVal?.gradeName || [];
-    setSearchForm({
-      gradeId,
-      classId,
-      [formVal?.select]: formVal?.input,
-      visionLabel: formVal?.visionLabel,
-    });
+    setSearchForm(
+      deleteRedundantData(
+        {
+          ...formVal,
+          gradeId,
+          classId,
+          [formVal?.select]: formVal?.input,
+        },
+        ['select', 'input', 'gradeName'],
+      ),
+    );
     tableRef?.current?.reloadAndRest?.();
   };
 
   /**
    * @desc 删除
    */
-  const onDelete = (row: API.StudentListItem | undefined) => {
-    deleteTableRow('该学生数据', async () => {
-      await deleteStudentInfo(row?.id!);
-      message.success('删除成功');
-      onSearch();
-    });
-  };
+  // const onDelete = (row: API.StudentListItem | undefined) => {
+  //   deleteTableRow('该学生数据', async () => {
+  //     await deleteStudentInfo(row?.id!);
+  //     message.success('删除成功');
+  //     onSearch();
+  //   });
+  // };
 
   /**
    * @desc 跳转档案管理
    */
   const onJumpArchives = (record: API.StudentListItem) => {
-    history.push(`/student/file?id=${record.id}&studentId=${record?.studentId}`);
+    history.push(`/student/file?id=${record.id}`);
   };
 
   /**
@@ -113,7 +132,7 @@ const TableList: React.FC = () => {
       valueType: 'option',
       render: (_, record) => [
         <DynamicButtonGroup key="operator">
-          <Button
+          {/* <Button
             type="link"
             onClick={() => {
               onAdd(record);
@@ -123,13 +142,13 @@ const TableList: React.FC = () => {
           </Button>
           <Button type="link" onClick={() => onDelete(record)}>
             删除
-          </Button>
+          </Button> */}
           <SwitchableButton
             key="manage"
             icon="icon-a-Group120"
             onClick={() => onJumpArchives(record)}
           >
-            档案管理
+            学生档案
           </SwitchableButton>
         </DynamicButtonGroup>,
       ],
@@ -156,17 +175,7 @@ const TableList: React.FC = () => {
           form={{ span: 8, labelWidth: 120 }}
           columnEmptyText={EMPTY}
           search={false}
-          scroll={{
-            x: '100vw',
-          }}
-          columnsStateMap={{
-            sno: {
-              fixed: 'left',
-            },
-            option: {
-              fixed: 'right',
-            },
-          }}
+          scroll={{ x: 'max-content' }}
           toolBarRender={() => [
             <Button
               type="primary"

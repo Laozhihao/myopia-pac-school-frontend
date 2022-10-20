@@ -5,6 +5,7 @@ export const listColumns: ProColumns<API.ScreeningStudentListItem>[] = [
   {
     title: '筛查编码',
     dataIndex: 'screeningCode',
+    fixed: 'left',
   },
   {
     title: '学号',

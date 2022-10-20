@@ -7,11 +7,9 @@ import { useMemo, useRef, useState } from 'react';
 import { modalConfig } from '@/hook/ant-config';
 import { FormItemOptions } from './form-item';
 import { getScreeningStudent, editScreeningStudent } from '@/api/screen/plan';
-import { message, Form, Col, Button } from 'antd';
-import moment from 'moment';
-import { DATE } from '@/utils/constant';
+import { message, Form, Col } from 'antd';
 
-export const PlanModal: React.FC<API.ModalItemType> = (props) => {
+export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }> = (props) => {
   const modalRef = useRef<ProFormInstance>();
   const [screeningStudentInfo, setScreeningStudentInfo] = useState<API.ObjectType>({
     allList: [],
@@ -19,7 +17,7 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
   });
   const [contentValue, setContentValue] = useState('');
 
-  const { title, visible, currentRow } = props;
+  const { title, visible, currentRow, param = {} } = props;
 
   /**
    * @desc 获取筛查学生年级班级
@@ -28,10 +26,8 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
     if (visible) {
       const parm = currentRow ? { screeningPlanId: currentRow?.planId } : undefined;
       setContentValue(currentRow ? currentRow?.content : '');
-
       const { data = {} } = await getScreeningStudent(parm);
       setScreeningStudentInfo(data);
-
       modalRef?.current?.setFieldsValue({
         ...currentRow,
         time: currentRow ? [currentRow?.startTime, currentRow?.endTime] : [],
@@ -41,29 +37,31 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
       });
     }
   }, [visible]);
+
   /**
    * @desc 新增/编辑
    */
-  const onConfirm = () => {
-    modalRef?.current?.validateFields().then(async (value) => {
-      const { time = [] } = value;
-      const [startTime, endTime] = time;
-      await editScreeningStudent(
-        deleteRedundantData(
-          {
-            ...value,
-            screeningType: 0,
-            startTime: moment(startTime).format(DATE),
-            endTime: moment(endTime).format(DATE),
-            content: contentValue,
-            id: currentRow ? currentRow?.planId : undefined,
-          },
-          ['time'],
-        ),
-      );
-      props.onCancel(true);
-      message.success(`${currentRow ? '编辑' : '创建'}成功`);
-    });
+  const onConfirm = async (value: any) => {
+    const { time = [] } = value;
+    const [startTime, endTime] = time;
+    await editScreeningStudent(
+      deleteRedundantData(
+        {
+          ...value,
+          screeningType: 0,
+          startTime,
+          endTime,
+          content: contentValue,
+          id: currentRow ? currentRow?.planId : undefined, // 编辑时需要
+          screeningNoticeId: currentRow ? currentRow?.srcScreeningNoticeId : undefined, // 编辑时需要
+          screeningTaskId: currentRow ? currentRow?.screeningTaskId : undefined, // 编辑时需要
+          ...param,
+        },
+        ['time'],
+      ),
+    );
+    props.onCancel(true);
+    message.success(`${currentRow ? '编辑' : '创建'}成功`);
   };
 
   return (
@@ -72,18 +70,8 @@ export const PlanModal: React.FC<API.ModalItemType> = (props) => {
       formRef={modalRef}
       width={800}
       visible={visible}
-      submitter={{
-        render: () => {
-          return [
-            <Button onClick={() => props.onCancel(false)} key="cancel">
-              取消
-            </Button>,
-            <Button onClick={onConfirm} key="submit" type="primary">
-              确定
-            </Button>,
-          ];
-        },
-      }}
+      isKeyPressSubmit={false}
+      onFinish={onConfirm}
       layout="horizontal"
       labelCol={{ style: { width: 120 } }}
       modalProps={{

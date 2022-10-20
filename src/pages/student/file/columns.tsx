@@ -1,275 +1,242 @@
-import type { ProColumns } from '@ant-design/pro-table';
-import { EMPTY, STATE_TEXT, MYOPIAWARNOPTION } from '@/utils/constant';
-import { Badge } from 'antd';
-import { visionResultColumn } from '@/utils/columns';
-import { formatLength, typeNumberHandle, symbolHandle } from '@/utils/common';
+import { EMPTY } from '@/utils/constant';
+import {
+  entiretySpineType,
+  privacyOption,
+  spineLevel,
+  spineOption,
+  spineType,
+} from '@/utils/form-constant';
+import React from 'react';
 
-export const listColumns: ProColumns<API.FileListItem>[] = [
-  {
-    title: '筛查日期',
-    dataIndex: 'screeningDate',
-    valueType: 'date',
-    width: 150,
-  },
-  {
-    title: '配镜情况',
-    dataIndex: 'glassesTypeDes',
-  },
-  {
-    title: '裸眼视力（左/右）',
-    dataIndex: 'details',
-    renderText: (val) =>
-      `${typeNumberHandle(val.vision[1]?.nakedVision, 1)} / ${typeNumberHandle(
-        val.vision[0]?.nakedVision,
-        1,
-      )}`,
-  },
-  {
-    title: '矫正视力（左/右）',
-    dataIndex: 'details',
-    renderText: (val) =>
-      `${typeNumberHandle(val.vision[1]?.correctedVision, 1)} / ${typeNumberHandle(
-        val.vision[0]?.correctedVision,
-        1,
-      )}`,
-  },
-  {
-    title: '球镜（左/右）',
-    dataIndex: 'details',
-    renderText: (val) =>
-      `${symbolHandle(val.vision[1]?.sph, 2, 'D')} / ${symbolHandle(val.vision[0]?.sph, 2, 'D')}`,
-  },
+// 标题行信息类型
+export type ScreeningStudentRecordType = {
+  planStudentId?: React.Key;
+  planId?: React.Key;
+  hasScreening?: boolean;
+  resultId?: number;
+  screeningDate?: React.Key;
+  screeningCode?: string;
+  isDoubleScreen?: boolean;
+  screeningTitle?: string;
+  screeningOrgName?: string;
+  screeningType?: number;
+  details?: API.ObjectType;
+};
 
+// 常见病数据类型
+export type ScreeningCommonDiseasesType = {
+  bloodPressureData?: API.ObjectType;
+  diseasesHistoryData?: API.ObjectType;
+  saprodontiaStat?: API.ObjectType; // 龋齿检查
+  spineData?: API.ObjectType;
+  privacyData?: API.ObjectType; // 个人隐私
+};
+
+// 其他
+export type ScreeningOtherType = {
+  details?: API.ObjectType;
+  isDoubleScreen?: boolean;
+  screeningType?: React.Key;
+  gender?: React.Key;
+};
+
+// 列合并
+export const onCell = (value: React.Key | JSX.Element, index: number) => {
+  const obj = {
+    children: value,
+    props: {} as any,
+  };
+  obj.props.rowSpan = index ? 0 : 2;
+  return obj;
+};
+
+// 其他眼病
+export const otherDiseasesColumns = [
   {
-    title: '柱镜（左/右）',
-    dataIndex: 'details',
-    renderText: (val) =>
-      `${symbolHandle(val.vision[1]?.cyl, 2, 'D')} / ${symbolHandle(val.vision[0]?.cyl, 2, 'D')}`,
+    title: '其他眼病',
+    dataIndex: 'eyeDiseases',
+    width: 400,
   },
-  {
-    title: '等效球镜（左/右）',
-    dataIndex: 'details',
-    renderText: (val) =>
-      `${symbolHandle(val.vision[1]?.se, 2, 'D')} / ${symbolHandle(val.vision[0]?.se, 2, 'D')}`,
-  },
-  {
-    title: '轴位（左/右）',
-    dataIndex: 'details',
-    renderText: (val) =>
-      `${typeNumberHandle(val.vision[1]?.axial, 0, '°')} / ${typeNumberHandle(
-        val.vision[0]?.axial,
-        0,
-        '°',
-      )}`,
-  },
+];
+
+// 身高体重 columns
+export const heightAndWeightColumns = [
   {
     title: '身高（cm）',
-    dataIndex: 'details',
-    renderText: (val) => (val && val.vision[0]?.heightAndWeightData?.height) ?? EMPTY,
+    dataIndex: 'heightAndWeightData',
+    render: (value: { height: React.Key }, _row: any, index: number) =>
+      onCell(value?.height ?? EMPTY, index),
   },
   {
     title: '体重（KG）',
-    dataIndex: 'details',
-    renderText: (val) => (val && val.vision[0]?.heightAndWeightData?.weight) ?? EMPTY,
+    dataIndex: 'heightAndWeightData',
+    render: (value: { weight: React.Key }, _row: any, index: number) =>
+      onCell(value?.weight ?? EMPTY, index),
   },
-  ...visionResultColumn,
+];
 
+// 通用
+export const basicColumns = [
   {
-    title: '视力预警',
-    dataIndex: 'warningLevel',
-    width: 200,
-    renderText: (val?: number) =>
-      typeof val === 'number' && [0, 1, 2, 3, 4].includes(val) ? (
-        <Badge color={MYOPIAWARNOPTION[val]?.color} text={MYOPIAWARNOPTION[val]?.text} />
-      ) : (
-        EMPTY
-      ),
+    dataIndex: 'lateriality',
+    width: 120,
+    render: (val: number) => <span>{val === 0 ? '左眼（OS）' : '右眼（OD）'}</span>,
+    fixed: 'left',
   },
   {
-    title: '其他眼病',
-    dataIndex: 'otherEyeDiseases',
-    width: 400,
-    renderText: (val: string[]) => `${val.length ? val.join('、') : EMPTY}`,
-  },
-  {
-    title: '筛查标题',
-    dataIndex: 'screeningTitle',
-    render: (_, record) => {
-      return (
-        <p title={record?.screeningTitle}>
-          {record?.screeningTitle ? formatLength(record?.screeningTitle) : EMPTY}
-        </p>
-      );
+    title: '戴镜情况',
+    dataIndex: 'glassesTypeDes',
+    render: (value: string, record: any, index: number) => {
+      const childrenText =
+        record?.glassesType === 3 ? (
+          <>
+            {value} <p>{record?.okDegreeDesc}</p>
+          </>
+        ) : (
+          value
+        );
+      return onCell(childrenText, index);
     },
   },
-];
-
-/** ------------------------------------------------------- 查看详情列 */
-
-// 默认第一列
-const defaultColumns: ProColumns<API.FileDetailItem>[] = [
-  {
-    title: '',
-    width: 150,
-    dataIndex: 'eyes',
-  },
-];
-
-// 视力columns
-export const visionColumns: ProColumns<API.FileDetailItem>[] = [
-  ...defaultColumns,
   {
     title: '裸眼视力',
     dataIndex: 'nakedVision',
   },
   {
-    title: '矫正视力',
+    title: '矫正视力（戴镜视力）',
     dataIndex: 'correctedVision',
   },
-];
-
-// 验光 columns
-export const optometryColumns: ProColumns<API.FileDetailItem>[] = [
-  ...defaultColumns,
   {
-    title: '球镜',
+    title: '等效球镜（SE）',
+    dataIndex: 'se',
+  },
+  {
+    title: '球镜（S）',
     dataIndex: 'sph',
-    render: (text) => <span>{typeNumberHandle(text)}</span>,
   },
   {
     title: '柱镜',
     dataIndex: 'cyl',
-    render: (text) => <span>{typeNumberHandle(text)}</span>,
   },
   {
-    title: '轴向',
+    title: '轴位（A）',
     dataIndex: 'axial',
   },
 ];
 
-// 生物测量 columns
-export const biometryColumns: ProColumns<API.FileDetailItem>[] = [
-  ...defaultColumns,
+// 常见病
+export const commonDiseasesColumns = (
+  commonDiseases?: ScreeningCommonDiseasesType,
+  data?: ScreeningOtherType,
+) => [
   {
-    title: '角膜前表面曲率K1',
-    dataIndex: 'k1',
+    title: '龋齿检查',
+    key: 'saprodontiaStat',
+    width: 150,
+    render: (_value: string, _row: any, index: number) => {
+      const { saprodontiaStat } = commonDiseases || {};
+      const toothArr = ['deciduous', 'permanent'];
+      const childrenText = (
+        <>
+          {toothArr.map((item, eleIndex) => (
+            <p key={eleIndex}>
+              {eleIndex ? '恒牙' : '乳牙'} 龋（d）：{saprodontiaStat?.[item]?.dcount ?? EMPTY} ；
+              失（m）：{saprodontiaStat?.[item]?.mcount ?? EMPTY} ； 补（f）：
+              {saprodontiaStat?.[item]?.fcount ?? EMPTY}
+            </p>
+          ))}
+        </>
+      );
+      return onCell(childrenText, index);
+    },
   },
   {
-    title: '角膜前表面曲率K2',
-    dataIndex: 'k2',
+    title: '脊柱弯曲 ',
+    key: 'spineData',
+    width: 150,
+    render: (_value: string, _row: any, index: number) => {
+      const { spineData } = commonDiseases || {};
+      const childrenText = (
+        <>
+          {spineOption.map((item, eleIndex) => (
+            <p key={eleIndex}>
+              {item.label}：{' '}
+              {item.key === 'entirety'
+                ? entiretySpineType?.[spineData?.[item.key]?.type] || EMPTY
+                : spineType?.[spineData?.[item.key]?.type] || EMPTY}{' '}
+              {spineLevel?.[spineData?.[item.key]?.level]
+                ? `${spineLevel?.[spineData?.[item.key]?.level]}度`
+                : EMPTY}
+            </p>
+          ))}
+        </>
+      );
+      return onCell(childrenText, index);
+    },
   },
   {
-    title: '垂直方向角膜散光度数AST',
-    dataIndex: 'ast',
+    title: '血压情况',
+    key: 'bloodPressureData',
+    width: 150,
+    render: (_value: string, _row: any, index: number) => {
+      const childrenText = (
+        <>
+          <p>舒张压：{commonDiseases?.bloodPressureData?.dbp ?? EMPTY}</p>
+          <p>收缩压: {commonDiseases?.bloodPressureData?.sbp ?? EMPTY}</p>
+        </>
+      );
+      return onCell(childrenText, index);
+    },
   },
   {
-    title: '角膜直径WTW',
-    dataIndex: 'wtw',
+    title: '疾病情况',
+    key: 'diseasesHistoryData',
+    render: (_value: string, _row: any, index: number) => {
+      const childrenText = (
+        <p>
+          {commonDiseases?.diseasesHistoryData?.diseases
+            ? commonDiseases?.diseasesHistoryData?.diseases.join('，')
+            : EMPTY}
+        </p>
+      );
+      return onCell(childrenText, index);
+    },
   },
   {
-    title: '眼轴总长度AL',
-    dataIndex: 'al',
-  },
-  {
-    title: '角膜中央厚度CCT',
-    dataIndex: 'cct',
-  },
-  {
-    title: '前房深度AD',
-    dataIndex: 'ad',
-  },
-  {
-    title: '晶体厚度LT',
-    dataIndex: 'lt',
-  },
-  {
-    title: '玻璃体厚度VT',
-    dataIndex: 'vt',
+    title: '个人隐私',
+    key: 'privacyData',
+    render: (_value: string, _row: any, index: number) => {
+      const { privacyData } = commonDiseases || {};
+      const childrenText = (
+        <>
+          <p>{data?.gender ? privacyOption[data?.gender] : ''}</p>
+          <p>状况: {privacyData?.hasIncident ? `是， 年龄 ${privacyData?.age} 岁` : '否'}</p>
+        </>
+      );
+      return onCell(childrenText, index);
+    },
   },
 ];
 
-// 眼压 columns
-export const eyePressureColumns: ProColumns<API.FileDetailItem>[] = [
-  ...defaultColumns,
-  {
-    title: '眼压',
-    dataIndex: 'pressure',
-    render: (text) => <span>{text}mmHg</span>,
-  },
-];
-
-// 其他 columns
-export const othersColumns: ProColumns<API.FileDetailItem>[] = [
-  ...defaultColumns,
-  {
-    title: '裂隙灯',
-    dataIndex: 'slitLampData',
-    render: (text: any) => <span>{STATE_TEXT[text]}</span>,
-  },
-  {
-    title: '眼位',
-    dataIndex: 'ocularInspectionData',
-    render: (text: any) => <span>{STATE_TEXT[text]}</span>,
-  },
-  {
-    title: '眼底',
-    dataIndex: 'fundusData',
-    render: (text: any) => <span>{STATE_TEXT[text]}</span>,
-  },
-  {
-    title: '其他眼病',
-    width: 300,
-    dataIndex: 'otherEyeDiseases',
-  },
-];
-
-// 身高体重 columns
-export const heightAndWeightColumns: ProColumns<API.FileDetailItem>[] = [
-  {
-    title: '身高（cm）',
-    dataIndex: 'height',
-  },
-  {
-    title: '体重（KG）',
-    dataIndex: 'weight',
-  },
-];
-
-// 检查类型
-export const inspectType: API.FileDetailInspectItem[] = [
-  {
-    title: '视力检查',
-    dataIndex: 'visionData',
-    columns: visionColumns,
-  },
-  {
-    title: '电脑验光',
-    dataIndex: 'computerOptometry',
-    columns: optometryColumns,
-  },
-  {
-    title: '身高体重',
-    dataIndex: 'heightAndWeightData',
-    columns: heightAndWeightColumns,
-  },
-  {
-    title: '生物测量',
-    dataIndex: 'biometricData',
-    columns: biometryColumns,
-  },
-  {
-    title: '小瞳验光',
-    dataIndex: 'pupilOptometryData',
-    columns: optometryColumns,
-  },
-  {
-    title: '眼压',
-    dataIndex: 'eyePressureData',
-    columns: eyePressureColumns,
-  },
-  {
-    title: '其他',
-    dataIndex: 'other',
-    columns: othersColumns,
-  },
-];
+// 筛查计划表格列
+export const ScreeningRecordColumns = (data: {
+  details?: any;
+  isDoubleScreen?: any;
+  screeningType?: any;
+}) => {
+  const { isDoubleScreen, screeningType } = data;
+  if (screeningType === 0) {
+    return isDoubleScreen
+      ? [...basicColumns]
+      : [...basicColumns, ...otherDiseasesColumns, ...heightAndWeightColumns];
+  }
+  // 常见病
+  return isDoubleScreen
+    ? [...basicColumns, ...heightAndWeightColumns]
+    : [
+        ...basicColumns,
+        ...otherDiseasesColumns,
+        ...commonDiseasesColumns(data?.details?.commonDiseases, data),
+        ...heightAndWeightColumns,
+      ];
+};

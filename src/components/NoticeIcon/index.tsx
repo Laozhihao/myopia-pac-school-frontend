@@ -7,7 +7,7 @@ import { NoticeRead } from '@/api/screen/plan';
 import { getToken } from '@/hook/storage';
 
 const Info = '/info-center';
-const Notice = '/screening';
+const Notice = '/screening/notice';
 const NoticeIconView = () => {
   const [notices, setNotices] = useState<API.ObjectType>();
   const [visble, setVisble] = useState(false);

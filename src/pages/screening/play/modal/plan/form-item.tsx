@@ -17,13 +17,11 @@ export const FormItemOptions = (
   currentRow?: API.ObjectType,
 ) => {
   const [total, setTotal] = useState(0); // 选中的学生总数
-  const [allTotal, setAllTotal] = useState(0); // 全部的学生总数
 
   useEffect(() => {
     const allStudentTotal = studentOption
       .map((item) => item?.studentNum)
       .reduce((pre, item) => pre! + item!, 0)!;
-    setAllTotal(allStudentTotal);
     // 合计
     setTotal(
       currentRow
@@ -89,7 +87,7 @@ export const FormItemOptions = (
         col: {
           span: 24,
         },
-        slot: allTotal ? (
+        slot: studentOption?.length ? (
           <>
             <Form.Item
               label="筛查学生"

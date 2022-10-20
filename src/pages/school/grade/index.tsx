@@ -62,7 +62,7 @@ const GradeManage: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 300,
+      fixed: 'right',
       render: (_, record, index) => [
         !record?.gradeId ? (
           <a key="add" onClick={() => onAddClass(record, index)}>
@@ -101,11 +101,6 @@ const GradeManage: React.FC = () => {
         rowKey="id"
         pagination={{
           pageSize: 10,
-        }}
-        columnsStateMap={{
-          option: {
-            fixed: 'right',
-          },
         }}
         expandable={{ childrenColumnName: 'child' }}
         expandedRowKeys={expandedRow}

@@ -301,7 +301,8 @@ const FileList: React.FC = () => {
                               {item?.hasScreening ? (
                                 <Button
                                   key="detail"
-                                  className={styles.btn}
+                                  type="primary"
+                                  ghost
                                   onClick={() => onDetail(item)}
                                 >
                                   查看详情
@@ -309,7 +310,8 @@ const FileList: React.FC = () => {
                               ) : null}
                               <Button
                                 key="print"
-                                className={styles.btn}
+                                type="primary"
+                                ghost
                                 onClick={() => onMonitor(item)}
                               >
                                 档案卡

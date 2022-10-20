@@ -167,7 +167,7 @@ const TableList: React.FC = () => {
               </span>
 
               <span className={styles.judge_standard} onClick={onShowStandard}>
-                <InfoCircleOutlined style={{ color: '#096DD9' }} />
+                <InfoCircleOutlined style={{ color: '#096DD9', marginRight: 8 }} />
                 判断标准
               </span>
             </p>

@@ -82,5 +82,5 @@ export const correctionOption = {
   0: '正常',
   1: '未矫',
   2: '欠矫',
-  3: '足娇',
+  3: '足矫',
 };

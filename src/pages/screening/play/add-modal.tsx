@@ -1,6 +1,6 @@
 import { Modal, Select, Radio, Button, Cascader, Form, Row, Col, Image, Upload, Space } from 'antd';
 import { useRequest, useModel } from 'umi';
-import { ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import { ProFormText } from '@ant-design/pro-form';
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { isNotEmpty } from '@vistel/vistel-utils/lib/tool';
 import styles from './add-modal.less';
@@ -8,6 +8,7 @@ import qrcodeImg from '@/assets/images/qrcode.jpg';
 import { Step } from '../result/notice-report/components/step';
 import { FooterTips } from '../result/notice-report/components/footer-tips';
 import RightTips from './right-tips';
+import MyEditor from '@/components/WangEditorModal';
 import UploadDefaultImg from '@/assets/images/code.png';
 import { modalConfig, getPopupContainer } from '@/hook/ant-config';
 import { uploadFile } from '@/api/common';
@@ -43,6 +44,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const [refresh, setRefresh] = useState(false); // 刷新列表
   const [isAssignment, setIsAssignment] = useState(false); // 赋值标志位
   const [imgUrl, setImgUrl] = useState<string>();
+  const [contentValue, setContentValue] = useState('');
 
   const [initForm, setInitForm] = useState<API.ObjectType>({
     title: '学生视力筛查告家长书',
@@ -107,7 +109,8 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
 
   useMemo(async () => {
     if (props?.visible) {
-      const { planId: screeningPlanId } = props?.currentRow || {};
+      const { planId: screeningPlanId, notificationConfig } = props?.currentRow || {};
+      setContentValue(notificationConfig?.content ? notificationConfig?.content : '');
       const { data = [] } = await getScreeningGradeList(screeningPlanId);
       // 级联只选择年级，设置全部
       data.forEach((item: any) => {
@@ -288,6 +291,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       if (current) {
         formRef?.validateFields().then((value) => {
           if (value) {
+            value.content = contentValue;
             onHandle(printType, value); // 打印
           }
         });
@@ -430,12 +434,17 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
 
             <Row>
               <Col span={16}>
-                <ProFormTextArea
+                {/* <ProFormTextArea
                   name="content"
                   fieldProps={{ maxLength: FormNoticeTemp[0].limit }}
                   placeholder="请输入告知书内容"
                   rules={[{ required: true, message: '请输入告知书内容' }]}
-                />
+                /> */}
+                <MyEditor
+                  maxlength={500}
+                  value={contentValue}
+                  onChange={(e) => setContentValue(e)}
+                ></MyEditor>
               </Col>
               <Col span={8}>
                 <RightTips style={{ top: 'calc(50% - 23px)' }} {...FormNoticeTemp[0]} />

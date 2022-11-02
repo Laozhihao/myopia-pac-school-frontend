@@ -54,6 +54,8 @@
     "@ant-design/pro-table": "^2.30.8",
     "@umijs/route-utils": "^1.0.36",
     "@vistel/vistel-utils": "^1.0.36",
+    "@wangeditor/editor": "^5.1.22",
+    "@wangeditor/editor-for-react": "^1.0.6",
     "antd": "4.17.0",
     "classnames": "^2.2.6",
     "jsonwebtoken": "^8.5.1",

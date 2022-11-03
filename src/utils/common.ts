@@ -24,6 +24,22 @@ export const formatLength = (val?: string, length = 15) =>
   val && val.length > length ? `${val.substr(0, length)}...` : val;
 
 /**
+ * @desc 富文本转义html
+ * @param {string} sHtml
+ */
+export const html2Escape = (sHtml) =>
+  sHtml.replace(
+    /[<>&"]/g,
+    (c) =>
+      ({
+        '<': '&lt;',
+        '>': '&gt;',
+        '&': '&amp;',
+        '"': '&quot;',
+      }[c]),
+  );
+
+/**
  * @desc 富文本反转义html
  * @param {string} str
  */

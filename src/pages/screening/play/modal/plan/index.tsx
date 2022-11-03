@@ -2,7 +2,7 @@ import { ModalForm } from '@ant-design/pro-form';
 import DynamicForm from '@/components/DynamicForm';
 import MyEditor from '@/components/EditorModal';
 import type { ProFormInstance } from '@ant-design/pro-form';
-import { deleteRedundantData } from '@/utils/common';
+import { deleteRedundantData, html2Escape } from '@/utils/common';
 import { useMemo, useRef, useState } from 'react';
 import { modalConfig } from '@/hook/ant-config';
 import { FormItemOptions } from './form-item';
@@ -51,7 +51,7 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
           screeningType: 0,
           startTime,
           endTime,
-          content: contentValue,
+          content: html2Escape(contentValue),
           id: currentRow ? currentRow?.planId : undefined, // 编辑时需要
           screeningNoticeId: currentRow ? currentRow?.srcScreeningNoticeId : undefined, // 编辑时需要
           screeningTaskId: currentRow ? currentRow?.screeningTaskId : undefined, // 编辑时需要

@@ -11,6 +11,7 @@ import RightTips from './right-tips';
 import MyEditor from '@/components/WangEditorModal';
 import UploadDefaultImg from '@/assets/images/code.png';
 import { modalConfig, getPopupContainer } from '@/hook/ant-config';
+import { escape2Html, html2Escape } from '@/utils/common';
 import { uploadFile } from '@/api/common';
 import {
   getScreeningGradeList,
@@ -110,7 +111,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   useMemo(async () => {
     if (props?.visible) {
       const { planId: screeningPlanId, notificationConfig } = props?.currentRow || {};
-      setContentValue(notificationConfig?.content ? notificationConfig?.content : '');
+      setContentValue(escape2Html(notificationConfig?.content ? notificationConfig?.content : ''));
       const { data = [] } = await getScreeningGradeList(screeningPlanId);
       // 级联只选择年级，设置全部
       data.forEach((item: any) => {
@@ -291,7 +292,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       if (current) {
         formRef?.validateFields().then((value) => {
           if (value) {
-            value.content = contentValue;
+            value.content = html2Escape(contentValue);
             onHandle(printType, value); // 打印
           }
         });

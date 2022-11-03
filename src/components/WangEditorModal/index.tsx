@@ -8,6 +8,7 @@ export default function MyEditor(props: {
   value: any;
   needImg: boolean;
   maxlength: number;
+  height: number;
   onChange?: (e: any) => void;
 }) {
   // editor 实例
@@ -16,12 +17,10 @@ export default function MyEditor(props: {
   // 编辑器内容
   const [html, setHtml] = useState('');
 
-  // 模拟 ajax 请求，异步设置 html
+  // 异步设置 html
   useEffect(() => {
-    setTimeout(() => {
-      setHtml(props?.value);
-    }, 1000);
-  }, []);
+    setHtml(props?.value);
+  }, [props?.value]);
 
   // 工具栏配置
   const toolbarConfig: Partial<IToolbarConfig> = {
@@ -100,7 +99,7 @@ export default function MyEditor(props: {
           onCreated={setEditor}
           onChange={(editorRef) => contengChangeHandler(editorRef.getHtml())}
           mode="default"
-          style={{ height: '300px', overflowY: 'hidden' }}
+          style={{ height: props?.height ? `${props.height}px` : '300px', overflowY: 'hidden' }}
         />
       </div>
     </>

@@ -3,7 +3,9 @@ import styles from './pre-step.less';
 import type { IdsType } from '../index';
 import { getReportInfo } from '@/api/screen/plan';
 import { useMemo, useState, forwardRef } from 'react';
+import MyEditor from '@/components/WangEditorModal';
 import UploadDefaultImg from '@/assets/images/code.png';
+import { escape2Html } from '@/utils/common';
 import { uploadFile } from '@/api/common';
 
 type PreStepType = {
@@ -16,6 +18,7 @@ export const PreStep = forwardRef<any, PreStepType>((props, ref) => {
   const [fileList, setFileList] = useState<any[]>([]);
   const [imgUrl, setImgUrl] = useState<string>();
   const [preLoading, setPreLoading] = useState(false);
+  const [contentValue, setContentValue] = useState('');
   const { schoolName } = ids;
   const [initForm] = useState<API.ObjectType>({
     title: '学生视力筛查结果通知书',
@@ -59,6 +62,9 @@ export const PreStep = forwardRef<any, PreStepType>((props, ref) => {
         const { data } = await getReportInfo(schoolId);
         if (data.resultNoticeConfig) {
           form.setFieldsValue(data.resultNoticeConfig);
+          setContentValue(
+            escape2Html(data?.resultNoticeConfig?.content ? data?.resultNoticeConfig?.content : ''),
+          );
           setImgUrl(data.noticeResultFileUrl);
         }
       }
@@ -95,7 +101,7 @@ export const PreStep = forwardRef<any, PreStepType>((props, ref) => {
     },
   };
 
-  const { TextArea } = Input;
+  // const { TextArea } = Input;
   return (
     <Spin spinning={preLoading} delay={300}>
       <Form
@@ -174,7 +180,12 @@ export const PreStep = forwardRef<any, PreStepType>((props, ref) => {
             { min: 1, max: 500, message: '最多可填入500个字符' },
           ]}
         >
-          <TextArea showCount maxLength={500} style={{ height: 170 }} />
+          {/* <TextArea showCount maxLength={500} style={{ height: 170 }} /> */}
+          <MyEditor
+            maxlength={500}
+            value={contentValue}
+            onChange={(e) => setContentValue(e)}
+          ></MyEditor>
         </Form.Item>
         <Form.Item
           label={

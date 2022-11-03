@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import { useRequest, history } from 'umi';
 import { unreadCount } from '@/api/common';
 import NoticeIcon from './NoticeIcon';
@@ -38,32 +39,44 @@ const NoticeIconView = () => {
   };
 
   return (
-    <NoticeIcon
-      className={styles.action}
-      count={notices?.total}
-      onItemClick={onRouter}
-      loading={false}
-      viewMoreText="查看更多"
-      onViewMore={(props) => onRouter(false, props)}
-      clearClose
-      popupVisible={visble}
-      onPopupVisibleChange={setVisble}
-    >
-      <NoticeIcon.Tab
-        tabKey="info"
-        count={notices?.stationLetter?.length}
-        list={notices?.stationLetter}
-        title="站内信"
-        showViewMore
-      />
-      <NoticeIcon.Tab
-        tabKey="notice"
-        count={notices?.screeningNotice?.length}
-        list={notices?.screeningNotice}
-        title="筛查通知"
-        showViewMore
-      />
-    </NoticeIcon>
+    <>
+      {notices?.systemUpdateNotice && (
+        <div className={styles.tipsW}>
+          <InfoCircleOutlined className={styles.icon} />
+          <div className={styles.textW}>
+            <div className={styles.words} text={notices.systemUpdateNotice}>
+              {notices.systemUpdateNotice}
+            </div>
+          </div>
+        </div>
+      )}
+      <NoticeIcon
+        className={styles.action}
+        count={notices?.total}
+        onItemClick={onRouter}
+        loading={false}
+        viewMoreText="查看更多"
+        onViewMore={(props) => onRouter(false, props)}
+        clearClose
+        popupVisible={visble}
+        onPopupVisibleChange={setVisble}
+      >
+        <NoticeIcon.Tab
+          tabKey="info"
+          count={notices?.stationLetter?.length}
+          list={notices?.stationLetter}
+          title="站内信"
+          showViewMore
+        />
+        <NoticeIcon.Tab
+          tabKey="notice"
+          count={notices?.screeningNotice?.length}
+          list={notices?.screeningNotice}
+          title="筛查通知"
+          showViewMore
+        />
+      </NoticeIcon>
+    </>
   );
 };
 

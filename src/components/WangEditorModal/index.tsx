@@ -1,8 +1,10 @@
 import '@wangeditor/editor/dist/css/style.css'; // 引入 css
 
 import React, { useState, useEffect } from 'react';
+import { Spin } from 'antd';
 import { Editor, Toolbar } from '@wangeditor/editor-for-react';
 import { IDomEditor, IEditorConfig, IToolbarConfig } from '@wangeditor/editor';
+import { uploadImg } from '@/api/common';
 
 export default function MyEditor(props: {
   value: any;
@@ -11,6 +13,8 @@ export default function MyEditor(props: {
   height: number;
   onChange?: (e: any) => void;
 }) {
+  const [loading, setLoading] = useState(false);
+
   // editor 实例
   const [editor, setEditor] = useState<IDomEditor | null>(null);
 
@@ -57,6 +61,7 @@ export default function MyEditor(props: {
     ],
   };
 
+  type InsertFnType = (url: string, alt: string, href: string) => void;
   // 编辑器配置
   const editorConfig: Partial<IEditorConfig> = {
     placeholder: '请输入内容...',
@@ -64,8 +69,15 @@ export default function MyEditor(props: {
     ...(props?.maxlength ? { maxLength: props.maxlength } : {}),
     MENU_CONF: {
       uploadImage: {
-        // 上传图片的配置
-        server: 'http://xx.com',
+        // 自定义上传
+        async customUpload(file: File, insertFn: InsertFnType) {
+          const formData = new FormData();
+          formData.append('file', file);
+          setLoading(true);
+          const { data } = await uploadImg(formData);
+          insertFn(data?.url);
+          setLoading(false);
+        },
       },
     },
   };
@@ -85,7 +97,7 @@ export default function MyEditor(props: {
   };
 
   return (
-    <>
+    <Spin spinning={loading}>
       <div style={{ border: '1px solid #ccc', zIndex: 100 }}>
         <Toolbar
           editor={editor}
@@ -102,6 +114,6 @@ export default function MyEditor(props: {
           style={{ height: props?.height ? `${props.height}px` : '300px', overflowY: 'hidden' }}
         />
       </div>
-    </>
+    </Spin>
   );
 }

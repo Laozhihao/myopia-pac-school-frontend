@@ -90,7 +90,11 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
       >
         <Col span={24}>
           <Form.Item label="筛查内容">
-            <MyEditor value={contentValue} onChange={(e) => setContentValue(e)}></MyEditor>
+            <MyEditor
+              needImg={true}
+              value={contentValue}
+              onChange={(e) => setContentValue(e)}
+            ></MyEditor>
           </Form.Item>
         </Col>
       </DynamicForm>

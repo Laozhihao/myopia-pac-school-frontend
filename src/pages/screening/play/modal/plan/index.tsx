@@ -1,8 +1,8 @@
 import { ModalForm } from '@ant-design/pro-form';
 import DynamicForm from '@/components/DynamicForm';
-import MyEditor from '@/components/EditorModal';
+import MyEditor from '@/components/WangEditorModal';
 import type { ProFormInstance } from '@ant-design/pro-form';
-import { deleteRedundantData, html2Escape } from '@/utils/common';
+import { deleteRedundantData, html2Escape, escape2Html } from '@/utils/common';
 import { useMemo, useRef, useState } from 'react';
 import { modalConfig } from '@/hook/ant-config';
 import { FormItemOptions } from './form-item';
@@ -25,7 +25,7 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
   useMemo(async () => {
     if (visible) {
       const parm = currentRow ? { screeningPlanId: currentRow?.planId } : undefined;
-      setContentValue(currentRow ? currentRow?.content : '');
+      setContentValue(currentRow?.content ? escape2Html(escape2Html(currentRow?.content)) : '');
       const { data = {} } = await getScreeningStudent(parm);
       setScreeningStudentInfo(data);
       modalRef?.current?.setFieldsValue({

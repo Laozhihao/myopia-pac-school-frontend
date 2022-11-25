@@ -20,7 +20,7 @@ export const studentFormOptions = (validatorCb?: StudentFormOptionsParmas, type 
   return {
     filterList: [
       {
-        label: '学号',
+        label: '学籍号',
         type: 'input',
         value: 'sno',
         showLabel: true,

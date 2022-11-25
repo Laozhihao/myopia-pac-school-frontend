@@ -12,7 +12,7 @@ export const SCREENSELECTOPTIONS = {
 
 // 学生管理
 export const STUDENTSELECTOPTIONS = {
-  sno: '学号',
+  sno: '学籍号',
   name: '姓名',
 };
 

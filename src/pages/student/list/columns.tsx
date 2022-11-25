@@ -5,7 +5,7 @@ import { correctionOption } from '@/utils/form-constant';
 
 export const listColumns: ProColumns<API.StudentListItem>[] = [
   {
-    title: '学号',
+    title: '学籍号',
     dataIndex: 'sno',
     fixed: 'left',
   },

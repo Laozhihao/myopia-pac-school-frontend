@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Button } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
@@ -15,6 +15,17 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<VisionColumnsType>[] = [...listColumns];
   const [operationVisible, setOperationVisible] = useState(false); // 导入
+
+  let requestTimer;
+  useEffect(() => {
+    // 定时 30s 请求数据报送的列表
+    requestTimer = setTimeout(() => {
+      tableRef?.current?.reload?.();
+    }, Number('30000'));
+    return () => {
+      clearTimeout(requestTimer);
+    };
+  }, []);
 
   /**
    * @desc 导入弹窗

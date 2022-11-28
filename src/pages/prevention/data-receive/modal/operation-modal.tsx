@@ -13,6 +13,12 @@ export const OperationModal: React.FC<API.ModalItemType & { typeKey?: string }> 
   const [fileList, setFileList] = useState<any[]>([]); // 导入file
   const [loading, setLoading] = useState(false); // 确认按钮loading
 
+  const onCancel = () => {
+    // 清空上一次保存的文件
+    setFileList([]);
+    props.onCancel();
+  };
+
   // 导入
   const loadProps = {
     name: 'file',
@@ -65,7 +71,7 @@ export const OperationModal: React.FC<API.ModalItemType & { typeKey?: string }> 
       onOk={onComfirm}
       destroyOnClose
       confirmLoading={loading}
-      onCancel={() => props.onCancel()}
+      onCancel={onCancel}
       {...modalConfig}
     >
       <p className={styles.explain}>1.请从中国学生体质健康网数据报送平台下载视力数据模板</p>

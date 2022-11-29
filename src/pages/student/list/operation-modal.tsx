@@ -61,6 +61,7 @@ export const OperationModal: React.FC<
       case 'import':
         if (!fileList.length) {
           message.error('请上传需要导入的学生数据');
+          setLoading(false);
           return;
         }
         fileList.forEach((file) => {

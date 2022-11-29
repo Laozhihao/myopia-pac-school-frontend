@@ -61,6 +61,11 @@ export default [
         path: '/prevention/vision',
         component: './prevention/vision',
       },
+      {
+        name: '数据报送',
+        path: '/prevention/data-receive',
+        component: './prevention/data-receive',
+      },
     ],
   },
   { name: '消息中心', icon: 'comment', path: '/info-center', component: './infoCenter' },

@@ -41,11 +41,12 @@ export const listColumns: ProColumns<VisionColumnsType>[] = [
   },
   {
     title: '下载',
-    dataIndex: 'downloadMessage',
+    dataIndex: 'status',
     render: (text, record) => {
       return (
-        <div className={record.fileId ? styles.download : ''} onClick={() => getFileUrl(record)}>
-          {text}
+        // 状态 0-创建 1-进行中 2-成功 3-失败
+        <div className={text === 2 ? styles.download : ''} onClick={() => getFileUrl(record)}>
+          {text === 3 ? '系统错误，请重试' : '视力筛查数据报送表'}
         </div>
       );
     },

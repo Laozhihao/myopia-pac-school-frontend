@@ -2,16 +2,14 @@ import styles from './index.less';
 import type { ProColumns } from '@ant-design/pro-table';
 import { getDataSubmitFileUrl } from '@/api/prevention/data-receive';
 
-// 视力小队类型
+// 数据报送类型
 export type VisionColumnsType = {
   id: React.Key;
-  staffName?: string;
-  gender?: React.Key;
-  idCard?: string;
-  passport?: string;
-  phone?: string;
   remark?: string;
-  status?: React.Key;
+  successMatch?: React.Key;
+  failMatch?: React.Key;
+  downloadMessage?: React.Key;
+  createTime?: React.Key;
 };
 
 /**

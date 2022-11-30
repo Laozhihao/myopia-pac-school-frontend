@@ -9,10 +9,10 @@ export const listColumns: ProColumns<API.StudentListItem>[] = [
     dataIndex: 'sno',
     fixed: 'left',
   },
-  {
-    title: '学年',
-    dataIndex: 'yearStr',
-  },
+  // {
+  //   title: '学年',
+  //   dataIndex: 'yearStr',
+  // },
   {
     title: '姓名',
     dataIndex: 'name',

@@ -1,25 +1,25 @@
-import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Card } from 'antd';
+import { history } from 'umi';
 import React, { useState, useRef, useMemo } from 'react';
+import { Button, Card } from 'antd';
+import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import ProForm from '@ant-design/pro-form';
-import DynamicForm from '@/components/DynamicForm';
-import ProTable from '@ant-design/pro-table';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
+import DynamicForm from '@/components/DynamicForm';
+import SwitchableButton from '@/components/SwitchableButton';
+import DynamicButtonGroup from '@/components/DynamicButtonGroup';
 import { AddModal } from './add-modal';
 import { OperationModal } from './operation-modal';
 import { listColumns } from './columns';
+import { FormItemOptions } from './form-item';
+import { EMPTY } from '@/utils/constant';
+import { convertData, deleteRedundantData } from '@/utils/common';
+import { TableListCtx } from '@/hook/ant-config';
 // import { deleteTableRow } from '@/hook/table';
 import { getschoolGrade } from '@/api/school';
 import { getStudentList, getStudentFormItemList } from '@/api/student';
-import { EMPTY } from '@/utils/constant';
-import SwitchableButton from '@/components/SwitchableButton';
-import { FormItemOptions } from './form-item';
-import DynamicButtonGroup from '@/components/DynamicButtonGroup';
-import { convertData, deleteRedundantData } from '@/utils/common';
-import { TableListCtx } from '@/hook/ant-config';
-import { history } from 'umi';
 
 const TableList: React.FC = () => {
   const [searchForm, setSearchForm] = useState({}); // 搜索表单项

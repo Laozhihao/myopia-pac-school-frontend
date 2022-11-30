@@ -23,10 +23,10 @@ const getFileUrl = async ({ fileId }) => {
 };
 
 export const listColumns: ProColumns<VisionColumnsType>[] = [
-  {
-    title: '序号',
-    dataIndex: 'id',
-  },
+  // {
+  //   title: '序号',
+  //   dataIndex: 'id',
+  // },
   {
     title: '说明',
     dataIndex: 'remark',

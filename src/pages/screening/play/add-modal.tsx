@@ -96,7 +96,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
 
   const FormNoticeTemp = [{ title: '正文', value: 'content', limit: 500, step: 5 }];
   const FormUploadTemp = {
-    title: '医院公众号二维码',
+    title: '公众号二维码',
     text: '可进行更改大小不能超过5M宽度不能小于100px格式：png、jpg、jpeg',
     step: 6,
   };
@@ -136,7 +136,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const defaultPrintTypeArr = [
     { type: 0, text: '告知书' },
     { type: 1, text: '筛查二维码' },
-    { type: 2, text: 'vs666专属筛查二维码' },
+    { type: 2, text: '学生筛查二维码' },
     { type: 3, text: '虚拟二维码' },
   ];
   const [printTypeArr, setPrintTypeArr] = useState<API.ObjectType[]>(defaultPrintTypeArr);

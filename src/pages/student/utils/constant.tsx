@@ -20,7 +20,7 @@ export const studentFormOptions = (validatorCb?: StudentFormOptionsParmas, type 
   return {
     filterList: [
       {
-        label: '学号',
+        label: '学籍号',
         type: 'input',
         value: 'sno',
         showLabel: true,
@@ -31,7 +31,7 @@ export const studentFormOptions = (validatorCb?: StudentFormOptionsParmas, type 
           },
         ],
         fieldProps: {
-          maxLength: 20,
+          maxLength: 25,
         },
         col: {
           span: 24,

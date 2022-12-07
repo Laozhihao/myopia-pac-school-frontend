@@ -8,7 +8,7 @@ export const listColumns: ProColumns<API.ScreeningStudentListItem>[] = [
     fixed: 'left',
   },
   {
-    title: '学号',
+    title: '学籍号',
     dataIndex: 'sno',
   },
   {

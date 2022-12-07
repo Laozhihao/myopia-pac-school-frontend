@@ -9,12 +9,12 @@ export const FormItemOptions: Pick<API.PropsType, 'filterList' | 'listTypeInfo'>
       value: 'inputKey',
       valueEnum: STUDENTSELECTOPTIONS,
     },
-    {
-      label: '学年(入学年份)',
-      type: 'select',
-      list: 'yearList',
-      value: 'year',
-    },
+    // {
+    //   label: '学年(入学年份)',
+    //   type: 'select',
+    //   list: 'yearList',
+    //   value: 'year',
+    // },
     {
       label: '年级班级',
       type: 'cascader',

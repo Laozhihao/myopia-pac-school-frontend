@@ -108,7 +108,7 @@ export const OperationModal: React.FC<
         模板：
         <span
           className={styles.load_font}
-          onClick={() => window.open(getCorrectPath('excel/导入学生信息表格.xlsx'))}
+          onClick={() => window.open(getCorrectPath('excel/学生数据表模板.xlsx'))}
         >
           学生数据表模板.xls，点击下载
         </span>

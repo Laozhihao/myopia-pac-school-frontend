@@ -1,6 +1,6 @@
 import { ModalForm } from '@ant-design/pro-form';
 import DynamicForm from '@/components/DynamicForm';
-import MyEditor from '@/components/WangEditorModal';
+import MyEditor from '@/components/EditorModal';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import { deleteRedundantData, html2Escape, escape2Html } from '@/utils/common';
 import { useMemo, useRef, useState } from 'react';

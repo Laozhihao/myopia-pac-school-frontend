@@ -3,7 +3,7 @@ import styles from './pre-step.less';
 import type { IdsType } from '../index';
 import { getReportInfo } from '@/api/screen/plan';
 import { useMemo, useState, forwardRef } from 'react';
-import MyEditor from '@/components/WangEditorModal';
+import MyEditor from '@/components/EditorModal';
 import UploadDefaultImg from '@/assets/images/code.png';
 import { escape2Html } from '@/utils/common';
 import { uploadFile } from '@/api/common';

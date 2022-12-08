@@ -8,7 +8,7 @@ import qrcodeImg from '@/assets/images/qrcode.jpg';
 import { Step } from '../result/notice-report/components/step';
 import { FooterTips } from '../result/notice-report/components/footer-tips';
 import RightTips from './right-tips';
-import MyEditor from '@/components/WangEditorModal';
+import MyEditor from '@/components/EditorModal';
 import UploadDefaultImg from '@/assets/images/code.png';
 import { modalConfig, getPopupContainer } from '@/hook/ant-config';
 import { escape2Html, html2Escape } from '@/utils/common';

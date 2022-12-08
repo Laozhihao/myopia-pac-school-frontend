@@ -66,8 +66,7 @@
     "react-dom": "^17.0.0",
     "react-helmet-async": "^1.0.4",
     "umi": "^3.5.0",
-    "umi-serve": "^1.9.10",
-    "wangeditor": "^4.7.15"
+    "umi-serve": "^1.9.10"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^2.0.2",

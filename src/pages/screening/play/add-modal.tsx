@@ -310,6 +310,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       width={750}
       visible={props.visible}
       destroyOnClose
+      forceRender
       onCancel={onCancel}
       className={styles.modal}
       footer={[

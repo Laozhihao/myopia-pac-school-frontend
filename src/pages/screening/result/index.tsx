@@ -285,7 +285,7 @@ const ScreeningResult: React.FC = () => {
                         (eleItem: ProColumns<any, 'text'>[] | undefined, eleIndex: number) => (
                           <ProTable
                             columns={eleItem}
-                            rowKey="id"
+                            rowKey="validScreeningNum"
                             key={eleIndex}
                             className={styles.table}
                             search={false}

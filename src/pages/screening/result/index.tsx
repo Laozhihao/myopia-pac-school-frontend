@@ -182,10 +182,10 @@ const ScreeningResult: React.FC = () => {
 
   // 结果统计分析导出
   const onExport = (val: number) => {
-    // 筛查报告特殊处理，需要区分学校类型，幼儿园待处理
-    if (val === 0 && ActiveKey === '0') {
+    // 筛查报告特殊处理，暂时学校端只有视力筛查，没有常见病计划
+    if (val === 0) {
       showReport(
-        `reportType=word_visonPrimarySchool&schoolId=${initialState?.currentUser?.orgId}&planId=${screeningPlanId}`,
+        `reportType=word_visonSchool&schoolId=${initialState?.currentUser?.orgId}&planId=${screeningPlanId}`,
       );
       return;
     }

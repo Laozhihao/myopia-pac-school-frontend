@@ -25,6 +25,7 @@ import {
   // diseasesColumns1,
   // diseasesColumns2,
 } from './columns';
+import { getToken } from '@/hook/storage';
 import {
   getScreeningResult,
   exportScreeningStudent,
@@ -185,7 +186,9 @@ const ScreeningResult: React.FC = () => {
     // 筛查报告特殊处理，暂时学校端只有视力筛查，没有常见病计划
     if (val === 0) {
       showReport(
-        `reportType=word_visonSchool&schoolId=${initialState?.currentUser?.orgId}&planId=${screeningPlanId}`,
+        `reportType=word_visonSchool&schoolId=${
+          initialState?.currentUser?.orgId
+        }&planId=${screeningPlanId}&token=${getToken()}`,
       );
       return;
     }

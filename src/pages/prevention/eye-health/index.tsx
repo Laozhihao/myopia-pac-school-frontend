@@ -1,26 +1,26 @@
+import { history } from 'umi';
 import React, { useState, useRef, useMemo } from 'react';
 import { Badge, Button, Card, message, Modal, Space } from 'antd';
+import { PageContainer } from '@ant-design/pro-layout';
+import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
+import type { ProFormInstance } from '@ant-design/pro-form';
+import ProForm from '@ant-design/pro-form';
 import DynamicButtonGroup from '@/components/DynamicButtonGroup';
 import SwitchableButton from '@/components/SwitchableButton';
-import { PageContainer } from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
-import ProForm from '@ant-design/pro-form';
-import type { ProFormInstance } from '@ant-design/pro-form';
 import DynamicForm from '@/components/DynamicForm';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { listColumns } from './columns';
+import { ExportModal } from '@/pages/components/export-modal';
 import type { PreventionEyeHealthType } from './columns';
+import { listColumns } from './columns';
 import { convertData, deleteRedundantData } from '@/utils/common';
 import { EMPTY } from '@/utils/constant';
 import { FormItemOptions } from './form-item';
 import { TableListCtx } from '@/hook/ant-config';
-import { ExportModal } from '@/pages/components/export-modal';
 import {
   getAllGradeList,
   getExportEyeHealthData,
   getPreventionEyeHealthList,
 } from '@/api/prevention/eye-health';
-import { history } from 'umi';
 
 const TableList: React.FC = () => {
   const [searchForm, setSearchForm] = useState({}); // 搜索表单项
@@ -97,6 +97,7 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       fixed: 'right',
+      width: 44,
       render: (_, record) => {
         return [
           <DynamicButtonGroup key="operator">

@@ -196,3 +196,20 @@ export function getCorrectNum(num: any, digit = 2, prefix = '+') {
   const val = Number(num);
   return `${val >= 0 ? prefix : ''}${getFixedNum(val, digit)}`;
 }
+
+/**
+ * @desc 新开报告
+ * @param
+ */
+export const openReport = (cb: (path: string) => string) => {
+  // 获取当前域名
+  const { protocol, host } = location;
+  const hostPath = `${protocol}//${host}/report`;
+  const href = cb(hostPath);
+  window.open(decodeURIComponent(href), '_blank');
+};
+
+// 报告端
+export const showReport = (parm: string) => {
+  return openReport((path: string) => `${path}?${parm}`);
+};

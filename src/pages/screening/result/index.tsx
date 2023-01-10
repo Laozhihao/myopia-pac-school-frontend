@@ -1,6 +1,21 @@
-import React, { useMemo, Fragment, useEffect } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import styles from './index.less';
+import { history, useModel } from 'umi';
+import React, { useState, useMemo, Fragment, useEffect } from 'react';
 import { Tabs, Card, Button, message, Row, Col, Space } from 'antd';
+import moment from 'moment';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { PageContainer } from '@ant-design/pro-layout';
+import ProTable from '@ant-design/pro-table';
+import type { ProColumns } from '@ant-design/pro-table';
+import { AddModal } from './add-modal';
+import { NoticeReport } from './notice-report/index';
+import { StandardModal } from './modal/standard-modal';
+import { ExportArchivesModal } from './modal/export-modal';
+import { ExportModal } from '@/pages/components/export-modal';
+import { showReport } from '@/utils/common';
+import type { IdsType } from './notice-report/index';
+import { SCREENTYPEOPTIONS } from '@/utils/form-constant';
+import { EMPTY, DATE, SCREENING_TYPE_LIST, RELEASESTATUS } from '@/utils/constant';
 import {
   screeningColumns,
   teenagersSituationColumns,
@@ -10,29 +25,14 @@ import {
   // diseasesColumns1,
   // diseasesColumns2,
 } from './columns';
-import ProTable from '@ant-design/pro-table';
-import type { ProColumns } from '@ant-design/pro-table';
-import { InfoCircleOutlined } from '@ant-design/icons';
-import { history } from 'umi';
-import { AddModal } from './add-modal';
-import { NoticeReport } from './notice-report/index';
-import { ExportModal } from '@/pages/components/export-modal';
-import { StandardModal } from './modal/standard-modal';
-import { ExportArchivesModal } from './modal/export-modal';
-import { useState } from 'react';
-import { useModel } from 'umi';
+import { getToken } from '@/hook/storage';
 import {
   getScreeningResult,
   exportScreeningStudent,
   exportScreeningReport,
   exportScreeningData,
+  getScreeningDetail,
 } from '@/api/screen/plan';
-import styles from './index.less';
-import { EMPTY, DATE, SCREENING_TYPE_LIST, RELEASESTATUS } from '@/utils/constant';
-import { getScreeningDetail } from '@/api/screen/plan';
-import moment from 'moment';
-import type { IdsType } from './notice-report/index';
-import { SCREENTYPEOPTIONS } from '@/utils/form-constant';
 
 const { TabPane } = Tabs;
 
@@ -183,6 +183,15 @@ const ScreeningResult: React.FC = () => {
 
   // 结果统计分析导出
   const onExport = (val: number) => {
+    // 筛查报告特殊处理，暂时学校端只有视力筛查，没有常见病计划
+    if (val === 0) {
+      showReport(
+        `reportType=word_visonSchool&schoolId=${
+          initialState?.currentUser?.orgId
+        }&planId=${screeningPlanId}&token=${getToken()}`,
+      );
+      return;
+    }
     setExportType(val);
     setExportVisible(true);
   };
@@ -285,7 +294,7 @@ const ScreeningResult: React.FC = () => {
                         (eleItem: ProColumns<any, 'text'>[] | undefined, eleIndex: number) => (
                           <ProTable
                             columns={eleItem}
-                            rowKey="id"
+                            rowKey="validScreeningNum"
                             key={eleIndex}
                             className={styles.table}
                             search={false}

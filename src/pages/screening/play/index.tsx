@@ -1,29 +1,32 @@
+import styles from './index.less';
+import { history, useModel } from 'umi';
 import React, { useState, useRef } from 'react';
 import { Modal, Button, Card, message } from 'antd';
-import DynamicButtonGroup from '@/components/DynamicButtonGroup';
-import SwitchableButton from '@/components/SwitchableButton';
 import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
-import ProForm from '@ant-design/pro-form';
 import type { ProFormInstance } from '@ant-design/pro-form';
-import DynamicForm from '@/components/DynamicForm';
+import ProForm from '@ant-design/pro-form';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import styles from './index.less';
-import { listColumns } from './columns';
+import ProTable from '@ant-design/pro-table';
+import DynamicForm from '@/components/DynamicForm';
+import SwitchableButton from '@/components/SwitchableButton';
+import DynamicButtonGroup from '@/components/DynamicButtonGroup';
 import { AddModal } from './add-modal';
+import { listColumns } from './columns';
 import { PlanModal } from './modal/plan';
 import { TimeModal } from './modal/time';
-import { escape2Html, deleteRedundantData } from '@/utils/common';
-import { EMPTY } from '@/utils/constant';
-import { modalConfig } from '@/hook/ant-config';
-import { getScreeningList, deleteScreeningPlan, releaseScreeningPlan } from '@/api/screen/plan';
 import { FormItemOptions } from './form-item';
+import { EMPTY } from '@/utils/constant';
+import { escape2Html, deleteRedundantData } from '@/utils/common';
+import { modalConfig } from '@/hook/ant-config';
 import { TableListCtx } from '@/hook/ant-config';
 import { deleteTableRow, secondaryConfirmation } from '@/hook/table';
-import { history } from 'umi';
+import { getScreeningList, deleteScreeningPlan, releaseScreeningPlan } from '@/api/screen/plan';
 
 const TableList: React.FC = () => {
+  // 获取当前学校信息
+  const { initialState } = useModel('@@initialState');
+  const { currentUser } = initialState!;
   const [currentRow, setCurrentRow] = useState<API.ObjectType>();
   const [createModalVisible, handleModalVisible] = useState(false);
   const [textModalVisible, setTextModalVisible] = useState(false); // 筛查内容visible
@@ -220,11 +223,15 @@ const TableList: React.FC = () => {
           options={false}
           actionRef={tableRef}
           columnEmptyText={EMPTY}
-          toolBarRender={() => [
-            <Button type="primary" icon={<PlusOutlined />} onClick={() => onHandle()}>
-              创建
-            </Button>,
-          ]}
+          toolBarRender={() =>
+            currentUser?.isIndependentScreening
+              ? [
+                  <Button type="primary" icon={<PlusOutlined />} onClick={() => onHandle()}>
+                    创建
+                  </Button>,
+                ]
+              : []
+          }
           request={async (params) => {
             const datas = await getScreeningList({
               ...searchForm,

@@ -8,7 +8,7 @@ import RightContent from '@/components/RightContent';
 import { HttpStatusEnum } from '@/enums/http-enum';
 import { getToken, getUser, getRefreshToken, clearStorage, setToken } from '@/hook/storage';
 import { checkStatus } from '@/axios/check-status';
-import customMenuDate from '../config/routes';
+import customRoutes from '../config/customRoutes';
 import { refreshToken } from './api/common';
 
 const loginPath = '/user/login';
@@ -43,8 +43,8 @@ export async function getInitialState(): Promise<{
  */
 const filterRoutes = (initialState) => {
   const result: any[] = [];
-  customMenuDate.forEach((item) =>
-    result.push(item?.filter ? (initialState[item.filter] ? item : '') : item),
+  customRoutes.forEach((item) =>
+    result.push(item?.filter ? (initialState && initialState[item.filter] ? item : '') : item),
   );
   return result.filter(Boolean);
 };

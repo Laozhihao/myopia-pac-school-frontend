@@ -187,7 +187,8 @@ const TableList: React.FC = () => {
                   //   学校问卷
                   // </SwitchableButton>,
                 ]
-              : [
+              : record.screeningBizType
+              ? [
                   <Button type="link" key="edit" onClick={() => onHandle(record)}>
                     编辑
                   </Button>,
@@ -197,7 +198,8 @@ const TableList: React.FC = () => {
                   <Button type="link" key="release" onClick={() => onRelease(record?.planId!)}>
                     发布
                   </Button>,
-                ]}
+                ]
+              : []}
           </DynamicButtonGroup>,
         ];
       },

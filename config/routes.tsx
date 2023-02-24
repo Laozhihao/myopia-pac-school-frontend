@@ -1,3 +1,11 @@
+import {
+  ProfileOutlined,
+  EyeOutlined,
+  ProjectOutlined,
+  CommentOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
+
 export default [
   {
     path: '/user',
@@ -9,7 +17,7 @@ export default [
   },
   {
     name: '学生管理',
-    icon: 'profile',
+    icon: <ProfileOutlined />,
     path: '/student',
     hideChildrenInMenu: true,
     routes: [
@@ -19,7 +27,7 @@ export default [
   },
   {
     name: '视力筛查',
-    icon: 'eye',
+    icon: <EyeOutlined />,
     path: '/screening',
     routes: [
       {
@@ -48,8 +56,9 @@ export default [
   },
   {
     name: '防控中心',
-    icon: 'project',
+    icon: <ProjectOutlined />,
     path: '/prevention',
+    filter: 'isIndependentScreening',
     routes: [
       {
         name: '眼健康中心',
@@ -68,10 +77,10 @@ export default [
       },
     ],
   },
-  { name: '消息中心', icon: 'comment', path: '/info-center', component: './infoCenter' },
+  { name: '消息中心', icon: <CommentOutlined />, path: '/info-center', component: './infoCenter' },
   {
     name: '学校管理',
-    icon: 'setting',
+    icon: <SettingOutlined />,
     path: '/school',
     hideChildrenInMenu: true,
     routes: [

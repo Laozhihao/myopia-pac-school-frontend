@@ -43,7 +43,8 @@ const TableList: React.FC = () => {
 
   const [addModalVisible, setAddModalVisible] = useState(false); // 新增筛查学生
 
-  const { query: { screeningPlanId, screeningBizType } = {} } = history.location;
+  // const { query: { screeningPlanId, screeningBizType } = {} } = history.location;
+  const { query: { screeningPlanId } = {} } = history.location;
 
   /**
    * @desc 获取年级班级
@@ -174,7 +175,8 @@ const TableList: React.FC = () => {
             </p>
           }
           toolBarRender={() => [
-            screeningBizType === '1' && isHasScreeningStudent ? (
+            // screeningBizType === '1' && 暂时放开，协助筛查也可以新增，默认只有自主筛查的才可以新增
+            isHasScreeningStudent ? (
               <Button type="primary" key="add" onClick={() => setAddModalVisible(true)}>
                 新增筛查学生
               </Button>

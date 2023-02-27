@@ -50,6 +50,7 @@ export default [
     name: '防控中心',
     icon: 'project',
     path: '/prevention',
+    filter: 'isIndependentScreening',
     routes: [
       {
         name: '眼健康中心',

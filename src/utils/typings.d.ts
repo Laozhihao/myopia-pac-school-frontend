@@ -36,6 +36,7 @@ declare namespace API {
     realName?: string;
     orgId?: number; // 学校id
     orgName?: string;
+    isIndependentScreening?: boolean; // 是否支持自主筛查
   };
 
   type ModalDataType = {

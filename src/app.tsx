@@ -1,14 +1,15 @@
-import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
-import { HttpStatusEnum } from '@/enums/http-enum';
-import { Spin } from 'antd';
+import Logo from '@/assets/images/logo@2x.png';
 import type { RunTimeLayoutConfig, RequestConfig } from 'umi';
 import { history, request as requestFn } from 'umi';
-import RightContent from '@/components/RightContent';
+import { Spin } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import RightContent from '@/components/RightContent';
+import { HttpStatusEnum } from '@/enums/http-enum';
 import { getToken, getUser, getRefreshToken, clearStorage, setToken } from '@/hook/storage';
 import { checkStatus } from '@/axios/check-status';
+import customRoutes from '../config/customRoutes';
 import { refreshToken } from './api/common';
-import Logo from '@/assets/images/logo@2x.png';
 
 const loginPath = '/user/login';
 
@@ -35,6 +36,18 @@ export async function getInitialState(): Promise<{
     },
   };
 }
+
+/**
+ * @desc 根据权限查是否支持自主筛查
+ * @param initialState 学校信息
+ */
+const filterRoutes = (initialState) => {
+  const result: any[] = [];
+  customRoutes.forEach((item) =>
+    result.push(item?.filter ? (initialState && initialState[item.filter] ? item : '') : item),
+  );
+  return result.filter(Boolean);
+};
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
@@ -68,6 +81,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       }
     },
     menuHeaderRender: undefined,
+    menuDataRender: () => {
+      return filterRoutes(initialState?.currentUser);
+    },
     pageTitleRender: () => '近视防控学校平台',
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,

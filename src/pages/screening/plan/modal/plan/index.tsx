@@ -28,7 +28,9 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
       modalRef?.current?.setFieldsValue({
         ...currentRow,
         time: currentRow ? [currentRow?.startTime, currentRow?.endTime] : [],
-        gradeIds: data.map((item: API.GradeInfoType) => item?.isSelect),
+        gradeIds: data
+          .map((item: API.GradeInfoType) => item?.isSelect && item.gradeId)
+          .filter(Boolean),
       });
     }
   }, [visible]);

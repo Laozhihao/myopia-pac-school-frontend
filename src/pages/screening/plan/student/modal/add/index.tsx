@@ -24,7 +24,9 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       const { data } = await getScreeningStudent({ screeningPlanId });
       setScreeningStudentInfo(data);
       modalRef?.current?.setFieldsValue({
-        gradeIds: data.map((item: API.GradeInfoType) => item?.isSelect),
+        gradeIds: data
+          .map((item: API.GradeInfoType) => item?.isSelect && item.gradeId)
+          .filter(Boolean),
       });
     }
   }, [visible]);

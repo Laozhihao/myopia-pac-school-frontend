@@ -57,20 +57,22 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       }}
     >
       <div className={styles.info}>
-        <p>当前计划已选中的年级：</p>
-        <p className={styles.info_grade}>
-          {screeningStudentInfo?.selectList
-            ?.map((item: API.GradeInfoType & { studentNum?: number }) => item.gradeName)
-            ?.join('、')}
+        <p>新增筛查学生使用说明：</p>
+        <p>1.请勾选您要添加至本次筛查计划的学生，可按照年级/或班级批量添加。</p>
+        <p>
+          2.如果您已经添加过筛查学生，且在学校中新增了学生档案信息，并想将学生添加入本次筛查，完成档案添加后，请重新点击新增筛查学生并选中所处的年级班级，系统将会为您更新筛查学生列表，不会影响原有筛查计划中的学生信息。
         </p>
       </div>
       <Form.Item label="新增筛查学生" rules={defaultRulesConfig('选择筛查学生')} name="gradeIds">
         <Checkbox.Group className={styles.checkbox_item}>
           {screeningStudentInfo?.noSelectList?.map(
-            (item: API.GradeInfoType & { studentNum?: number }) => (
-              <Checkbox value={item.gradeId} key={item.gradeId}>
-                {item?.gradeName} ({item?.studentNum})
-              </Checkbox>
+            (item: API.GradeInfoType & { unImportedStudentNum?: number; studentNum?: number }) => (
+              <div key={item.gradeId}>
+                <Checkbox value={item.gradeId}>
+                  {item?.gradeName} (未添加到筛查计划：{item?.unImportedStudentNum}；年级人数：
+                  {item?.studentNum})
+                </Checkbox>
+              </div>
             ),
           )}
         </Checkbox.Group>

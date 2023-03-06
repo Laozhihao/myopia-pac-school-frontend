@@ -13,7 +13,7 @@ import { EMPTY } from '@/utils/constant';
 import { modalConfig } from '@/hook/ant-config';
 import { getScreeningNoticeList } from '@/api/screen/notice';
 import { history } from 'umi';
-import { PlanModal } from '../play/modal/plan';
+import { PlanModal } from '../plan/modal/plan';
 
 const TableList: React.FC = () => {
   const [textModalVisible, setTextModalVisible] = useState(false); // 筛查内容visible
@@ -41,7 +41,7 @@ const TableList: React.FC = () => {
    * @desc 查看筛查计划
    */
   const onRouterPlan = () => {
-    history.push('/screening/play');
+    history.push('/screening/plan');
   };
 
   /**

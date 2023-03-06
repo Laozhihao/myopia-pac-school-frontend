@@ -15,7 +15,7 @@ import type { ProFormInstance } from '@ant-design/pro-form';
 import { getStudentDetail, getStudentScreen } from '@/api/student';
 import { getCascaderOption } from '@/hook/district';
 import { getschoolGrade } from '@/api/school';
-import { DetailModal } from '@/pages/screening/play/student/modal/detail';
+import { DetailModal } from '@/pages/screening/plan/student/modal/detail';
 import { DATE } from '@/utils/constant';
 import { formatLength } from '@/utils/common';
 import type { ScreeningStudentRecordType } from './columns';

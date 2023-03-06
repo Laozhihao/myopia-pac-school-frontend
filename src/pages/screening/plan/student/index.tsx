@@ -178,7 +178,7 @@ const TableList: React.FC = () => {
             // screeningBizType === '1' && 暂时放开，协助筛查也可以新增，默认只有自主筛查的才可以新增
             isHasScreeningStudent ? (
               <Button type="primary" key="add" onClick={() => setAddModalVisible(true)}>
-                新增筛查学生
+                新增/同步筛查学生
               </Button>
             ) : null,
           ]}
@@ -199,7 +199,7 @@ const TableList: React.FC = () => {
           columns={columns}
         />
       </TableListCtx.Provider>
-      <AddModal visible={addModalVisible} onCancel={onCancel} />
+      <AddModal title="新增/同步筛查学生" visible={addModalVisible} onCancel={onCancel} />
       <DetailModal
         {...detailInfo}
         onCancel={() => setDetailInfo((s) => ({ ...s, visible: false, currentRow: {} }))}

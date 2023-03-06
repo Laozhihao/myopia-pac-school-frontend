@@ -98,12 +98,13 @@ export const FormItemOptions = (
               <Checkbox.Group className={styles.checkbox_item} onChange={onChange}>
                 {studentOption.map((item) => (
                   <Checkbox value={item.gradeId} key={item.gradeId}>
-                    {item?.gradeName}({item?.studentNum})
+                    {/* {item?.gradeName}({item?.studentNum}) */}
+                    {item?.gradeName}
                   </Checkbox>
                 ))}
               </Checkbox.Group>
             </Form.Item>
-            <div className={styles.total_part}>合计{total}人</div>
+            {/* <div className={styles.total_part}>合计{total}人</div> */}
             {!total ? (
               <div className={styles.tip}>
                 <p className="secondary_text">

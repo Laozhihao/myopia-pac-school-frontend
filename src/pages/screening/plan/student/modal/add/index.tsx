@@ -66,10 +66,10 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       <Form.Item label="新增筛查学生" rules={defaultRulesConfig('选择筛查学生')} name="gradeIds">
         <Checkbox.Group className={styles.checkbox_item}>
           {screeningStudentInfo?.noSelectList?.map(
-            (item: API.GradeInfoType & { unImportedStudentNum?: number; studentNum?: number }) => (
+            (item: API.GradeInfoType & { unSyncStudentNum?: number; studentNum?: number }) => (
               <div key={item.gradeId}>
                 <Checkbox value={item.gradeId}>
-                  {item?.gradeName} (未添加到筛查计划：{item?.unImportedStudentNum}；年级人数：
+                  {item?.gradeName} (未添加到筛查计划：{item?.unSyncStudentNum}；年级人数：
                   {item?.studentNum})
                 </Checkbox>
               </div>

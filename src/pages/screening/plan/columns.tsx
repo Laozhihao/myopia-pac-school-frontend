@@ -78,6 +78,9 @@ export const listColumns: (show: (dom: any) => void) => ProColumns[] = (show) =>
   {
     title: '实际筛查学生数',
     dataIndex: 'realScreeningNumbers',
+    render: (text, record) => {
+      return record.status ? text : EMPTY;
+    },
   },
   {
     title: '筛查机构',

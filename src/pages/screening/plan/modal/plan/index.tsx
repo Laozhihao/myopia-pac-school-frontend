@@ -11,10 +11,7 @@ import { message, Form, Col } from 'antd';
 
 export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }> = (props) => {
   const modalRef = useRef<ProFormInstance>();
-  const [screeningStudentInfo, setScreeningStudentInfo] = useState<API.ObjectType>({
-    allList: [],
-    selectList: [],
-  });
+  const [screeningStudentInfo, setScreeningStudentInfo] = useState<API.ObjectType[]>([]);
   const [contentValue, setContentValue] = useState('');
 
   const { title, visible, currentRow, param = {} } = props;
@@ -26,14 +23,12 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
     if (visible) {
       const parm = currentRow ? { screeningPlanId: currentRow?.planId } : undefined;
       setContentValue(currentRow?.content ? escape2Html(escape2Html(currentRow?.content)) : '');
-      const { data = {} } = await getScreeningStudent(parm);
+      const { data } = await getScreeningStudent(parm);
       setScreeningStudentInfo(data);
       modalRef?.current?.setFieldsValue({
         ...currentRow,
         time: currentRow ? [currentRow?.startTime, currentRow?.endTime] : [],
-        gradeIds: currentRow
-          ? data?.selectList.map((item: API.GradeInfoType) => item.gradeId)
-          : data?.allList?.map((item: API.GradeInfoType) => item.gradeId),
+        gradeIds: data.map((item: API.GradeInfoType) => item?.isSelect),
       });
     }
   }, [visible]);
@@ -80,14 +75,7 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
         onCancel: () => props.onCancel(false),
       }}
     >
-      <DynamicForm
-        {...FormItemOptions(
-          screeningStudentInfo?.allList,
-          screeningStudentInfo?.selectList,
-          currentRow,
-        )}
-        isNeedBtn={false}
-      >
+      <DynamicForm {...FormItemOptions(screeningStudentInfo)} isNeedBtn={false}>
         <Col span={24}>
           <Form.Item label="筛查内容">
             <MyEditor

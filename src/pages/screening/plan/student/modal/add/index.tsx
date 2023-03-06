@@ -12,10 +12,7 @@ import { addScreeningStudentList } from '@/api/screen/student';
 export const AddModal: React.FC<API.ModalItemType> = (props) => {
   const modalRef = useRef<ProFormInstance>();
   const { title, visible } = props;
-  const [screeningStudentInfo, setScreeningStudentInfo] = useState<API.ObjectType>({
-    noSelectList: [],
-    selectList: [],
-  });
+  const [screeningStudentInfo, setScreeningStudentInfo] = useState<API.ObjectType[]>([]);
 
   const { query: { screeningPlanId } = {} } = history.location;
 
@@ -24,8 +21,11 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
    */
   useMemo(async () => {
     if (visible) {
-      const { data = {} } = await getScreeningStudent({ screeningPlanId });
+      const { data } = await getScreeningStudent({ screeningPlanId });
       setScreeningStudentInfo(data);
+      modalRef?.current?.setFieldsValue({
+        gradeIds: data.map((item: API.GradeInfoType) => item?.isSelect),
+      });
     }
   }, [visible]);
 
@@ -65,7 +65,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       </div>
       <Form.Item label="新增筛查学生" rules={defaultRulesConfig('选择筛查学生')} name="gradeIds">
         <Checkbox.Group className={styles.checkbox_item}>
-          {screeningStudentInfo?.noSelectList?.map(
+          {screeningStudentInfo?.map(
             (item: API.GradeInfoType & { unSyncStudentNum?: number; studentNum?: number }) => (
               <div key={item.gradeId}>
                 <Checkbox value={item.gradeId}>

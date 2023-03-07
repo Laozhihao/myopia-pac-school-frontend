@@ -143,7 +143,7 @@ const TableList: React.FC = () => {
                     icon="icon-Team"
                     onClick={() =>
                       onJumpRouter(
-                        `/screening/play/student?screeningPlanId=${record?.planId}&screeningBizType=${record?.screeningBizType}`,
+                        `/screening/plan/student?screeningPlanId=${record?.planId}&screeningBizType=${record?.screeningBizType}`,
                       )
                     }
                   >
@@ -175,7 +175,7 @@ const TableList: React.FC = () => {
                     disabled={!record?.hasScreeningResults}
                     tooltip={!record?.hasScreeningResults ? '当前没有筛查结果' : ''}
                     onClick={() =>
-                      onJumpRouter(`/screening/play/result/?screeningPlanId=${record?.planId}`)
+                      onJumpRouter(`/screening/plan/result/?screeningPlanId=${record?.planId}`)
                     }
                   >
                     筛查结果

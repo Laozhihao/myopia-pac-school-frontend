@@ -102,5 +102,6 @@ declare namespace API {
   type GradeInfoType = {
     gradeId?: React.Key;
     gradeName?: string;
+    isSelect?: boolean;
   };
 }

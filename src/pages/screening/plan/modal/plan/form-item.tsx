@@ -7,15 +7,7 @@ import type { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import moment from 'moment';
 import { history } from 'umi';
 
-type StudentOptionType = {
-  studentNum?: number;
-} & API.GradeInfoType;
-
-export const FormItemOptions = (
-  studentOption: StudentOptionType[],
-  selectStudentOption: StudentOptionType[],
-  currentRow?: API.ObjectType,
-) => {
+export const FormItemOptions = (studentOption: API.ObjectType[]) => {
   const [total, setTotal] = useState(0); // 选中的学生总数
 
   useEffect(() => {
@@ -23,13 +15,7 @@ export const FormItemOptions = (
       .map((item) => item?.studentNum)
       .reduce((pre, item) => pre! + item!, 0)!;
     // 合计
-    setTotal(
-      currentRow
-        ? selectStudentOption
-            .map((item) => item?.studentNum)
-            .reduce((pre, item) => pre! + item!, 0)!
-        : allStudentTotal,
-    );
+    setTotal(allStudentTotal);
   }, [studentOption]);
 
   // 选中学生数
@@ -98,12 +84,13 @@ export const FormItemOptions = (
               <Checkbox.Group className={styles.checkbox_item} onChange={onChange}>
                 {studentOption.map((item) => (
                   <Checkbox value={item.gradeId} key={item.gradeId}>
-                    {item?.gradeName}({item?.studentNum})
+                    {/* {item?.gradeName}({item?.studentNum}) */}
+                    {item?.gradeName}
                   </Checkbox>
                 ))}
               </Checkbox.Group>
             </Form.Item>
-            <div className={styles.total_part}>合计{total}人</div>
+            {/* <div className={styles.total_part}>合计{total}人</div> */}
             {!total ? (
               <div className={styles.tip}>
                 <p className="secondary_text">

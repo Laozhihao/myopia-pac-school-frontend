@@ -28,18 +28,18 @@ export default [
         name: '筛查通知',
       },
       {
-        path: '/screening/play',
-        component: './screening/play',
+        path: '/screening/plan',
+        component: './screening/plan',
         name: '筛查计划',
       },
       {
         name: '筛查学生列表',
-        path: '/screening/play/student',
-        component: './screening/play/student',
+        path: '/screening/plan/student',
+        component: './screening/plan/student',
         hideInMenu: true,
       },
       {
-        path: '/screening/play/result',
+        path: '/screening/plan/result',
         component: './screening/result',
         name: '筛查结果',
         hideInMenu: true,

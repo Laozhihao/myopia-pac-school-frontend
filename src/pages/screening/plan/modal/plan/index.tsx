@@ -29,8 +29,10 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
         ...currentRow,
         time: currentRow ? [currentRow?.startTime, currentRow?.endTime] : [],
         gradeIds: data
-          .map((item: API.GradeInfoType) => item?.isSelect && item.gradeId)
-          .filter(Boolean),
+          .map((item: API.GradeInfoType) =>
+            currentRow ? item?.isSelect && item.gradeId : item.gradeId,
+          )
+          .filter(Boolean), // 创建默认全选，编辑按 isSelect
       });
     }
   }, [visible]);

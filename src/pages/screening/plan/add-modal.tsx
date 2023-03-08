@@ -153,6 +153,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     setPrintTypeArr(dynamicPrintTypeArr);
     // 根据权限显示默认匹配第一个二维码类型，没有则默认显示告知书
     setPrintType(confitArr[1] ?? 0);
+    formRef?.setFieldsValue({ printType: confitArr[1] ?? 0 });
   }, [props?.visible, props?.currentRow]);
 
   // 监听选择的年级和班级
@@ -319,7 +320,13 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
             {current === 1 ? '上一步' : '取消'}
           </Button>
           {isNotEmpty(printType) ? (
-            <Button loading={loading} key="export" type="primary" onClick={nextClickHandle}>
+            <Button
+              loading={loading}
+              key="export"
+              type="primary"
+              disabled={Boolean((printType || current) && !props?.currentRow?.planScreeningNumbers)}
+              onClick={nextClickHandle}
+            >
               {printType || current ? '生成' : '下一步'}
             </Button>
           ) : (
@@ -333,12 +340,8 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
       <Form {...(current ? {} : layout)} form={formRef} preserve={false}>
         {current === 0 ? (
           <>
-            <Form.Item label="打印类型" required>
-              <Radio.Group
-                defaultValue={printType}
-                buttonStyle="solid"
-                onChange={onPrintTypeChange}
-              >
+            <Form.Item label="打印类型" name="printType" required>
+              <Radio.Group buttonStyle="solid" onChange={onPrintTypeChange}>
                 <Space size={10}>
                   {printTypeArr.map((item: any) => (
                     <Radio.Button value={item.type} key={item.type}>

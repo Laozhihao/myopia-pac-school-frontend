@@ -319,7 +319,13 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
             {current === 1 ? '上一步' : '取消'}
           </Button>
           {isNotEmpty(printType) ? (
-            <Button loading={loading} key="export" type="primary" onClick={nextClickHandle}>
+            <Button
+              loading={loading}
+              key="export"
+              type="primary"
+              disabled={(printType || current) && !props?.currentRow?.planScreeningNumbers}
+              onClick={nextClickHandle}
+            >
               {printType || current ? '生成' : '下一步'}
             </Button>
           ) : (

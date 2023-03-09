@@ -37,6 +37,7 @@ declare namespace API {
     orgId?: number; // 学校id
     orgName?: string;
     isIndependentScreening?: boolean; // 是否支持自主筛查
+    districtDetail?: array; // 区域信息
   };
 
   type ModalDataType = {

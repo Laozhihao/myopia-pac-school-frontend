@@ -38,6 +38,7 @@ declare namespace API {
     orgName?: string;
     isIndependentScreening?: boolean; // 是否支持自主筛查
     districtDetail?: array; // 区域信息
+    dataSubmitConfig?: array; // 数据报送配置信息
   };
 
   type ModalDataType = {

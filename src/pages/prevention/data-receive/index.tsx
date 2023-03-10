@@ -72,11 +72,13 @@ const TableList: React.FC = () => {
         }}
       />
 
-      <OperationModal
-        visible={operationVisible}
-        typeKey={'import'}
-        onCancel={(refresh) => onCancel(refresh)}
-      />
+      {operationVisible ? (
+        <OperationModal
+          visible={operationVisible}
+          typeKey={'import'}
+          onCancel={(refresh) => onCancel(refresh)}
+        />
+      ) : null}
     </PageContainer>
   );
 };

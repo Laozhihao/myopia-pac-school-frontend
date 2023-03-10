@@ -1,38 +1,55 @@
 import styles from './operation-modal.less';
 import { useModel } from 'umi';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import type { RadioChangeEvent } from 'antd';
-import { Upload, message, Modal, Radio, Space } from 'antd';
+import { Upload, message, Modal, Radio, Space, Button } from 'antd';
 import { CloudUploadOutlined } from '@ant-design/icons';
-import { modalConfig } from '@/hook/ant-config';
-import { saveDataSubmitFile } from '@/api/prevention/data-receive';
+import { reportModalConfig } from '@/hook/ant-config';
+import { saveDataSubmitFile, getSchoolDataSubmitTemplate } from '@/api/prevention/data-receive';
 
 const { Dragger } = Upload;
 
 export const OperationModal: React.FC<API.ModalItemType & { typeKey?: string }> = (props) => {
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState!;
-  // 是否是长沙市及以下归属
-  const isChangSha = currentUser?.districtDetail?.some((item) =>
-    String(item.code).startsWith('4301'),
+
+  // 是否配置了超出一种数据上报类型
+  const isMultiple = currentUser?.dataSubmitConfig?.length > 1;
+  const [step, setStep] = useState<number>(0); // 选择步骤，只有当存在数据上报类型多个才需要
+  const [submitTips, setSubmitTips] = useState<string>(''); // 报错错误提示
+
+  // 数据上报类型，超出一种不选择，只有一种默认选择
+  const [submitType, setSubmitType] = useState<number>(
+    isMultiple ? undefined : currentUser?.dataSubmitConfig[0],
   );
 
-  const { typeKey } = props;
+  const onSubmitTypeChange = (e: RadioChangeEvent) => {
+    setSubmitType(e.target.value);
+  };
+
+  /**
+   * @desc 保存数据报送适配器选择回调
+   */
+  const onSaveBubmitType = () => {
+    const isError = submitType === undefined;
+    setSubmitTips(isError ? '请选择对应的数据报送表格适配器' : '');
+    setStep(isError ? 0 : 1);
+  };
+
+  const { typeKey, visible } = props;
 
   const [fileList, setFileList] = useState<any[]>([]); // 导入file
   const [loading, setLoading] = useState(false); // 确认按钮loading
 
   // 数据报送类型
-  const dataSubmissionTypeArr = [
-    { type: 0, text: '国家表格' },
-    { type: 1, text: '长沙市数据报送适配器（教育版）' },
-  ];
-  // 默认选中长沙市数据报送适配器（教育版）
-  const [submitType, setSubmitType] = useState<number>(isChangSha ? 1 : 0);
-
-  const onSubmitTypeChange = (e: RadioChangeEvent) => {
-    setSubmitType(e.target.value);
-  };
+  const [dataSubmissionTypeArr, setDataSubmitTypeArr] = useState<any[]>([]);
+  useMemo(async () => {
+    if (visible) {
+      // 获取数据报送模板信息
+      const { data } = await getSchoolDataSubmitTemplate();
+      setDataSubmitTypeArr(data ?? []);
+    }
+  }, [visible]);
 
   const onCancel = () => {
     // 清空上一次保存的文件
@@ -86,58 +103,70 @@ export const OperationModal: React.FC<API.ModalItemType & { typeKey?: string }> 
   };
 
   return (
+    // footer={!isMultiple || step ? true : null}
     <Modal
-      title="新建数据送报表格导出"
-      width={800}
+      title={isMultiple ? '数据报送表格适配器选择' : '新建数据送报表格导出'}
+      className={!isMultiple || step ? '' : 'noSaveType'}
       visible={props.visible}
       onOk={onComfirm}
       destroyOnClose
       confirmLoading={loading}
       onCancel={onCancel}
-      {...modalConfig}
+      {...reportModalConfig}
     >
-      {isChangSha ? (
-        <Radio.Group
-          className={styles.mb10}
-          buttonStyle="solid"
-          onChange={onSubmitTypeChange}
-          value={submitType}
-        >
-          <Space size={10}>
-            {dataSubmissionTypeArr.map((item: any) => (
-              <Radio.Button value={item.type} key={item.type}>
-                {item.text}
-              </Radio.Button>
-            ))}
-          </Space>
-        </Radio.Group>
+      {isMultiple && !step ? (
+        <>
+          <p className={styles.mb10}>1.您配置了多个数据报送的适配器，请选择对应的适配器。</p>
+          <p className={styles.mb10}>
+            2.说明：不同的是配置对应需要上传的表格和导出的表格内容不同，请根据实际情况选用。
+          </p>
+          <Radio.Group
+            className={styles.mb10}
+            buttonStyle="solid"
+            onChange={onSubmitTypeChange}
+            value={submitType}
+          >
+            <Space size={10}>
+              {dataSubmissionTypeArr
+                .filter((item) => currentUser?.dataSubmitConfig?.includes(item.type))
+                .map((item: any) => (
+                  <Radio.Button value={item.type} key={item.type}>
+                    {item.desc}
+                  </Radio.Button>
+                ))}
+            </Space>
+          </Radio.Group>
+          <div className={styles.stepBtnW}>
+            <div>
+              <Button className={styles.sureBtn} type="primary" onClick={onSaveBubmitType}>
+                确定
+              </Button>
+            </div>
+            {submitTips && submitType === undefined ? (
+              <div className={styles.redFont}>{submitTips}</div>
+            ) : (
+              ''
+            )}
+          </div>
+        </>
       ) : (
         ''
       )}
-      {submitType ? (
+      {!isMultiple || step ? (
         <>
-          <p className={styles.explain}>1.您配置了多个数据报送的适配器，请选择对应的适配器。</p>
+          <p className={styles.explain}>1.请从对应的数据源网站下载近视防控学生数据模板</p>
           <p className={styles.explain}>
-            2.说明：不同的是配置对应需要上传的表格和导出的表格内容不同，请根据实际情况选用。
+            2.系统将根据学籍号进行记录匹配，系统将取学生最后一次筛查数据进行匹配
           </p>
+          <p className={styles.explain}>3.完成匹配后将通过站内信通知您下载补全完整的数据表格</p>
+          <Dragger {...loadProps}>
+            <CloudUploadOutlined className={styles.icon} />
+            <p className="ant-upload-hint">点击导入excel</p>
+          </Dragger>
         </>
       ) : (
-        <>
-          <p className={styles.explain}>1.请从中国学生体质健康网数据报送平台下载视力数据模板</p>
-          <p className={styles.explain}>
-            2.系统将会默认填充右眼裸眼视力、左眼裸眼视力、右眼屈光度(球镜、
-            柱镜、轴位)、左眼屈光度(球镜、柱镜、轴位)
-          </p>
-          <p className={styles.explain}>
-            3.系统将根据学籍号进行记录匹配，系统将取学生最后一次筛查数据进行匹配
-          </p>
-          <p className={styles.explain}>4.完成匹配后将通过站内信通知您下载补全完整的数据表格</p>
-        </>
+        ''
       )}
-      <Dragger {...loadProps}>
-        <CloudUploadOutlined className={styles.icon} />
-        <p className="ant-upload-hint">点击导入excel</p>
-      </Dragger>
     </Modal>
   );
 };

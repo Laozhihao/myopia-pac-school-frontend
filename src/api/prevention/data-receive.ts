@@ -25,3 +25,10 @@ export async function getDataSubmitFileUrl(id: React.Key, options?: API.ObjectTy
     ...(options || {}),
   });
 }
+
+/** 数据报送模板列表 GET /school/prevention/data/submit/template */
+export async function getSchoolDataSubmitTemplate() {
+  return request<API.RequestResult>('/school/prevention/data/submit/template', {
+    method: 'GET',
+  });
+}

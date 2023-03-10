@@ -118,7 +118,7 @@ export const OperationModal: React.FC<API.ModalItemType & { typeKey?: string }> 
         <>
           <p className={styles.mb10}>1.您配置了多个数据报送的适配器，请选择对应的适配器。</p>
           <p className={styles.mb10}>
-            2.说明：不同的是配置对应需要上传的表格和导出的表格内容不同，请根据实际情况选用。
+            2.说明：不同的适配器配置需要上传对应的表格，请根据实际情况选用。
           </p>
           <Radio.Group
             className={styles.mb10}

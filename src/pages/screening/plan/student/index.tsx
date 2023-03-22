@@ -1,25 +1,27 @@
-import { Button, Card } from 'antd';
+import { history } from 'umi';
+import { Button, message, Card } from 'antd';
 import React, { useState, useRef, useMemo } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
+import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
 import type { ProFormInstance } from '@ant-design/pro-form';
 import ProForm from '@ant-design/pro-form';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import DynamicForm from '@/components/DynamicForm';
-import ProTable from '@ant-design/pro-table';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { listColumns } from './columns';
-import { EMPTY } from '@/utils/constant';
 import SwitchableButton from '@/components/SwitchableButton';
-import { FormItemOptions } from './form-item';
 import DynamicButtonGroup from '@/components/DynamicButtonGroup';
-import { convertData } from '@/utils/common';
-import { AddModal } from './modal/add/index';
-import { TableListCtx } from '@/hook/ant-config';
-import { getschoolGrade } from '@/api/school';
-import { getScreeningStudentList } from '@/api/screen/student';
-import { history } from 'umi';
 import { DetailModal } from './modal/detail/index';
 import { StandardModal } from '../../result/modal/standard-modal';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { listColumns } from './columns';
+import { EMPTY } from '@/utils/constant';
+import { FormItemOptions } from './form-item';
+import { convertData } from '@/utils/common';
+import { AddModal } from './modal/add/index';
+import { deleteTableRow } from '@/hook/table';
+import { TableListCtx } from '@/hook/ant-config';
+import { getschoolGrade } from '@/api/school';
+import { getScreeningStudentList, delPlanStudent } from '@/api/screen/student';
+
 import styles from './index.less';
 
 const TableList: React.FC = () => {
@@ -106,6 +108,17 @@ const TableList: React.FC = () => {
     setStandardModalVisible(true);
   };
 
+  /**
+   * @desc 删除
+   */
+  const onDelete = (row: API.ScreeningStudentListItem) => {
+    deleteTableRow('该学生数据', async () => {
+      await delPlanStudent(row?.planStudentId!);
+      message.success('删除成功');
+      onSearch();
+    });
+  };
+
   const columns: ProColumns<API.ScreeningStudentListItem>[] = [
     ...listColumns,
     {
@@ -116,6 +129,9 @@ const TableList: React.FC = () => {
       width: 80,
       render: (_, record) => [
         <DynamicButtonGroup key="operator">
+          <Button type="link" onClick={() => onDelete(record)}>
+            删除
+          </Button>
           <SwitchableButton
             key="detail"
             icon="icon-a-Group1000006854"

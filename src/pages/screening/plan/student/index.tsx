@@ -113,7 +113,7 @@ const TableList: React.FC = () => {
    */
   const onDelete = (row: API.ScreeningStudentListItem) => {
     deleteTableRow('该学生数据', async () => {
-      await delPlanStudent(row?.id!);
+      await delPlanStudent(row?.planStudentId!);
       message.success('删除成功');
       onSearch();
     });

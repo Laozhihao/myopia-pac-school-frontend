@@ -29,3 +29,13 @@ export async function getScreeningStudentDetailList(
     ...(options || {}),
   });
 }
+
+/** 删除 筛查计划-学生列表 /school/vision/screening/delete/planStudent/{planStudentId} */
+export async function delPlanStudent(planStudentId: React.Key) {
+  return request<API.RequestResult>(
+    `/school/vision/screening/delete/planStudent/${planStudentId}`,
+    {
+      method: 'DELETE',
+    },
+  );
+}

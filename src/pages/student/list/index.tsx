@@ -1,6 +1,6 @@
 import { history } from 'umi';
 import React, { useState, useRef, useMemo } from 'react';
-import { Button, Card } from 'antd';
+import { Button, message, Card } from 'antd';
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProFormInstance } from '@ant-design/pro-form';
@@ -17,9 +17,9 @@ import { FormItemOptions } from './form-item';
 import { EMPTY } from '@/utils/constant';
 import { convertData, deleteRedundantData } from '@/utils/common';
 import { TableListCtx } from '@/hook/ant-config';
-// import { deleteTableRow } from '@/hook/table';
+import { deleteTableRow } from '@/hook/table';
 import { getschoolGrade } from '@/api/school';
-import { getStudentList, getStudentFormItemList } from '@/api/student';
+import { getStudentList, deleteStudentInfo, getStudentFormItemList } from '@/api/student';
 
 const TableList: React.FC = () => {
   const [searchForm, setSearchForm] = useState({}); // 搜索表单项
@@ -101,13 +101,13 @@ const TableList: React.FC = () => {
   /**
    * @desc 删除
    */
-  // const onDelete = (row: API.StudentListItem | undefined) => {
-  //   deleteTableRow('该学生数据', async () => {
-  //     await deleteStudentInfo(row?.id!);
-  //     message.success('删除成功');
-  //     onSearch();
-  //   });
-  // };
+  const onDelete = (row: API.StudentListItem | undefined) => {
+    deleteTableRow('该学生数据', async () => {
+      await deleteStudentInfo(row?.id!);
+      message.success('删除成功');
+      onSearch();
+    });
+  };
 
   /**
    * @desc 跳转档案管理
@@ -139,10 +139,10 @@ const TableList: React.FC = () => {
             }}
           >
             编辑
-          </Button>
+          </Button> */}
           <Button type="link" onClick={() => onDelete(record)}>
             删除
-          </Button> */}
+          </Button>
           <SwitchableButton
             key="manage"
             icon="icon-a-Group120"

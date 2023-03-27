@@ -200,3 +200,18 @@ export async function increasedScreeningTime(data?: API.ObjectType) {
     data,
   });
 }
+
+/** 获取可关联的通知 GET /school/screeningPlan/planLinkNotice/list */
+export async function getPlanLinkNotice() {
+  return request<API.RequestResult>('/school/screeningPlan/planLinkNotice/list', {
+    method: 'GET',
+  });
+}
+
+/** 关联通知 POST /school/screeningPlan/linkNotice/link */
+export async function savelinkNotice(data?: API.ObjectType) {
+  return request<API.RequestResult>('/school/screeningPlan/linkNotice/link', {
+    method: 'POST',
+    data,
+  });
+}

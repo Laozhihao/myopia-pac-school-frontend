@@ -15,6 +15,7 @@ import { AddModal } from './add-modal';
 import { listColumns } from './columns';
 import { PlanModal } from './modal/plan';
 import { TimeModal } from './modal/time';
+import { AssociateModal } from './modal/associate';
 import { FormItemOptions } from './form-item';
 import { EMPTY } from '@/utils/constant';
 import { escape2Html, deleteRedundantData } from '@/utils/common';
@@ -41,6 +42,12 @@ const TableList: React.FC = () => {
     visible: false,
     currentRow: undefined,
   }); // 筛查时间信息
+
+  const [associateModal, setAssociateModal] = useState<API.ModalDataType>({
+    title: '将筛查计划关联至筛查任务',
+    visible: false,
+    currentRow: undefined,
+  }); // 筛查任务关联筛查计划
 
   const [searchForm, setSearchForm] = useState({}); // 搜索表单项
   const [textHtml, setTextHtml] = useState('');
@@ -125,6 +132,13 @@ const TableList: React.FC = () => {
     refresh && onSearch();
   };
 
+  /**
+   * @desc 筛查任务关联至筛查计划
+   */
+  const onAssociateFn = (row: API.ObjectType) => {
+    setAssociateModal((s: API.ModalDataType) => ({ ...s, visible: true, currentRow: row }));
+  };
+
   const columns: ProColumns[] = [
     ...listColumns(onShow),
     {
@@ -180,6 +194,18 @@ const TableList: React.FC = () => {
                   >
                     筛查结果
                   </SwitchableButton>,
+                  // 只有自主筛查 and 视力筛查 and 非区域筛查计划类型的筛查计划才显示该按钮
+                  record?.screeningBizType &&
+                  !record?.screeningType &&
+                  !record?.srcScreeningNoticeId ? (
+                    <SwitchableButton
+                      key="associate"
+                      icon="icon-FundView1"
+                      onClick={() => onAssociateFn(record)}
+                    >
+                      关联至
+                    </SwitchableButton>
+                  ) : null,
                   // <SwitchableButton key="student" icon="icon-a-Group120" >
                   //   数据上交
                   // </SwitchableButton>,
@@ -287,6 +313,16 @@ const TableList: React.FC = () => {
           )
         }
       />
+      {associateModal.visible ? (
+        <AssociateModal
+          {...associateModal}
+          onCancel={(refresh?: boolean) =>
+            onCancel(refresh, () =>
+              setAssociateModal((s: API.ModalDataType) => ({ ...s, visible: false })),
+            )
+          }
+        />
+      ) : null}
     </PageContainer>
   );
 };

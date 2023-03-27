@@ -1,4 +1,5 @@
-import { EMPTY } from '@/utils/constant';
+import moment from 'moment';
+import { EMPTY, DATE } from '@/utils/constant';
 import type { Rule } from 'antd/lib/form';
 
 /**
@@ -15,6 +16,15 @@ export function toFormData(params: Record<string, any>): FormData {
   }
   return formData;
 }
+
+/**
+ **
+ * @desc 格式化日期
+ * @param time
+ * @param {string} format - 格式
+ */
+export const formatDate = (time: number | string | undefined, format = DATE) =>
+  time ? moment(time).format(format) : '';
 
 /**
  * @desc 截取字符长度

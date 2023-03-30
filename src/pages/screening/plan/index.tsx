@@ -25,6 +25,8 @@ import { deleteTableRow, secondaryConfirmation } from '@/hook/table';
 import { getScreeningList, deleteScreeningPlan, releaseScreeningPlan } from '@/api/screen/plan';
 
 const TableList: React.FC = () => {
+  const [initStatus, setInitStatus] = useState(false); // 是否请求过一次接口
+  const { query: { id: screeningTaskId } = {} } = history.location;
   // 获取当前学校信息
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState!;
@@ -265,7 +267,9 @@ const TableList: React.FC = () => {
               ...searchForm,
               current: params.current,
               size: params.pageSize,
+              ...(!initStatus && screeningTaskId ? { screeningTaskId } : {}),
             });
+            setInitStatus(true);
             return {
               data: datas.data.records,
               success: true,

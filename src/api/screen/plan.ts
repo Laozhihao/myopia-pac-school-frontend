@@ -201,16 +201,16 @@ export async function increasedScreeningTime(data?: API.ObjectType) {
   });
 }
 
-/** 获取可关联的通知 GET /school/screeningPlan/planLinkNotice/list */
+/** 获取可关联的通知 GET /school/screeningNotice/planLinkNotice/list */
 export async function getPlanLinkNotice() {
-  return request<API.RequestResult>('/school/screeningPlan/planLinkNotice/list', {
+  return request<API.RequestResult>('/school/screeningNotice/planLinkNotice/list', {
     method: 'GET',
   });
 }
 
-/** 关联通知 POST /school/screeningPlan/linkNotice/link */
+/** 关联通知 POST /school/vision/screening/linkNotice/link */
 export async function savelinkNotice(data?: API.ObjectType) {
-  return request<API.RequestResult>('/school/screeningPlan/linkNotice/link', {
+  return request<API.RequestResult>('/school/vision/screening/linkNotice/link', {
     method: 'POST',
     data,
   });

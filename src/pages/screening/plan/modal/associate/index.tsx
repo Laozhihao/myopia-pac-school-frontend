@@ -21,14 +21,7 @@ type taskNamesType = {
 export const AssociateModal: React.FC<API.ModalItemType> = (props) => {
   const modalRef = useRef<ProFormInstance>();
 
-  const [taskOptions, setTaskOptions] = useState<taskNamesType[]>([
-    {
-      govDeptName: '发布部门',
-      title: '筛查任务标题',
-      releaseTime: 1679889574594,
-      screeningTaskId: 1,
-    },
-  ]); // 筛查任务列表
+  const [taskOptions, setTaskOptions] = useState<taskNamesType[]>([]); // 筛查任务列表
   const [step, setStep] = useState(1); // 操作步骤
   const [confirmLoading, setConfirmLoading] = useState(false); // 确定操作按钮 loading
   const [selectTask, setSelectTask] = useState<taskNamesType | null>(null); // 已选择的关联筛查任务
@@ -41,7 +34,6 @@ export const AssociateModal: React.FC<API.ModalItemType> = (props) => {
   useMemo(async () => {
     if (visible) {
       const { data } = await getPlanLinkNotice();
-      console.log('getPlanLinkNotice', data);
       setTaskOptions(data);
     }
   }, [visible]);
@@ -61,7 +53,7 @@ export const AssociateModal: React.FC<API.ModalItemType> = (props) => {
     setConfirmLoading(true);
     const { screeningTaskId, screeningNoticeDeptOrgId } = selectTask!;
     const params = {
-      screeningPlanId: currentRow?.planId,
+      planId: currentRow?.planId,
       screeningTaskId,
       screeningNoticeDeptOrgId,
     };

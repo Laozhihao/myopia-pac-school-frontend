@@ -196,7 +196,8 @@ const TableList: React.FC = () => {
                   >
                     筛查结果
                   </SwitchableButton>,
-                  // 只有自主筛查 and 视力筛查 and 非区域筛查计划类型的筛查计划才显示该按钮
+                  // 暂时屏蔽这功能 只有自主筛查 and 视力筛查 and 非区域筛查计划类型的筛查计划才显示该按钮
+                  false &&
                   record?.screeningBizType &&
                   !record?.screeningType &&
                   !record?.srcScreeningNoticeId ? (

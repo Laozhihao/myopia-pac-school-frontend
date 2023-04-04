@@ -40,8 +40,8 @@ const TableList: React.FC = () => {
   /**
    * @desc 查看筛查计划
    */
-  const onRouterPlan = () => {
-    history.push('/screening/plan');
+  const onRouterPlan = (record: Object) => {
+    history.push(`/screening/plan?id=${record['screeningTaskId']}`);
   };
 
   /**
@@ -74,7 +74,11 @@ const TableList: React.FC = () => {
         return [
           <DynamicButtonGroup key="operator">
             {record?.status === 3 ? (
-              <SwitchableButton key="detail" icon="icon-a-Group1000006857" onClick={onRouterPlan}>
+              <SwitchableButton
+                key="detail"
+                icon="icon-a-Group1000006857"
+                onClick={() => onRouterPlan(record)}
+              >
                 查看筛查计划
               </SwitchableButton>
             ) : null}

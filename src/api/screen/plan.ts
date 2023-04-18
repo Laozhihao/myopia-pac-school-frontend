@@ -215,3 +215,11 @@ export async function savelinkNotice(data?: API.ObjectType) {
     data,
   });
 }
+
+/** 判断当前创建的计划是否属于新疆地区的 GET /school/plan/isXinJiangDistrict */
+export async function getIsXinJiangDistrict(params?: API.ObjectType) {
+  return request<API.RequestResult>('/school/plan/isXinJiangDistrict', {
+    method: 'GET',
+    params,
+  });
+}

@@ -1,13 +1,17 @@
+import { useMemo, useRef, useState } from 'react';
+import { message, Form, Col } from 'antd';
+import type { ProFormInstance } from '@ant-design/pro-form';
 import { ModalForm } from '@ant-design/pro-form';
 import DynamicForm from '@/components/DynamicForm';
 import MyEditor from '@/components/EditorModal';
-import type { ProFormInstance } from '@ant-design/pro-form';
-import { deleteRedundantData, html2Escape, escape2Html } from '@/utils/common';
-import { useMemo, useRef, useState } from 'react';
-import { modalConfig } from '@/hook/ant-config';
 import { FormItemOptions } from './form-item';
-import { getScreeningStudent, editScreeningStudent } from '@/api/screen/plan';
-import { message, Form, Col } from 'antd';
+import { deleteRedundantData, html2Escape, escape2Html } from '@/utils/common';
+import { modalConfig } from '@/hook/ant-config';
+import {
+  getScreeningStudent,
+  editScreeningStudent,
+  getIsXinJiangDistrict,
+} from '@/api/screen/plan';
 
 export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }> = (props) => {
   const modalRef = useRef<ProFormInstance>();
@@ -25,6 +29,10 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
       setContentValue(currentRow?.content ? escape2Html(escape2Html(currentRow?.content)) : '');
       const { data } = await getScreeningStudent(parm);
       setScreeningStudentInfo(data);
+      // 判断当前创建的计划是否属于新疆地区的
+      const { data: isXinJiangDistrict } = await getIsXinJiangDistrict();
+      data.isXinJiangDistrict = isXinJiangDistrict;
+      console.log('isXinJiangDistrict', isXinJiangDistrict);
       modalRef?.current?.setFieldsValue({
         ...currentRow,
         time: currentRow ? [currentRow?.startTime, currentRow?.endTime] : [],
@@ -41,8 +49,8 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
    * @desc 新增/编辑
    */
   const onConfirm = async (value: any) => {
-    const { time = [] } = value;
-    const [startTime, endTime] = time;
+    const { screeningTime = [] } = value;
+    const [startTime, endTime] = screeningTime;
     await editScreeningStudent(
       deleteRedundantData(
         {

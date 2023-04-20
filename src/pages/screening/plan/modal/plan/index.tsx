@@ -35,7 +35,7 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
       setIsXinJiangDistrict(xinjiangFlag);
       modalRef?.current?.setFieldsValue({
         ...currentRow,
-        time: currentRow ? [currentRow?.startTime, currentRow?.endTime] : [],
+        screeningTime: currentRow ? [currentRow?.startTime, currentRow?.endTime] : [],
         gradeIds: data
           .map((item: API.GradeInfoType) =>
             currentRow ? item?.isSelect && item.gradeId : item.gradeId,
@@ -64,7 +64,7 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
           screeningTaskId: currentRow ? currentRow?.screeningTaskId : undefined, // 编辑时需要
           ...param,
         },
-        ['time'],
+        ['screeningTime'],
       ),
     );
     props.onCancel(true);

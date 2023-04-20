@@ -231,3 +231,18 @@ export const ASTIGMATISM_LEVEL = {
   2: '中度散光',
   3: '高度散光',
 };
+
+// 新疆系统对接特殊流程 - 年份
+export const XINJIANG_YEAR_OPTIONS = [
+  { value: 2023, label: 2023 },
+  { value: 2024, label: 2024 },
+  { value: 2025, label: 2025 },
+];
+
+// 新疆系统对接特殊流程 - 次数
+export const XINJIANG_NUMS_OPTIONS = [
+  { value: 1, label: 1 },
+  { value: 2, label: 2 },
+  { value: 3, label: 3 },
+  { value: 4, label: 4 },
+];

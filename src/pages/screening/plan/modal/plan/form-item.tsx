@@ -1,13 +1,22 @@
-import { Checkbox, Form } from 'antd';
-import { defaultRulesConfig } from '@/utils/common';
 import styles from './index.less';
-import { ProFormDateRangePicker } from '@ant-design/pro-form';
-import { useEffect, useState } from 'react';
-import type { CheckboxValueType } from 'antd/lib/checkbox/Group';
-import moment from 'moment';
 import { history } from 'umi';
+import { useEffect, useState } from 'react';
+import { Checkbox, Form, Select, Space } from 'antd';
+import type { CheckboxValueType } from 'antd/lib/checkbox/Group';
+import { ProFormDateRangePicker } from '@ant-design/pro-form';
+import moment from 'moment';
+import { XINJIANG_YEAR_OPTIONS, XINJIANG_NUMS_OPTIONS } from '@/utils/constant';
+import { defaultRulesConfig } from '@/utils/common';
+import { getPopupContainer } from '@/hook/ant-config';
 
-export const FormItemOptions = (studentOption: API.ObjectType[]) => {
+type StudentOptionType = {
+  studentNum?: number;
+} & API.GradeInfoType;
+
+export const FormItemOptions = (
+  studentOption: StudentOptionType[],
+  isXinJiangDistrict: Boolean, // 是否是新疆用户
+) => {
   const [total, setTotal] = useState(0); // 选中的学生总数
 
   useEffect(() => {
@@ -47,14 +56,14 @@ export const FormItemOptions = (studentOption: API.ObjectType[]) => {
         rules: defaultRulesConfig('输入筛查标题'),
       },
       {
-        value: 'time',
+        value: 'screeningTime',
         col: {
           span: 24,
         },
         slot: (
           <div className={styles.screen_item}>
             <ProFormDateRangePicker
-              name="time"
+              name="screeningTime"
               label="筛查时间段"
               rules={[{ type: 'array', required: true, message: '请选择筛查时间段' }]}
               fieldProps={{
@@ -66,6 +75,49 @@ export const FormItemOptions = (studentOption: API.ObjectType[]) => {
               注：请合理设置时间段，为保证数据安全性，筛查人员在该筛查时间段内才能查阅到学生的数据进行筛查，因此请确保所负责的学校可以在该时间段内完成。筛查时间段只能从当前时间开始进行选择
             </p>
           </div>
+        ),
+      },
+      {
+        value: 'year',
+        col: {
+          span: 24,
+        },
+        slot: isXinJiangDistrict ? (
+          <>
+            <Space align={'start'} size={10}>
+              <Form.Item
+                label="自治区数据上报"
+                rules={defaultRulesConfig('选择')}
+                name="year"
+                style={{ marginBottom: 12 }}
+              >
+                <Select
+                  className={styles.select_w}
+                  allowClear
+                  placeholder="请选择"
+                  getPopupContainer={getPopupContainer}
+                  options={XINJIANG_YEAR_OPTIONS}
+                ></Select>
+              </Form.Item>
+              <div className={styles.data_tips}>年，第</div>
+              <Form.Item
+                rules={defaultRulesConfig('选择')}
+                name="time"
+                style={{ marginBottom: 12 }}
+              >
+                <Select
+                  className={styles.select_w}
+                  allowClear
+                  placeholder="请选择"
+                  getPopupContainer={getPopupContainer}
+                  options={XINJIANG_NUMS_OPTIONS}
+                ></Select>
+              </Form.Item>
+              <div className={styles.data_tips}>次</div>
+            </Space>
+          </>
+        ) : (
+          <></>
         ),
       },
       {

@@ -9,7 +9,14 @@ import { XINJIANG_YEAR_OPTIONS, XINJIANG_NUMS_OPTIONS } from '@/utils/constant';
 import { defaultRulesConfig } from '@/utils/common';
 import { getPopupContainer } from '@/hook/ant-config';
 
-export const FormItemOptions = (studentOption: API.ObjectType[]) => {
+type StudentOptionType = {
+  studentNum?: number;
+} & API.GradeInfoType;
+
+export const FormItemOptions = (
+  studentOption: StudentOptionType[],
+  isXinJiangDistrict: Boolean, // 是否是新疆用户
+) => {
   const [total, setTotal] = useState(0); // 选中的学生总数
 
   useEffect(() => {
@@ -75,7 +82,7 @@ export const FormItemOptions = (studentOption: API.ObjectType[]) => {
         col: {
           span: 24,
         },
-        slot: studentOption['isXinJiangDistrict'] ? (
+        slot: isXinJiangDistrict ? (
           <>
             <Space align={'start'} size={10}>
               <Form.Item

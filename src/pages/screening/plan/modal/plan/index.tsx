@@ -17,6 +17,7 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
   const modalRef = useRef<ProFormInstance>();
   const [screeningStudentInfo, setScreeningStudentInfo] = useState<API.ObjectType[]>([]);
   const [contentValue, setContentValue] = useState('');
+  const [isXinJiangDistrict, setIsXinJiangDistrict] = useState(false);
 
   const { title, visible, currentRow, param = {} } = props;
 
@@ -30,9 +31,8 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
       const { data } = await getScreeningStudent(parm);
       setScreeningStudentInfo(data);
       // 判断当前创建的计划是否属于新疆地区的
-      const { data: isXinJiangDistrict } = await getIsXinJiangDistrict();
-      data.isXinJiangDistrict = isXinJiangDistrict;
-      console.log('isXinJiangDistrict', isXinJiangDistrict);
+      const { data: xinjiangFlag } = await getIsXinJiangDistrict();
+      setIsXinJiangDistrict(xinjiangFlag);
       modalRef?.current?.setFieldsValue({
         ...currentRow,
         time: currentRow ? [currentRow?.startTime, currentRow?.endTime] : [],
@@ -87,7 +87,7 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
         onCancel: () => props.onCancel(false),
       }}
     >
-      <DynamicForm {...FormItemOptions(screeningStudentInfo)} isNeedBtn={false}>
+      <DynamicForm {...FormItemOptions(screeningStudentInfo, isXinJiangDistrict)} isNeedBtn={false}>
         <Col span={24}>
           <Form.Item label="筛查内容">
             <MyEditor

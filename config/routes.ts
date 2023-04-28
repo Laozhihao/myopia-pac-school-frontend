@@ -80,6 +80,14 @@ export default [
       { name: '年级管理', path: '/school/grade', component: './school/grade' },
     ],
   },
+  {
+    name: '数据大屏',
+    icon: 'project',
+    path: '/data-view',
+    layout: false,
+    target: '_blank',
+    component: './dataView',
+  },
   { path: '/', redirect: '/student' },
   { component: './404' },
 ];

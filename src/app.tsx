@@ -79,6 +79,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       if (!initialState?.currentUser && location.pathname !== loginPath) {
         history.push(loginPath);
       }
+      // if (location.pathname === '/data-view') {
+      //   history.push('/data-view', { target: '_blank' });
+      // }
     },
     menuHeaderRender: undefined,
     menuDataRender: () => {

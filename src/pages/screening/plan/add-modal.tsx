@@ -142,9 +142,10 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
 
   useEffect(() => {
     setImgUrl(props?.currentRow?.qrCodeFileUrl);
-    // 处理二维码配置权限，告知书默认显示
+    // 处理二维码配置权限，告知书默认显示一直有
     const confitArr = [
       0,
+      ...(props?.currentRow?.screeningBizType ? [2] : []), // 自主筛查给个默认筛查二维码
       ...(props?.currentRow?.qrCodeConfig?.split(',')?.map((i: string) => +i) || []),
     ];
     const dynamicPrintTypeArr = defaultPrintTypeArr.filter((item) => confitArr.includes(item.type));

@@ -135,8 +135,7 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
   // 打印类型
   const defaultPrintTypeArr = [
     { type: 0, text: '告知书' },
-    { type: 1, text: '筛查二维码' },
-    { type: 2, text: '学生筛查二维码' },
+    { type: 2, text: '筛查二维码' },
     { type: 3, text: '虚拟二维码' },
   ];
   const [printTypeArr, setPrintTypeArr] = useState<API.ObjectType[]>(defaultPrintTypeArr);
@@ -146,7 +145,6 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
     // 处理二维码配置权限，告知书默认显示
     const confitArr = [
       0,
-      2,
       ...(props?.currentRow?.qrCodeConfig?.split(',')?.map((i: string) => +i) || []),
     ];
     const dynamicPrintTypeArr = defaultPrintTypeArr.filter((item) => confitArr.includes(item.type));

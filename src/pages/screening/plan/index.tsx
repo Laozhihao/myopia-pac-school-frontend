@@ -283,15 +283,17 @@ const TableList: React.FC = () => {
           }}
         />
       </TableListCtx.Provider>
-      <AddModal
-        title="打印告知书/二维码"
-        visible={createModalVisible}
-        currentRow={currentRow}
-        onCancel={(flag?: boolean) => {
-          handleModalVisible(false);
-          flag && tableRef?.current?.reload();
-        }}
-      />
+      {createModalVisible ? (
+        <AddModal
+          title="打印告知书/二维码"
+          visible={createModalVisible}
+          currentRow={currentRow}
+          onCancel={(flag?: boolean) => {
+            handleModalVisible(false);
+            flag && tableRef?.current?.reload();
+          }}
+        />
+      ) : null}
       <Modal
         title="筛查内容"
         visible={textModalVisible}

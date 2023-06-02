@@ -6,8 +6,8 @@ WORKDIR /build
 
 COPY package.json .yarnrc yarn.lock ./
 
-RUN --mount=type=cache,target=/root/.cache,id=yarn-cache,sharing=private \
-    yarn install
+RUN --mount=type=cache,target=/root/.yarn \
+    YARN_CACHE_FOLDER=/root/.yarn yarn install
 
 ARG APP_ENV
 ARG NODE_ENV

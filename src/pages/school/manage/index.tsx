@@ -108,7 +108,11 @@ const SchoolManage: React.FC = () => {
                 rules={[{ required: true, message: '请输入学校名称' }]}
               />
               <p className={styles.total}>
-                学生总数： <span>{schoolInfo?.studentCount}</span>
+                在读学生： <span>{schoolInfo?.studentCount}</span>
+              </p>
+              <p className={styles.total}>
+                <label className={styles.label}>全部：</label>{' '}
+                <span>{schoolInfo?.studentCount}</span>
               </p>
               <LazyCascader
                 label="学校地址"

@@ -40,7 +40,7 @@ const TableList: React.FC = () => {
    */
   useMemo(async () => {
     const [gradeList, formItemList] = await Promise.all([
-      getschoolGrade(),
+      getschoolGrade({ isFilterGraduate: true }), // isFilterGraduate 为 true，过滤掉毕业年级
       getStudentFormItemList(),
     ]);
     const { data: gradeListOption } = gradeList;

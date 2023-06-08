@@ -39,3 +39,13 @@ export async function delPlanStudent(planStudentId: React.Key) {
     },
   );
 }
+
+/** 更新筛查学生不检查说明 POST /school/vision/screening/students/updateState */
+export async function updateExamineState(id: number, state: number) {
+  return request<API.RequestResult>(
+    `/school/vision/screening/students/updateState/${id}/${state}`,
+    {
+      method: 'POST',
+    },
+  );
+}

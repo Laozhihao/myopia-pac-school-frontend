@@ -108,7 +108,7 @@ const SchoolManage: React.FC = () => {
                 rules={[{ required: true, message: '请输入学校名称' }]}
               />
               <p className={styles.total}>
-                在读学生： <span>{schoolInfo?.studentCount}</span>
+                在读学生： <span>{schoolInfo?.currentStudent}</span>
               </p>
               <p className={styles.total}>
                 <label className={styles.label}>全部：</label>{' '}

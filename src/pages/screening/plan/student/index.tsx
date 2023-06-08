@@ -20,7 +20,7 @@ import { AddModal } from './modal/add/index';
 import { deleteTableRow } from '@/hook/table';
 import { TableListCtx, modalConfig } from '@/hook/ant-config';
 import { getschoolGrade } from '@/api/school';
-import { getScreeningStudentList, delPlanStudent } from '@/api/screen/student';
+import { getScreeningStudentList, delPlanStudent, updateExamineState } from '@/api/screen/student';
 
 import styles from './index.less';
 
@@ -119,28 +119,31 @@ const TableList: React.FC = () => {
     });
   };
 
+  const [currentRow, setCurrentRow] = useState<API.ObjectType>();
   const [reasonModalVisible, setReasonModalVisible] = useState(false); // 未做检查原因visible
   const [reasonVal, setReasonVal] = useState(0);
 
   /**
    * @desc 未做检查原因弹窗
    */
-  const onShow = (val: any) => {
+  const onShowExamine = (val: number, record: any) => {
     setReasonVal(val);
+    setCurrentRow(record);
     setReasonModalVisible(true);
   };
 
   /**
    * @desc 提交未做检查原因
    */
-  const submitReasonFn = () => {
-    console.log(reasonVal);
-    // TODO 接口请求
+  const submitReasonFn = async () => {
+    await updateExamineState(currentRow?.planStudentId!, reasonVal);
     setReasonModalVisible(false);
+    message.success('更新成功');
+    onSearch();
   };
 
   const columns: ProColumns<API.ScreeningStudentListItem>[] = [
-    ...listColumns(onShow),
+    ...listColumns(onShowExamine),
     {
       title: '操作',
       dataIndex: 'option',

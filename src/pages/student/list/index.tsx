@@ -40,7 +40,7 @@ const TableList: React.FC = () => {
    */
   useMemo(async () => {
     const [gradeList, formItemList] = await Promise.all([
-      getschoolGrade({ isFilterGraduate: true }), // isFilterGraduate 为 true，过滤掉毕业年级
+      getschoolGrade(),
       getStudentFormItemList(),
     ]);
     const { data: gradeListOption } = gradeList;
@@ -49,6 +49,11 @@ const TableList: React.FC = () => {
     } = formItemList;
 
     setGradeOption(gradeListOption);
+    console.log(
+      '123',
+      gradeOption,
+      gradeOption.filter((item) => item.gradeName !== '毕业'),
+    );
     setItemOptions((s) => ({
       ...s,
       listTypeInfo: {
@@ -223,14 +228,13 @@ const TableList: React.FC = () => {
       <AddModal
         visible={modalVisible}
         currentRow={currentRow}
-        option={gradeOption}
+        option={gradeOption.filter((item) => item.name !== '毕业')} // 新增过滤掉毕业年级
         title={currentRow ? '编辑学生' : '创建学生'}
         onCancel={(refresh) => {
           setModalVisible(false);
           refresh && onSearch();
         }}
       />
-
       <OperationModal
         visible={operationVisible}
         typeKey={typeKey}

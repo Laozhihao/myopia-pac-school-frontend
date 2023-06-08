@@ -51,7 +51,8 @@ const TableList: React.FC = () => {
    * @desc 获取年级班级
    */
   useMemo(async () => {
-    const { data = [] } = await getschoolGrade();
+    // 过滤毕业年级
+    const { data = [] } = await getschoolGrade({ isFilterGraduate: true });
     setItemOptions((s) => ({
       ...s,
       listTypeInfo: { ...s.listTypeInfo, gradeOptions: convertData(data) },

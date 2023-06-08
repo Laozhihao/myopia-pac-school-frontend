@@ -18,7 +18,7 @@ export async function editSchoolDetail(data: API.ObjectType, options?: API.Objec
 }
 
 /** 年级班级（级联） GET /school/management */
-export async function getschoolGrade(params: API.ObjectType, options?: API.ObjectType) {
+export async function getschoolGrade(params?: API.ObjectType, options?: API.ObjectType) {
   return request<API.RequestResult>('/school/management/grade/all', {
     method: 'GET',
     params,

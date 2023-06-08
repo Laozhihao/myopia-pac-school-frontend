@@ -49,11 +49,6 @@ const TableList: React.FC = () => {
     } = formItemList;
 
     setGradeOption(gradeListOption);
-    console.log(
-      '123',
-      gradeOption,
-      gradeOption.filter((item) => item.gradeName !== '毕业'),
-    );
     setItemOptions((s) => ({
       ...s,
       listTypeInfo: {

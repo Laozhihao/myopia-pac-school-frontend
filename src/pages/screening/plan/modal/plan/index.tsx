@@ -26,7 +26,12 @@ export const PlanModal: React.FC<API.ModalItemType & { param?: API.ObjectType }>
    */
   useMemo(async () => {
     if (visible) {
-      const parm = currentRow ? { screeningPlanId: currentRow?.planId } : undefined;
+      // 过滤毕业年级
+      const parm = {
+        isFilterGraduate: true,
+        ...(currentRow ? { screeningPlanId: currentRow?.planId } : {}),
+      };
+      console.log('currentRow', currentRow);
       setContentValue(currentRow?.content ? escape2Html(escape2Html(currentRow?.content)) : '');
       const { data } = await getScreeningStudent(parm);
       setScreeningStudentInfo(data);

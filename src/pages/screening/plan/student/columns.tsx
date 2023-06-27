@@ -1,7 +1,9 @@
 import type { ProColumns } from '@ant-design/pro-table';
 import { INSPECTIONINSTRUCTIONS, TABLESEXOPTION } from '@/utils/constant';
 
-export const listColumns: ProColumns<API.ScreeningStudentListItem>[] = [
+export const listColumns: (
+  show: (val: number, record: any) => void,
+) => ProColumns<API.ScreeningStudentListItem>[] = (show) => [
   {
     title: '筛查编码',
     dataIndex: 'screeningCode',
@@ -52,7 +54,14 @@ export const listColumns: ProColumns<API.ScreeningStudentListItem>[] = [
   {
     title: '未做检查原因',
     dataIndex: 'state',
-    valueEnum: INSPECTIONINSTRUCTIONS,
+    render: (val, record) => {
+      return (
+        <div>
+          {INSPECTIONINSTRUCTIONS[val as number]}{' '}
+          <a onClick={() => show(val as number, record)}>编辑</a>
+        </div>
+      );
+    },
   },
   {
     title: '数据完整性',

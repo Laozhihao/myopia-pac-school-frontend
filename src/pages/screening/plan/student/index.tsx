@@ -1,5 +1,5 @@
 import { history } from 'umi';
-import { Button, message, Card } from 'antd';
+import { Button, message, Card, Modal, Radio, Space } from 'antd';
 import React, { useState, useRef, useMemo } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
@@ -13,14 +13,14 @@ import DynamicButtonGroup from '@/components/DynamicButtonGroup';
 import { DetailModal } from './modal/detail/index';
 import { StandardModal } from '../../result/modal/standard-modal';
 import { listColumns } from './columns';
-import { EMPTY } from '@/utils/constant';
+import { EMPTY, INSPECTIONINSTRUCTIONS } from '@/utils/constant';
 import { FormItemOptions } from './form-item';
 import { convertData } from '@/utils/common';
 import { AddModal } from './modal/add/index';
 import { deleteTableRow } from '@/hook/table';
-import { TableListCtx } from '@/hook/ant-config';
+import { TableListCtx, modalConfig } from '@/hook/ant-config';
 import { getschoolGrade } from '@/api/school';
-import { getScreeningStudentList, delPlanStudent } from '@/api/screen/student';
+import { getScreeningStudentList, delPlanStudent, updateExamineState } from '@/api/screen/student';
 
 import styles from './index.less';
 
@@ -51,7 +51,8 @@ const TableList: React.FC = () => {
    * @desc 获取年级班级
    */
   useMemo(async () => {
-    const { data = [] } = await getschoolGrade();
+    // 过滤毕业年级
+    const { data = [] } = await getschoolGrade({ isFilterGraduate: true });
     setItemOptions((s) => ({
       ...s,
       listTypeInfo: { ...s.listTypeInfo, gradeOptions: convertData(data) },
@@ -119,8 +120,31 @@ const TableList: React.FC = () => {
     });
   };
 
+  const [currentRow, setCurrentRow] = useState<API.ObjectType>();
+  const [reasonModalVisible, setReasonModalVisible] = useState(false); // 未做检查原因visible
+  const [reasonVal, setReasonVal] = useState(0);
+
+  /**
+   * @desc 未做检查原因弹窗
+   */
+  const onShowExamine = (val: number, record: any) => {
+    setReasonVal(val);
+    setCurrentRow(record);
+    setReasonModalVisible(true);
+  };
+
+  /**
+   * @desc 提交未做检查原因
+   */
+  const submitReasonFn = async () => {
+    await updateExamineState(currentRow?.planStudentId!, reasonVal);
+    setReasonModalVisible(false);
+    message.success('更新成功');
+    onSearch();
+  };
+
   const columns: ProColumns<API.ScreeningStudentListItem>[] = [
-    ...listColumns,
+    ...listColumns(onShowExamine),
     {
       title: '操作',
       dataIndex: 'option',
@@ -219,6 +243,23 @@ const TableList: React.FC = () => {
         visible={standardModalVisible}
         onCancel={() => setStandardModalVisible(false)}
       ></StandardModal>
+      <Modal
+        title="未做检查原因"
+        visible={reasonModalVisible}
+        onOk={() => submitReasonFn()}
+        onCancel={() => setReasonModalVisible(false)}
+        {...modalConfig}
+      >
+        <Radio.Group onChange={(e) => setReasonVal(e.target.value)} value={reasonVal}>
+          <Space>
+            {Object.entries(INSPECTIONINSTRUCTIONS).map((item, index) => (
+              <Radio key={index} value={+item[0]}>
+                {item[1]}
+              </Radio>
+            ))}
+          </Space>
+        </Radio.Group>
+      </Modal>
     </PageContainer>
   );
 };

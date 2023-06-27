@@ -223,14 +223,13 @@ const TableList: React.FC = () => {
       <AddModal
         visible={modalVisible}
         currentRow={currentRow}
-        option={gradeOption}
+        option={gradeOption.filter((item) => item.name !== '毕业')} // 新增过滤掉毕业年级
         title={currentRow ? '编辑学生' : '创建学生'}
         onCancel={(refresh) => {
           setModalVisible(false);
           refresh && onSearch();
         }}
       />
-
       <OperationModal
         visible={operationVisible}
         typeKey={typeKey}

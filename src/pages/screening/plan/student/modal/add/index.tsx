@@ -21,7 +21,8 @@ export const AddModal: React.FC<API.ModalItemType> = (props) => {
    */
   useMemo(async () => {
     if (visible) {
-      const { data } = await getScreeningStudent({ screeningPlanId });
+      // 过滤毕业年级
+      const { data } = await getScreeningStudent({ screeningPlanId, isFilterGraduate: true });
       setScreeningStudentInfo(data);
       modalRef?.current?.setFieldsValue({
         gradeIds: data
